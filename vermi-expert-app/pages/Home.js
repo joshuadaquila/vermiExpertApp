@@ -5,12 +5,12 @@ import { View, StyleSheet, SafeAreaView, Text, FlatList, TouchableOpacity} from 
 import BluetoothNotice from "../components/BluetoothNotice";
 import { useState } from "react";
 
-export default function Home(){
+const Home = ({ navigation })=>{
   const [showBt, setShowBt] = useState(false);
   
   
   return(
-    <SafeAreaView style={styles.main}>
+    <View style={styles.main}>
       {showBt && <BluetoothNotice />}
       <View style={{padding: 10}}>
 
@@ -103,7 +103,7 @@ export default function Home(){
         </View>
 
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 
@@ -162,3 +162,5 @@ const styles = StyleSheet.create({
     textAlign: 'center', // Centers the text horizontally
   },
 })
+
+export default Home;
