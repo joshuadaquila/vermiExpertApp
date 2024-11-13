@@ -14,10 +14,10 @@ const App = () => {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Home"
-          component={Home}
+          component={BluetoothTest}
           options={{ headerShown: false }} // This will hide the header for Home screen
         />
-        <Stack.Screen name="Profile" component={DecisionTreeApp} />
+        {/* <Stack.Screen name="Profile" component={BluetoothTest} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

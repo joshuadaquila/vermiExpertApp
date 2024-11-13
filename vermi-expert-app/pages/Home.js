@@ -10,29 +10,36 @@ const Home = ({ navigation }) => {
   const [showBt, setShowBt] = useState(true);
   const [hc05Device, setHc05Device] = useState(null); // You should initialize this with the actual Bluetooth device object
   const [isConnected, setIsConnected] = useState('false'); // State to store the connection status
+  const manager = new BleManager();
+  const deviceAddress = '75:DA:C4:8A:87:0D';
+  const [receivedData, setReceivedData] = useState('')
 
-  useEffect(() => {
-    const manager = new BleManager();
-    const deviceAddress = '75:DA:C4:8A:87:0D';
-  
+
+  const connectToBluetooth = () => {
+    console.log("Trying to connect to bt device...")
+    setIsConnected('connecting')
     manager.connectToDevice(deviceAddress)
       .then(device => {
         setHc05Device(device);
-        // console.log('Connected to HC-05');
+        console.log(device)
         setIsConnected('true');
+        if (device && typeof device.discoverAllServicesAndCharacteristics === 'function') {
+          return device.discoverAllServicesAndCharacteristics();
+        }
         
-        // device.onConnectionStateChange((state) => {
-        //   console.log(`Connection state changed: ${state}`);
-        //   setIsConnected(state === 'connected');
-        // }, true); // Listen to state changes continuously
       })
       .catch(error => {
         console.log('Error connecting to HC-05:', error);
+        setIsConnected('false')
       });
-  
+  };
+
+  useEffect(() => {
+    // connectToBluetooth();
+
     return () => {
       if (hc05Device) {
-        hc05Device.cancelConnection(); // Make sure to cancel connection when unmounting
+        hc05Device.cancelConnection();
       }
     };
   }, []);
@@ -40,7 +47,8 @@ const Home = ({ navigation }) => {
 
   return (
     <View style={styles.main}>
-      {showBt && <BtStat status={isConnected} />}
+      {isConnected && <BtStat status={isConnected} 
+      message={`${isConnected === 'true'? "Bluetooth connected!" : isConnected === 'connecting'?  "Connecting..." :"Bluetooth disconnected. Tap to try again!"}`} clicked={connectToBluetooth}/>}
       <View style={{ padding: 10 }}>
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <FontAwesomeIcon icon={faBars} color="white" style={{ marginRight: 10 }} />

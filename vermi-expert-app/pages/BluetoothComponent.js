@@ -1,14 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, PermissionsAndroid, Platform, FlatList } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
 import { Buffer } from 'buffer'; // Import Buffer from the 'buffer' package
+import { faBars, faDroplet, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, SafeAreaView, Platform, PermissionsAndroid, Text, FlatList, TouchableOpacity} from "react-native";
+import BluetoothNotice from "../components/BluetoothNotice";
+import BtStat from "../components/BTStat";
 
 const BluetoothTest = () => {
-    const [isConnected, setIsConnected] = useState(false);
+    const [isConnected, setIsConnected] = useState('false');
     const [deviceId, setDeviceId] = useState(null);
     const [devices, setDevices] = useState([]);
     const [manager, setManager] = useState(null);
     const [receivedData, setReceivedData] = useState('');
+    // const [showBt, setShowBt] = useState(true);
+
+    const [temperature, setTemperature]= useState(0);
+    const [moisture, setMoisture] = useState(0);
+    const [phLevel, setPhLevel] = useState(0);
+
+  const [hc05Device, setHc05Device] = useState(null);
+  const deviceAddress = '75:DA:C4:8A:87:0D';
 
     useEffect(() => {
         const bleManager = new BleManager();
@@ -70,16 +82,20 @@ const BluetoothTest = () => {
         }, 5000); // Stop after 5 seconds (or adjust as needed)
     };
 
-    const connectToDevice = (deviceId) => {
+    const connectToDevice = () => {
         if (manager) {
-            manager.connectToDevice(deviceId)
+            manager.connectToDevice(deviceAddress)
                 .then((device) => {
                     setIsConnected(true);
                     setDeviceId(device.id);
                     console.log('Connected to device:', device.id);
+                    // console.log(device)
 
+                    setHc05Device(device);
+                    setIsConnected('true');
                     // Discover services and characteristics
                     return device.discoverAllServicesAndCharacteristics();
+                    
                 })
                 .then((device) => {
                     // Start listening to notifications from the device (replace with your characteristic UUID)
@@ -90,12 +106,22 @@ const BluetoothTest = () => {
                             return;
                         }
 
-                        // Decode the received base64 data
                         const data = characteristic.value
-                            ? Buffer.from(characteristic.value, 'base64').toString('utf-8')  // Decoding base64 to UTF-8 string
-                            : '';
+                          ? Buffer.from(characteristic.value, 'base64').toString('utf-8')  // Decoding base64 to UTF-8 string
+                          : '';
 
-                        setReceivedData(data);
+                        // Split the data by newlines
+                        const parts = data.split('\n');  // Split by newline
+
+
+                        const temperature = parseFloat(parts[0]); // Extracts temperature, e.g., '28.81'
+                        const moisture = parseInt(parts[1], 10);  // Extracts moisture, e.g., '23'
+                        const ph = parseFloat(parts[2]);          // Extracts pH level, e.g., '15.21'
+
+                        // Update states
+                        setTemperature(temperature);
+                        setMoisture(moisture);
+                        setPhLevel(ph);
                     });
                 })
                 .catch((error) => {
@@ -119,30 +145,149 @@ const BluetoothTest = () => {
         }
     };
 
-    return (
-        <View>
-            <Text>{isConnected ? 'Connected to ' + deviceId : 'Not connected'}</Text>
-            <FlatList
-                data={devices}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <View style={{ marginBottom: 10 }}>
-                        <Text>{item.name || item.id}</Text>
-                        <Button title={`Connect to ${item.name || item.id}`} onPress={() => connectToDevice(item.id)} />
-                    </View>
-                )}
-            />
-            <Button title="Disconnect" onPress={disconnectFromDevice} disabled={!isConnected} />
-            
-            {/* Display the received data */}
-            {receivedData ? (
-                <View style={{ marginTop: 20 }}>
-                    <Text>Data from Device:</Text>
-                    <Text>{receivedData}</Text>
-                </View>
-            ) : null}
+    console.log(temperature)
+
+   return (
+    <View style={styles.main}>
+      {isConnected && <BtStat status={isConnected} 
+      message={`${isConnected === 'true'? "Bluetooth connected!" : isConnected === 'connecting'?  "Connecting..." :"Bluetooth disconnected. Tap to try again!"}`} clicked={connectToDevice}/>}
+      <View style={{ padding: 10 }}>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <FontAwesomeIcon icon={faBars} color="white" style={{ marginRight: 10 }} />
+          <View style={{ alignSelf: 'flex-start', paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }}>
+            <Text style={{ color: '#111211', alignSelf: 'flex-start', fontWeight: 'bold' }}>DASHBOARD</Text>
+          </View>
         </View>
-    );
+
+        <View style={styles.latestAss}>
+          <Text style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: 10, color: 'white' }}>Latest Assessment</Text>
+          <View style={styles.gridContainer}>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>BED NAME</Text>
+              <Text style={{ color: 'white' }}>Sample Bed</Text>
+            </View>
+
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>DATE</Text>
+              <Text style={{ color: 'white' }}>2024-11-03 11:00</Text>
+            </View>
+
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>CONCLUSION</Text>
+              <Text style={{ color: 'white' }}>Optimal</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.gridContainer}>
+          <View style={styles.propertyCon}>
+            <Text style={{ color: 'white' }}>Temperature</Text>
+
+            <View style={styles.propertyInner}>
+              <View style={{ width: '100%' }}>
+                <FontAwesomeIcon icon={faTemperature2} color="white" />
+              </View>
+
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>29</Text>
+
+              <View style={{ width: '100%' }}>
+                <Text style={{ color: 'white', textAlign: 'right' }}>C</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.propertyCon}>
+            <Text style={{ color: 'white' }}>Moisture</Text>
+
+            <View style={styles.propertyInner}>
+              <View style={{ width: '100%' }}>
+                <FontAwesomeIcon icon={faWater} color="white" />
+              </View>
+
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>29</Text>
+
+              <View style={{ width: '100%' }}>
+                <Text style={{ color: 'white', textAlign: 'right' }}>%</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.propertyCon}>
+            <Text style={{ color: 'white' }}>pH Level</Text>
+
+            <View style={styles.propertyInner}>
+              <View style={{ width: '100%' }}>
+                <FontAwesomeIcon icon={faDroplet} color="white" />
+              </View>
+
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>29</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={{ borderColor: 'white', borderWidth: 0.5, marginTop: 50 }}></View>
+
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>NEW ASSESSMENT</Text>
+          </TouchableOpacity>
+          {/* <Text style={{color:'white'}}>{temperature}</Text> */}
+        </View>
+      </View>
+    </View>
+  );
 };
+
+const styles = StyleSheet.create({
+  main: {
+    backgroundColor: '#111211',
+    height: '100%',
+    color: 'white',
+  },
+  latestAss: {
+    color: 'white',
+    padding: 14,
+    margin: 10,
+    marginTop: 50,
+    borderWidth: 2,
+    borderColor: 'white',
+    borderRadius: 15,
+    marginBottom: 20,
+  },
+  propertyCon: {
+    height: 100,
+    width: 100,
+    margin: 4,
+    alignItems: 'center',
+    borderRadius: 15,
+  },
+  propertyInner: {
+    padding: 10,
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    borderColor: 'white',
+    borderWidth: 1,
+    borderRadius: 10,
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    width: '100%',
+  },
+  button: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#111211',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});
 
 export default BluetoothTest;

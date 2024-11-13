@@ -1,54 +1,222 @@
 {
-    "feature": "pH",
-    "threshold": 5.954999923706055,
+    "feature": "Moisture",
+    "threshold": 83.67500305175781,
     "left": {
-        "feature": "pH",
-        "threshold": 3.975000023841858,
+        "feature": "Moisture",
+        "threshold": 58.44499969482422,
         "left": {
-            "feature": "pH",
-            "threshold": 3.7350000143051147,
+            "feature": "Moisture",
+            "threshold": 56.05500030517578,
             "left": {
-                "prediction": "Suboptimal"
-            },
-            "right": {
-                "feature": "Temperature",
-                "threshold": 21.699999809265137,
+                "feature": "Moisture",
+                "threshold": 54.52000045776367,
                 "left": {
                     "prediction": "Suboptimal"
                 },
                 "right": {
-                    "feature": "Temperature",
-                    "threshold": 30.52999973297119,
+                    "feature": "Moisture",
+                    "threshold": 54.55000114440918,
                     "left": {
-                        "feature": "Moisture",
-                        "threshold": 51.31500053405762,
+                        "prediction": "Optimal"
+                    },
+                    "right": {
+                        "feature": "pH",
+                        "threshold": 5.289999961853027,
+                        "left": {
+                            "feature": "pH",
+                            "threshold": 4.420000076293945,
+                            "left": {
+                                "prediction": "Suboptimal"
+                            },
+                            "right": {
+                                "feature": "Temperature",
+                                "threshold": 27.585000038146973,
+                                "left": {
+                                    "prediction": "Optimal"
+                                },
+                                "right": {
+                                    "prediction": "Suboptimal"
+                                }
+                            }
+                        },
+                        "right": {
+                            "prediction": "Suboptimal"
+                        }
+                    }
+                }
+            },
+            "right": {
+                "feature": "pH",
+                "threshold": 5.424999952316284,
+                "left": {
+                    "feature": "pH",
+                    "threshold": 4.184999942779541,
+                    "left": {
+                        "feature": "pH",
+                        "threshold": 4.125,
                         "left": {
                             "prediction": "Suboptimal"
                         },
                         "right": {
-                            "feature": "Moisture",
-                            "threshold": 76.77000045776367,
+                            "feature": "pH",
+                            "threshold": 4.140000104904175,
                             "left": {
                                 "prediction": "Optimal"
                             },
                             "right": {
-                                "feature": "pH",
-                                "threshold": 3.915000081062317,
+                                "prediction": "Suboptimal"
+                            }
+                        }
+                    },
+                    "right": {
+                        "feature": "pH",
+                        "threshold": 5.2799999713897705,
+                        "left": {
+                            "prediction": "Optimal"
+                        },
+                        "right": {
+                            "feature": "Moisture",
+                            "threshold": 56.95000076293945,
+                            "left": {
+                                "prediction": "Optimal"
+                            },
+                            "right": {
+                                "prediction": "Suboptimal"
+                            }
+                        }
+                    }
+                },
+                "right": {
+                    "prediction": "Suboptimal"
+                }
+            }
+        },
+        "right": {
+            "feature": "pH",
+            "threshold": 4.0950000286102295,
+            "left": {
+                "feature": "pH",
+                "threshold": 4.0350000858306885,
+                "left": {
+                    "prediction": "Suboptimal"
+                },
+                "right": {
+                    "feature": "Moisture",
+                    "threshold": 79.38999938964844,
+                    "left": {
+                        "feature": "Temperature",
+                        "threshold": 29.420000076293945,
+                        "left": {
+                            "prediction": "Optimal"
+                        },
+                        "right": {
+                            "prediction": "Suboptimal"
+                        }
+                    },
+                    "right": {
+                        "prediction": "Suboptimal"
+                    }
+                }
+            },
+            "right": {
+                "feature": "pH",
+                "threshold": 5.515000104904175,
+                "left": {
+                    "feature": "Temperature",
+                    "threshold": 18.90000057220459,
+                    "left": {
+                        "prediction": "Suboptimal"
+                    },
+                    "right": {
+                        "feature": "Temperature",
+                        "threshold": 31.079999923706055,
+                        "left": {
+                            "feature": "Moisture",
+                            "threshold": 83.34499740600586,
+                            "left": {
+                                "feature": "Moisture",
+                                "threshold": 58.60000038146973,
                                 "left": {
-                                    "feature": "Temperature",
-                                    "threshold": 22.429999351501465,
+                                    "feature": "pH",
+                                    "threshold": 4.414999961853027,
                                     "left": {
-                                        "prediction": "Suboptimal"
+                                        "feature": "Temperature",
+                                        "threshold": 25.829999923706055,
+                                        "left": {
+                                            "prediction": "Suboptimal"
+                                        },
+                                        "right": {
+                                            "prediction": "Optimal"
+                                        }
                                     },
                                     "right": {
+                                        "prediction": "Optimal"
+                                    }
+                                },
+                                "right": {
+                                    "feature": "pH",
+                                    "threshold": 4.265000104904175,
+                                    "left": {
                                         "feature": "Temperature",
-                                        "threshold": 24.6850004196167,
+                                        "threshold": 29.980000495910645,
                                         "left": {
-                                            "prediction": "Optimal"
+                                            "feature": "Moisture",
+                                            "threshold": 80.79000091552734,
+                                            "left": {
+                                                "feature": "Temperature",
+                                                "threshold": 19.339999198913574,
+                                                "left": {
+                                                    "prediction": "Suboptimal"
+                                                },
+                                                "right": {
+                                                    "prediction": "Optimal"
+                                                }
+                                            },
+                                            "right": {
+                                                "feature": "Moisture",
+                                                "threshold": 81.25,
+                                                "left": {
+                                                    "prediction": "Suboptimal"
+                                                },
+                                                "right": {
+                                                    "feature": "pH",
+                                                    "threshold": 4.229999780654907,
+                                                    "left": {
+                                                        "prediction": "Optimal"
+                                                    },
+                                                    "right": {
+                                                        "prediction": "Suboptimal"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "right": {
+                                            "prediction": "Suboptimal"
+                                        }
+                                    },
+                                    "right": {
+                                        "feature": "pH",
+                                        "threshold": 5.505000114440918,
+                                        "left": {
+                                            "feature": "Temperature",
+                                            "threshold": 19.5600004196167,
+                                            "left": {
+                                                "feature": "Temperature",
+                                                "threshold": 19.510000228881836,
+                                                "left": {
+                                                    "prediction": "Optimal"
+                                                },
+                                                "right": {
+                                                    "prediction": "Suboptimal"
+                                                }
+                                            },
+                                            "right": {
+                                                "prediction": "Optimal"
+                                            }
                                         },
                                         "right": {
                                             "feature": "Moisture",
-                                            "threshold": 83.48500061035156,
+                                            "threshold": 59.744998931884766,
                                             "left": {
                                                 "prediction": "Suboptimal"
                                             },
@@ -57,6 +225,93 @@
                                             }
                                         }
                                     }
+                                }
+                            },
+                            "right": {
+                                "feature": "pH",
+                                "threshold": 4.445000171661377,
+                                "left": {
+                                    "prediction": "Suboptimal"
+                                },
+                                "right": {
+                                    "feature": "pH",
+                                    "threshold": 5.039999961853027,
+                                    "left": {
+                                        "prediction": "Optimal"
+                                    },
+                                    "right": {
+                                        "prediction": "Suboptimal"
+                                    }
+                                }
+                            }
+                        },
+                        "right": {
+                            "feature": "Moisture",
+                            "threshold": 79.4000015258789,
+                            "left": {
+                                "prediction": "Suboptimal"
+                            },
+                            "right": {
+                                "prediction": "Optimal"
+                            }
+                        }
+                    }
+                },
+                "right": {
+                    "feature": "pH",
+                    "threshold": 5.644999980926514,
+                    "left": {
+                        "feature": "Moisture",
+                        "threshold": 78.99499893188477,
+                        "left": {
+                            "feature": "Temperature",
+                            "threshold": 30.210000038146973,
+                            "left": {
+                                "feature": "Temperature",
+                                "threshold": 17.755000114440918,
+                                "left": {
+                                    "prediction": "Suboptimal"
+                                },
+                                "right": {
+                                    "feature": "pH",
+                                    "threshold": 5.605000019073486,
+                                    "left": {
+                                        "prediction": "Optimal"
+                                    },
+                                    "right": {
+                                        "feature": "pH",
+                                        "threshold": 5.625,
+                                        "left": {
+                                            "feature": "Moisture",
+                                            "threshold": 67.94000244140625,
+                                            "left": {
+                                                "prediction": "Suboptimal"
+                                            },
+                                            "right": {
+                                                "prediction": "Optimal"
+                                            }
+                                        },
+                                        "right": {
+                                            "prediction": "Optimal"
+                                        }
+                                    }
+                                }
+                            },
+                            "right": {
+                                "prediction": "Suboptimal"
+                            }
+                        },
+                        "right": {
+                            "feature": "Temperature",
+                            "threshold": 29.600000381469727,
+                            "left": {
+                                "prediction": "Suboptimal"
+                            },
+                            "right": {
+                                "feature": "Temperature",
+                                "threshold": 30.390000343322754,
+                                "left": {
+                                    "prediction": "Optimal"
                                 },
                                 "right": {
                                     "prediction": "Suboptimal"
@@ -65,716 +320,111 @@
                         }
                     },
                     "right": {
-                        "feature": "Temperature",
-                        "threshold": 31.1850004196167,
+                        "feature": "pH",
+                        "threshold": 5.680000066757202,
                         "left": {
-                            "feature": "Temperature",
-                            "threshold": 31.015000343322754,
-                            "left": {
-                                "prediction": "Suboptimal"
-                            },
-                            "right": {
-                                "prediction": "Optimal"
-                            }
-                        },
-                        "right": {
-                            "prediction": "Suboptimal"
-                        }
-                    }
-                }
-            }
-        },
-        "right": {
-            "feature": "Moisture",
-            "threshold": 49.32500076293945,
-            "left": {
-                "prediction": "Suboptimal"
-            },
-            "right": {
-                "feature": "Moisture",
-                "threshold": 87.59500122070312,
-                "left": {
-                    "feature": "Temperature",
-                    "threshold": 32.76499938964844,
-                    "left": {
-                        "feature": "Temperature",
-                        "threshold": 17.269999504089355,
-                        "left": {
-                            "prediction": "Suboptimal"
-                        },
-                        "right": {
-                            "feature": "Temperature",
-                            "threshold": 32.06999969482422,
+                            "feature": "Moisture",
+                            "threshold": 77.1099967956543,
                             "left": {
                                 "feature": "Temperature",
-                                "threshold": 19.214999198913574,
+                                "threshold": 23.5600004196167,
                                 "left": {
-                                    "feature": "pH",
-                                    "threshold": 5.505000114440918,
-                                    "left": {
-                                        "feature": "Moisture",
-                                        "threshold": 83.99499893188477,
-                                        "left": {
-                                            "feature": "Temperature",
-                                            "threshold": 19.199999809265137,
-                                            "left": {
-                                                "feature": "Temperature",
-                                                "threshold": 19.105000495910645,
-                                                "left": {
-                                                    "feature": "Moisture",
-                                                    "threshold": 60.39999961853027,
-                                                    "left": {
-                                                        "feature": "Moisture",
-                                                        "threshold": 58.415000915527344,
-                                                        "left": {
-                                                            "prediction": "Optimal"
-                                                        },
-                                                        "right": {
-                                                            "prediction": "Suboptimal"
-                                                        }
-                                                    },
-                                                    "right": {
-                                                        "prediction": "Optimal"
-                                                    }
-                                                },
-                                                "right": {
-                                                    "feature": "Temperature",
-                                                    "threshold": 19.125,
-                                                    "left": {
-                                                        "prediction": "Suboptimal"
-                                                    },
-                                                    "right": {
-                                                        "prediction": "Optimal"
-                                                    }
-                                                }
-                                            },
-                                            "right": {
-                                                "prediction": "Suboptimal"
-                                            }
-                                        },
-                                        "right": {
-                                            "feature": "Temperature",
-                                            "threshold": 19.074999809265137,
-                                            "left": {
-                                                "prediction": "Suboptimal"
-                                            },
-                                            "right": {
-                                                "prediction": "Optimal"
-                                            }
-                                        }
-                                    },
-                                    "right": {
-                                        "feature": "Temperature",
-                                        "threshold": 18.390000343322754,
-                                        "left": {
-                                            "prediction": "Suboptimal"
-                                        },
-                                        "right": {
-                                            "prediction": "Optimal"
-                                        }
-                                    }
+                                    "prediction": "Suboptimal"
                                 },
                                 "right": {
-                                    "feature": "pH",
-                                    "threshold": 4.295000076293945,
-                                    "left": {
-                                        "feature": "Moisture",
-                                        "threshold": 85.03999710083008,
-                                        "left": {
-                                            "feature": "Temperature",
-                                            "threshold": 27.625,
-                                            "left": {
-                                                "feature": "Temperature",
-                                                "threshold": 21.050000190734863,
-                                                "left": {
-                                                    "feature": "Temperature",
-                                                    "threshold": 20.295000076293945,
-                                                    "left": {
-                                                        "prediction": "Optimal"
-                                                    },
-                                                    "right": {
-                                                        "feature": "Moisture",
-                                                        "threshold": 71.86499786376953,
-                                                        "left": {
-                                                            "prediction": "Suboptimal"
-                                                        },
-                                                        "right": {
-                                                            "prediction": "Optimal"
-                                                        }
-                                                    }
-                                                },
-                                                "right": {
-                                                    "prediction": "Optimal"
-                                                }
-                                            },
-                                            "right": {
-                                                "feature": "Moisture",
-                                                "threshold": 59.189998626708984,
-                                                "left": {
-                                                    "feature": "pH",
-                                                    "threshold": 4.119999885559082,
-                                                    "left": {
-                                                        "prediction": "Optimal"
-                                                    },
-                                                    "right": {
-                                                        "feature": "Temperature",
-                                                        "threshold": 28.585000038146973,
-                                                        "left": {
-                                                            "prediction": "Suboptimal"
-                                                        },
-                                                        "right": {
-                                                            "feature": "pH",
-                                                            "threshold": 4.215000152587891,
-                                                            "left": {
-                                                                "prediction": "Optimal"
-                                                            },
-                                                            "right": {
-                                                                "feature": "Temperature",
-                                                                "threshold": 29.77999973297119,
-                                                                "left": {
-                                                                    "prediction": "Suboptimal"
-                                                                },
-                                                                "right": {
-                                                                    "feature": "Temperature",
-                                                                    "threshold": 30.28499984741211,
-                                                                    "left": {
-                                                                        "prediction": "Optimal"
-                                                                    },
-                                                                    "right": {
-                                                                        "prediction": "Suboptimal"
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "right": {
-                                                    "feature": "Temperature",
-                                                    "threshold": 27.81999969482422,
-                                                    "left": {
-                                                        "prediction": "Suboptimal"
-                                                    },
-                                                    "right": {
-                                                        "feature": "Moisture",
-                                                        "threshold": 74.69499969482422,
-                                                        "left": {
-                                                            "prediction": "Optimal"
-                                                        },
-                                                        "right": {
-                                                            "feature": "Moisture",
-                                                            "threshold": 74.86999893188477,
-                                                            "left": {
-                                                                "prediction": "Suboptimal"
-                                                            },
-                                                            "right": {
-                                                                "feature": "pH",
-                                                                "threshold": 4.130000114440918,
-                                                                "left": {
-                                                                    "prediction": "Suboptimal"
-                                                                },
-                                                                "right": {
-                                                                    "prediction": "Optimal"
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "right": {
-                                            "feature": "Moisture",
-                                            "threshold": 85.16500091552734,
-                                            "left": {
-                                                "prediction": "Suboptimal"
-                                            },
-                                            "right": {
-                                                "prediction": "Optimal"
-                                            }
-                                        }
-                                    },
-                                    "right": {
-                                        "feature": "Temperature",
-                                        "threshold": 31.300000190734863,
-                                        "left": {
-                                            "feature": "pH",
-                                            "threshold": 5.224999904632568,
-                                            "left": {
-                                                "feature": "Moisture",
-                                                "threshold": 85.7750015258789,
-                                                "left": {
-                                                    "feature": "Temperature",
-                                                    "threshold": 20.53499984741211,
-                                                    "left": {
-                                                        "feature": "Temperature",
-                                                        "threshold": 20.494999885559082,
-                                                        "left": {
-                                                            "feature": "Moisture",
-                                                            "threshold": 75.29000091552734,
-                                                            "left": {
-                                                                "prediction": "Optimal"
-                                                            },
-                                                            "right": {
-                                                                "feature": "Moisture",
-                                                                "threshold": 77.04000091552734,
-                                                                "left": {
-                                                                    "prediction": "Suboptimal"
-                                                                },
-                                                                "right": {
-                                                                    "feature": "Temperature",
-                                                                    "threshold": 19.609999656677246,
-                                                                    "left": {
-                                                                        "feature": "Moisture",
-                                                                        "threshold": 81.11499786376953,
-                                                                        "left": {
-                                                                            "prediction": "Suboptimal"
-                                                                        },
-                                                                        "right": {
-                                                                            "prediction": "Optimal"
-                                                                        }
-                                                                    },
-                                                                    "right": {
-                                                                        "prediction": "Optimal"
-                                                                    }
-                                                                }
-                                                            }
-                                                        },
-                                                        "right": {
-                                                            "feature": "pH",
-                                                            "threshold": 4.625,
-                                                            "left": {
-                                                                "prediction": "Optimal"
-                                                            },
-                                                            "right": {
-                                                                "prediction": "Suboptimal"
-                                                            }
-                                                        }
-                                                    },
-                                                    "right": {
-                                                        "feature": "Moisture",
-                                                        "threshold": 53.73499870300293,
-                                                        "left": {
-                                                            "feature": "Moisture",
-                                                            "threshold": 53.420000076293945,
-                                                            "left": {
-                                                                "prediction": "Optimal"
-                                                            },
-                                                            "right": {
-                                                                "prediction": "Suboptimal"
-                                                            }
-                                                        },
-                                                        "right": {
-                                                            "feature": "pH",
-                                                            "threshold": 4.775000095367432,
-                                                            "left": {
-                                                                "feature": "pH",
-                                                                "threshold": 4.765000104904175,
-                                                                "left": {
-                                                                    "feature": "pH",
-                                                                    "threshold": 4.684999942779541,
-                                                                    "left": {
-                                                                        "feature": "Temperature",
-                                                                        "threshold": 25.039999961853027,
-                                                                        "left": {
-                                                                            "feature": "Temperature",
-                                                                            "threshold": 24.789999961853027,
-                                                                            "left": {
-                                                                                "feature": "pH",
-                                                                                "threshold": 4.4599997997283936,
-                                                                                "left": {
-                                                                                    "feature": "pH",
-                                                                                    "threshold": 4.434999942779541,
-                                                                                    "left": {
-                                                                                        "feature": "Moisture",
-                                                                                        "threshold": 78.625,
-                                                                                        "left": {
-                                                                                            "prediction": "Optimal"
-                                                                                        },
-                                                                                        "right": {
-                                                                                            "feature": "Moisture",
-                                                                                            "threshold": 79.2750015258789,
-                                                                                            "left": {
-                                                                                                "prediction": "Suboptimal"
-                                                                                            },
-                                                                                            "right": {
-                                                                                                "prediction": "Optimal"
-                                                                                            }
-                                                                                        }
-                                                                                    },
-                                                                                    "right": {
-                                                                                        "feature": "Moisture",
-                                                                                        "threshold": 65.65999984741211,
-                                                                                        "left": {
-                                                                                            "prediction": "Suboptimal"
-                                                                                        },
-                                                                                        "right": {
-                                                                                            "prediction": "Optimal"
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                "right": {
-                                                                                    "prediction": "Optimal"
-                                                                                }
-                                                                            },
-                                                                            "right": {
-                                                                                "prediction": "Suboptimal"
-                                                                            }
-                                                                        },
-                                                                        "right": {
-                                                                            "prediction": "Optimal"
-                                                                        }
-                                                                    },
-                                                                    "right": {
-                                                                        "feature": "Temperature",
-                                                                        "threshold": 28.604999542236328,
-                                                                        "left": {
-                                                                            "prediction": "Optimal"
-                                                                        },
-                                                                        "right": {
-                                                                            "feature": "pH",
-                                                                            "threshold": 4.700000047683716,
-                                                                            "left": {
-                                                                                "prediction": "Suboptimal"
-                                                                            },
-                                                                            "right": {
-                                                                                "feature": "Temperature",
-                                                                                "threshold": 29.31999969482422,
-                                                                                "left": {
-                                                                                    "feature": "Moisture",
-                                                                                    "threshold": 77.78499984741211,
-                                                                                    "left": {
-                                                                                        "prediction": "Suboptimal"
-                                                                                    },
-                                                                                    "right": {
-                                                                                        "prediction": "Optimal"
-                                                                                    }
-                                                                                },
-                                                                                "right": {
-                                                                                    "prediction": "Optimal"
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "right": {
-                                                                    "feature": "Moisture",
-                                                                    "threshold": 72.62000274658203,
-                                                                    "left": {
-                                                                        "prediction": "Optimal"
-                                                                    },
-                                                                    "right": {
-                                                                        "prediction": "Suboptimal"
-                                                                    }
-                                                                }
-                                                            },
-                                                            "right": {
-                                                                "prediction": "Optimal"
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "right": {
-                                                    "feature": "Temperature",
-                                                    "threshold": 26.5600004196167,
-                                                    "left": {
-                                                        "feature": "pH",
-                                                        "threshold": 4.960000038146973,
-                                                        "left": {
-                                                            "prediction": "Suboptimal"
-                                                        },
-                                                        "right": {
-                                                            "prediction": "Optimal"
-                                                        }
-                                                    },
-                                                    "right": {
-                                                        "prediction": "Optimal"
-                                                    }
-                                                }
-                                            },
-                                            "right": {
-                                                "feature": "Temperature",
-                                                "threshold": 19.699999809265137,
-                                                "left": {
-                                                    "feature": "Temperature",
-                                                    "threshold": 19.550000190734863,
-                                                    "left": {
-                                                        "prediction": "Optimal"
-                                                    },
-                                                    "right": {
-                                                        "prediction": "Suboptimal"
-                                                    }
-                                                },
-                                                "right": {
-                                                    "feature": "Moisture",
-                                                    "threshold": 79.09500122070312,
-                                                    "left": {
-                                                        "feature": "Moisture",
-                                                        "threshold": 78.90499877929688,
-                                                        "left": {
-                                                            "feature": "pH",
-                                                            "threshold": 5.2850000858306885,
-                                                            "left": {
-                                                                "feature": "Moisture",
-                                                                "threshold": 71.23500061035156,
-                                                                "left": {
-                                                                    "feature": "Moisture",
-                                                                    "threshold": 61.98500061035156,
-                                                                    "left": {
-                                                                        "prediction": "Optimal"
-                                                                    },
-                                                                    "right": {
-                                                                        "feature": "Temperature",
-                                                                        "threshold": 30.125,
-                                                                        "left": {
-                                                                            "prediction": "Suboptimal"
-                                                                        },
-                                                                        "right": {
-                                                                            "prediction": "Optimal"
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "right": {
-                                                                    "prediction": "Optimal"
-                                                                }
-                                                            },
-                                                            "right": {
-                                                                "feature": "Moisture",
-                                                                "threshold": 55.204999923706055,
-                                                                "left": {
-                                                                    "feature": "Moisture",
-                                                                    "threshold": 54.114999771118164,
-                                                                    "left": {
-                                                                        "prediction": "Optimal"
-                                                                    },
-                                                                    "right": {
-                                                                        "prediction": "Suboptimal"
-                                                                    }
-                                                                },
-                                                                "right": {
-                                                                    "feature": "Temperature",
-                                                                    "threshold": 27.744999885559082,
-                                                                    "left": {
-                                                                        "feature": "Temperature",
-                                                                        "threshold": 27.644999504089355,
-                                                                        "left": {
-                                                                            "feature": "pH",
-                                                                            "threshold": 5.384999990463257,
-                                                                            "left": {
-                                                                                "prediction": "Optimal"
-                                                                            },
-                                                                            "right": {
-                                                                                "feature": "pH",
-                                                                                "threshold": 5.5950000286102295,
-                                                                                "left": {
-                                                                                    "feature": "Moisture",
-                                                                                    "threshold": 61.564998626708984,
-                                                                                    "left": {
-                                                                                        "prediction": "Optimal"
-                                                                                    },
-                                                                                    "right": {
-                                                                                        "feature": "Moisture",
-                                                                                        "threshold": 61.834999084472656,
-                                                                                        "left": {
-                                                                                            "prediction": "Suboptimal"
-                                                                                        },
-                                                                                        "right": {
-                                                                                            "feature": "Temperature",
-                                                                                            "threshold": 21.979999542236328,
-                                                                                            "left": {
-                                                                                                "feature": "Temperature",
-                                                                                                "threshold": 21.145000457763672,
-                                                                                                "left": {
-                                                                                                    "feature": "pH",
-                                                                                                    "threshold": 5.504999876022339,
-                                                                                                    "left": {
-                                                                                                        "prediction": "Optimal"
-                                                                                                    },
-                                                                                                    "right": {
-                                                                                                        "feature": "Moisture",
-                                                                                                        "threshold": 66.43999862670898,
-                                                                                                        "left": {
-                                                                                                            "prediction": "Optimal"
-                                                                                                        },
-                                                                                                        "right": {
-                                                                                                            "prediction": "Suboptimal"
-                                                                                                        }
-                                                                                                    }
-                                                                                                },
-                                                                                                "right": {
-                                                                                                    "prediction": "Suboptimal"
-                                                                                                }
-                                                                                            },
-                                                                                            "right": {
-                                                                                                "feature": "Moisture",
-                                                                                                "threshold": 66.38500213623047,
-                                                                                                "left": {
-                                                                                                    "prediction": "Suboptimal"
-                                                                                                },
-                                                                                                "right": {
-                                                                                                    "prediction": "Optimal"
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                "right": {
-                                                                                    "feature": "Temperature",
-                                                                                    "threshold": 26.225000381469727,
-                                                                                    "left": {
-                                                                                        "prediction": "Optimal"
-                                                                                    },
-                                                                                    "right": {
-                                                                                        "feature": "Moisture",
-                                                                                        "threshold": 66.20000076293945,
-                                                                                        "left": {
-                                                                                            "prediction": "Optimal"
-                                                                                        },
-                                                                                        "right": {
-                                                                                            "feature": "pH",
-                                                                                            "threshold": 5.730000019073486,
-                                                                                            "left": {
-                                                                                                "prediction": "Optimal"
-                                                                                            },
-                                                                                            "right": {
-                                                                                                "prediction": "Suboptimal"
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        },
-                                                                        "right": {
-                                                                            "prediction": "Suboptimal"
-                                                                        }
-                                                                    },
-                                                                    "right": {
-                                                                        "prediction": "Optimal"
-                                                                    }
-                                                                }
-                                                            }
-                                                        },
-                                                        "right": {
-                                                            "prediction": "Suboptimal"
-                                                        }
-                                                    },
-                                                    "right": {
-                                                        "prediction": "Optimal"
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "right": {
-                                            "feature": "pH",
-                                            "threshold": 4.569999933242798,
-                                            "left": {
-                                                "prediction": "Suboptimal"
-                                            },
-                                            "right": {
-                                                "feature": "pH",
-                                                "threshold": 5.6549999713897705,
-                                                "left": {
-                                                    "feature": "Moisture",
-                                                    "threshold": 58.20000076293945,
-                                                    "left": {
-                                                        "feature": "Moisture",
-                                                        "threshold": 55.17500114440918,
-                                                        "left": {
-                                                            "prediction": "Optimal"
-                                                        },
-                                                        "right": {
-                                                            "prediction": "Suboptimal"
-                                                        }
-                                                    },
-                                                    "right": {
-                                                        "prediction": "Optimal"
-                                                    }
-                                                },
-                                                "right": {
-                                                    "prediction": "Suboptimal"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "right": {
-                                "feature": "Temperature",
-                                "threshold": 32.385000228881836,
-                                "left": {
-                                    "feature": "Moisture",
-                                    "threshold": 67.86999893188477,
-                                    "left": {
-                                        "feature": "pH",
-                                        "threshold": 5.490000009536743,
-                                        "left": {
-                                            "prediction": "Optimal"
-                                        },
-                                        "right": {
-                                            "prediction": "Suboptimal"
-                                        }
-                                    },
-                                    "right": {
-                                        "prediction": "Suboptimal"
-                                    }
-                                },
-                                "right": {
-                                    "feature": "Moisture",
-                                    "threshold": 80.65999984741211,
-                                    "left": {
-                                        "prediction": "Optimal"
-                                    },
-                                    "right": {
-                                        "prediction": "Suboptimal"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "right": {
-                        "prediction": "Suboptimal"
-                    }
-                },
-                "right": {
-                    "feature": "Moisture",
-                    "threshold": 90.36499786376953,
-                    "left": {
-                        "feature": "Temperature",
-                        "threshold": 20.085000038146973,
-                        "left": {
-                            "prediction": "Suboptimal"
-                        },
-                        "right": {
-                            "feature": "Temperature",
-                            "threshold": 34.6850004196167,
-                            "left": {
-                                "feature": "Temperature",
-                                "threshold": 27.699999809265137,
-                                "left": {
                                     "prediction": "Optimal"
-                                },
-                                "right": {
-                                    "feature": "Temperature",
-                                    "threshold": 28.75,
-                                    "left": {
-                                        "prediction": "Suboptimal"
-                                    },
-                                    "right": {
-                                        "prediction": "Optimal"
-                                    }
                                 }
                             },
                             "right": {
                                 "prediction": "Suboptimal"
                             }
+                        },
+                        "right": {
+                            "prediction": "Suboptimal"
                         }
-                    },
-                    "right": {
-                        "prediction": "Suboptimal"
                     }
                 }
             }
         }
     },
     "right": {
-        "prediction": "Suboptimal"
+        "feature": "Moisture",
+        "threshold": 84.73500061035156,
+        "left": {
+            "feature": "Moisture",
+            "threshold": 84.67500305175781,
+            "left": {
+                "feature": "Temperature",
+                "threshold": 27.90499973297119,
+                "left": {
+                    "feature": "Temperature",
+                    "threshold": 22.75,
+                    "left": {
+                        "feature": "Temperature",
+                        "threshold": 19.690000534057617,
+                        "left": {
+                            "prediction": "Suboptimal"
+                        },
+                        "right": {
+                            "feature": "Moisture",
+                            "threshold": 84.36499786376953,
+                            "left": {
+                                "prediction": "Optimal"
+                            },
+                            "right": {
+                                "prediction": "Suboptimal"
+                            }
+                        }
+                    },
+                    "right": {
+                        "prediction": "Optimal"
+                    }
+                },
+                "right": {
+                    "prediction": "Suboptimal"
+                }
+            },
+            "right": {
+                "prediction": "Optimal"
+            }
+        },
+        "right": {
+            "feature": "Moisture",
+            "threshold": 85.50500106811523,
+            "left": {
+                "feature": "Moisture",
+                "threshold": 85.48500061035156,
+                "left": {
+                    "feature": "Moisture",
+                    "threshold": 85.3849983215332,
+                    "left": {
+                        "prediction": "Suboptimal"
+                    },
+                    "right": {
+                        "feature": "pH",
+                        "threshold": 4.4700000286102295,
+                        "left": {
+                            "prediction": "Suboptimal"
+                        },
+                        "right": {
+                            "feature": "pH",
+                            "threshold": 5.244999885559082,
+                            "left": {
+                                "prediction": "Optimal"
+                            },
+                            "right": {
+                                "prediction": "Suboptimal"
+                            }
+                        }
+                    }
+                },
+                "right": {
+                    "prediction": "Optimal"
+                }
+            },
+            "right": {
+                "prediction": "Suboptimal"
+            }
+        }
     }
 }
