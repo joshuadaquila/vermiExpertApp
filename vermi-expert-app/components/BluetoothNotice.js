@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native"; // Import Image component
 import { BlurView } from '@react-native-community/blur'; // Import the BlurView component
 
-function BluetoothNotice() {
+function BluetoothNotice({ bedSet }) {
   return (
     <View style={styles.container}>
       {/* Full-screen BlurView */}

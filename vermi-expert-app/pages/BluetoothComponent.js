@@ -6,14 +6,17 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, SafeAreaView, Platform, PermissionsAndroid, Text, FlatList, TouchableOpacity} from "react-native";
 import BluetoothNotice from "../components/BluetoothNotice";
 import BtStat from "../components/BTStat";
+import BedDetailForm from '../components/BedDetailForm';
+import Sidebar from '../components/Sidebar';
 
-const BluetoothTest = () => {
+const BluetoothTest = ({ navigation }) => {
     const [isConnected, setIsConnected] = useState('false');
     const [deviceId, setDeviceId] = useState(null);
     const [devices, setDevices] = useState([]);
     const [manager, setManager] = useState(null);
     const [receivedData, setReceivedData] = useState('');
-    // const [showBt, setShowBt] = useState(true);
+    const [showBedForm, setShowBedForm] = useState(false);
+    const [showSidebar, setShowSidebar] = useState(false);
 
     const [temperature, setTemperature]= useState(0);
     const [moisture, setMoisture] = useState(0);
@@ -36,8 +39,8 @@ const BluetoothTest = () => {
 
         // Cleanup on unmount
         return () => {
-            bleManager.stopDeviceScan();
-            bleManager.destroy();
+            // bleManager.stopDeviceScan();
+            // bleManager.destroy();
         };
     }, []);
 
@@ -146,14 +149,24 @@ const BluetoothTest = () => {
     };
 
     console.log(temperature)
+    const data = {temp: temperature, moisturelvl: moisture, ph: phLevel}
+
+    const proceedToResult = () =>{
+      navigation.navigate("Result", data)
+    }
 
    return (
     <View style={styles.main}>
-      {isConnected && <BtStat status={isConnected} 
-      message={`${isConnected === 'true'? "Bluetooth connected!" : isConnected === 'connecting'?  "Connecting..." :"Bluetooth disconnected. Tap to try again!"}`} clicked={connectToDevice}/>}
+      {showSidebar&& <Sidebar toggleThis={()=> setShowSidebar(false)} menu={"dashboard"}/>}
+      {isConnected && <BtStat status={isConnected}
+      message={`${isConnected === 'true'? "Bluetooth connected!" : isConnected === 'connecting'?  "Connecting..." :"Sensors disconnected. Tap to connect!"}`} clicked={connectToDevice}/>}
+      {showBedForm && <BedDetailForm cancel={()=> setShowBedForm(false)} bedSet={proceedToResult}/>}
       <View style={{ padding: 10 }}>
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <FontAwesomeIcon icon={faBars} color="white" style={{ marginRight: 10 }} />
+          <TouchableOpacity onPress={()=> setShowSidebar(true)}>
+           <FontAwesomeIcon icon={faBars} color="white" style={{ marginRight: 10 }} />
+
+          </TouchableOpacity>
           <View style={{ alignSelf: 'flex-start', paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }}>
             <Text style={{ color: '#111211', alignSelf: 'flex-start', fontWeight: 'bold' }}>DASHBOARD</Text>
           </View>
@@ -188,7 +201,7 @@ const BluetoothTest = () => {
                 <FontAwesomeIcon icon={faTemperature2} color="white" />
               </View>
 
-              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>29</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>26</Text>
 
               <View style={{ width: '100%' }}>
                 <Text style={{ color: 'white', textAlign: 'right' }}>C</Text>
@@ -204,7 +217,7 @@ const BluetoothTest = () => {
                 <FontAwesomeIcon icon={faWater} color="white" />
               </View>
 
-              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>29</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>75</Text>
 
               <View style={{ width: '100%' }}>
                 <Text style={{ color: 'white', textAlign: 'right' }}>%</Text>
@@ -220,7 +233,7 @@ const BluetoothTest = () => {
                 <FontAwesomeIcon icon={faDroplet} color="white" />
               </View>
 
-              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>29</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>4.5</Text>
             </View>
           </View>
         </View>
@@ -228,7 +241,7 @@ const BluetoothTest = () => {
         <View style={{ borderColor: 'white', borderWidth: 0.5, marginTop: 50 }}></View>
 
         <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={()=> setShowBedForm(true)}>
             <Text style={styles.buttonText}>NEW ASSESSMENT</Text>
           </TouchableOpacity>
           {/* <Text style={{color:'white'}}>{temperature}</Text> */}
