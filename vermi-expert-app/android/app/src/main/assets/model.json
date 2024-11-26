@@ -1,346 +1,59 @@
 {
     "feature": "Moisture",
-    "threshold": 83.67500305175781,
+    "threshold": 56.1150016784668,
     "left": {
         "feature": "Moisture",
-        "threshold": 58.44499969482422,
+        "threshold": 55.40999984741211,
         "left": {
             "feature": "Moisture",
-            "threshold": 56.05500030517578,
+            "threshold": 54.86000061035156,
             "left": {
-                "feature": "Moisture",
-                "threshold": 54.52000045776367,
-                "left": {
-                    "prediction": "Suboptimal"
-                },
-                "right": {
-                    "feature": "Moisture",
-                    "threshold": 54.55000114440918,
-                    "left": {
-                        "prediction": "Optimal"
-                    },
-                    "right": {
-                        "feature": "pH",
-                        "threshold": 5.289999961853027,
-                        "left": {
-                            "feature": "pH",
-                            "threshold": 4.420000076293945,
-                            "left": {
-                                "prediction": "Suboptimal"
-                            },
-                            "right": {
-                                "feature": "Temperature",
-                                "threshold": 27.585000038146973,
-                                "left": {
-                                    "prediction": "Optimal"
-                                },
-                                "right": {
-                                    "prediction": "Suboptimal"
-                                }
-                            }
-                        },
-                        "right": {
-                            "prediction": "Suboptimal"
-                        }
-                    }
-                }
+                "prediction": "Unfavorable"
             },
             "right": {
-                "feature": "pH",
-                "threshold": 5.424999952316284,
+                "feature": "Moisture",
+                "threshold": 54.89999961853027,
                 "left": {
-                    "feature": "pH",
-                    "threshold": 4.184999942779541,
+                    "feature": "Temperature",
+                    "threshold": 27.130000114440918,
                     "left": {
-                        "feature": "pH",
-                        "threshold": 4.125,
-                        "left": {
-                            "prediction": "Suboptimal"
-                        },
-                        "right": {
-                            "feature": "pH",
-                            "threshold": 4.140000104904175,
-                            "left": {
-                                "prediction": "Optimal"
-                            },
-                            "right": {
-                                "prediction": "Suboptimal"
-                            }
-                        }
+                        "prediction": "Favorable"
                     },
                     "right": {
-                        "feature": "pH",
-                        "threshold": 5.2799999713897705,
-                        "left": {
-                            "prediction": "Optimal"
-                        },
-                        "right": {
-                            "feature": "Moisture",
-                            "threshold": 56.95000076293945,
-                            "left": {
-                                "prediction": "Optimal"
-                            },
-                            "right": {
-                                "prediction": "Suboptimal"
-                            }
-                        }
+                        "prediction": "Unfavorable"
                     }
                 },
                 "right": {
-                    "prediction": "Suboptimal"
+                    "prediction": "Unfavorable"
                 }
             }
         },
         "right": {
             "feature": "pH",
-            "threshold": 4.0950000286102295,
+            "threshold": 4.480000019073486,
             "left": {
-                "feature": "pH",
-                "threshold": 4.0350000858306885,
-                "left": {
-                    "prediction": "Suboptimal"
-                },
-                "right": {
-                    "feature": "Moisture",
-                    "threshold": 79.38999938964844,
-                    "left": {
-                        "feature": "Temperature",
-                        "threshold": 29.420000076293945,
-                        "left": {
-                            "prediction": "Optimal"
-                        },
-                        "right": {
-                            "prediction": "Suboptimal"
-                        }
-                    },
-                    "right": {
-                        "prediction": "Suboptimal"
-                    }
-                }
+                "prediction": "Unfavorable"
             },
             "right": {
                 "feature": "pH",
-                "threshold": 5.515000104904175,
+                "threshold": 5.150000095367432,
                 "left": {
-                    "feature": "Temperature",
-                    "threshold": 18.90000057220459,
-                    "left": {
-                        "prediction": "Suboptimal"
-                    },
-                    "right": {
-                        "feature": "Temperature",
-                        "threshold": 31.079999923706055,
-                        "left": {
-                            "feature": "Moisture",
-                            "threshold": 83.34499740600586,
-                            "left": {
-                                "feature": "Moisture",
-                                "threshold": 58.60000038146973,
-                                "left": {
-                                    "feature": "pH",
-                                    "threshold": 4.414999961853027,
-                                    "left": {
-                                        "feature": "Temperature",
-                                        "threshold": 25.829999923706055,
-                                        "left": {
-                                            "prediction": "Suboptimal"
-                                        },
-                                        "right": {
-                                            "prediction": "Optimal"
-                                        }
-                                    },
-                                    "right": {
-                                        "prediction": "Optimal"
-                                    }
-                                },
-                                "right": {
-                                    "feature": "pH",
-                                    "threshold": 4.265000104904175,
-                                    "left": {
-                                        "feature": "Temperature",
-                                        "threshold": 29.980000495910645,
-                                        "left": {
-                                            "feature": "Moisture",
-                                            "threshold": 80.79000091552734,
-                                            "left": {
-                                                "feature": "Temperature",
-                                                "threshold": 19.339999198913574,
-                                                "left": {
-                                                    "prediction": "Suboptimal"
-                                                },
-                                                "right": {
-                                                    "prediction": "Optimal"
-                                                }
-                                            },
-                                            "right": {
-                                                "feature": "Moisture",
-                                                "threshold": 81.25,
-                                                "left": {
-                                                    "prediction": "Suboptimal"
-                                                },
-                                                "right": {
-                                                    "feature": "pH",
-                                                    "threshold": 4.229999780654907,
-                                                    "left": {
-                                                        "prediction": "Optimal"
-                                                    },
-                                                    "right": {
-                                                        "prediction": "Suboptimal"
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "right": {
-                                            "prediction": "Suboptimal"
-                                        }
-                                    },
-                                    "right": {
-                                        "feature": "pH",
-                                        "threshold": 5.505000114440918,
-                                        "left": {
-                                            "feature": "Temperature",
-                                            "threshold": 19.5600004196167,
-                                            "left": {
-                                                "feature": "Temperature",
-                                                "threshold": 19.510000228881836,
-                                                "left": {
-                                                    "prediction": "Optimal"
-                                                },
-                                                "right": {
-                                                    "prediction": "Suboptimal"
-                                                }
-                                            },
-                                            "right": {
-                                                "prediction": "Optimal"
-                                            }
-                                        },
-                                        "right": {
-                                            "feature": "Moisture",
-                                            "threshold": 59.744998931884766,
-                                            "left": {
-                                                "prediction": "Suboptimal"
-                                            },
-                                            "right": {
-                                                "prediction": "Optimal"
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "right": {
-                                "feature": "pH",
-                                "threshold": 4.445000171661377,
-                                "left": {
-                                    "prediction": "Suboptimal"
-                                },
-                                "right": {
-                                    "feature": "pH",
-                                    "threshold": 5.039999961853027,
-                                    "left": {
-                                        "prediction": "Optimal"
-                                    },
-                                    "right": {
-                                        "prediction": "Suboptimal"
-                                    }
-                                }
-                            }
-                        },
-                        "right": {
-                            "feature": "Moisture",
-                            "threshold": 79.4000015258789,
-                            "left": {
-                                "prediction": "Suboptimal"
-                            },
-                            "right": {
-                                "prediction": "Optimal"
-                            }
-                        }
-                    }
+                    "prediction": "Favorable"
                 },
                 "right": {
-                    "feature": "pH",
-                    "threshold": 5.644999980926514,
+                    "feature": "Moisture",
+                    "threshold": 55.92499923706055,
                     "left": {
-                        "feature": "Moisture",
-                        "threshold": 78.99499893188477,
-                        "left": {
-                            "feature": "Temperature",
-                            "threshold": 30.210000038146973,
-                            "left": {
-                                "feature": "Temperature",
-                                "threshold": 17.755000114440918,
-                                "left": {
-                                    "prediction": "Suboptimal"
-                                },
-                                "right": {
-                                    "feature": "pH",
-                                    "threshold": 5.605000019073486,
-                                    "left": {
-                                        "prediction": "Optimal"
-                                    },
-                                    "right": {
-                                        "feature": "pH",
-                                        "threshold": 5.625,
-                                        "left": {
-                                            "feature": "Moisture",
-                                            "threshold": 67.94000244140625,
-                                            "left": {
-                                                "prediction": "Suboptimal"
-                                            },
-                                            "right": {
-                                                "prediction": "Optimal"
-                                            }
-                                        },
-                                        "right": {
-                                            "prediction": "Optimal"
-                                        }
-                                    }
-                                }
-                            },
-                            "right": {
-                                "prediction": "Suboptimal"
-                            }
-                        },
-                        "right": {
-                            "feature": "Temperature",
-                            "threshold": 29.600000381469727,
-                            "left": {
-                                "prediction": "Suboptimal"
-                            },
-                            "right": {
-                                "feature": "Temperature",
-                                "threshold": 30.390000343322754,
-                                "left": {
-                                    "prediction": "Optimal"
-                                },
-                                "right": {
-                                    "prediction": "Suboptimal"
-                                }
-                            }
-                        }
+                        "prediction": "Unfavorable"
                     },
                     "right": {
-                        "feature": "pH",
-                        "threshold": 5.680000066757202,
+                        "feature": "Moisture",
+                        "threshold": 55.96000099182129,
                         "left": {
-                            "feature": "Moisture",
-                            "threshold": 77.1099967956543,
-                            "left": {
-                                "feature": "Temperature",
-                                "threshold": 23.5600004196167,
-                                "left": {
-                                    "prediction": "Suboptimal"
-                                },
-                                "right": {
-                                    "prediction": "Optimal"
-                                }
-                            },
-                            "right": {
-                                "prediction": "Suboptimal"
-                            }
+                            "prediction": "Favorable"
                         },
                         "right": {
-                            "prediction": "Suboptimal"
+                            "prediction": "Unfavorable"
                         }
                     }
                 }
@@ -349,81 +62,340 @@
     },
     "right": {
         "feature": "Moisture",
-        "threshold": 84.73500061035156,
+        "threshold": 81.47999954223633,
         "left": {
-            "feature": "Moisture",
-            "threshold": 84.67500305175781,
+            "feature": "pH",
+            "threshold": 4.0950000286102295,
             "left": {
-                "feature": "Temperature",
-                "threshold": 27.90499973297119,
+                "feature": "pH",
+                "threshold": 4.0350000858306885,
                 "left": {
-                    "feature": "Temperature",
-                    "threshold": 22.75,
+                    "prediction": "Unfavorable"
+                },
+                "right": {
+                    "feature": "pH",
+                    "threshold": 4.049999952316284,
                     "left": {
-                        "feature": "Temperature",
-                        "threshold": 19.690000534057617,
+                        "feature": "Moisture",
+                        "threshold": 69.67499923706055,
                         "left": {
-                            "prediction": "Suboptimal"
+                            "prediction": "Unfavorable"
                         },
                         "right": {
-                            "feature": "Moisture",
-                            "threshold": 84.36499786376953,
-                            "left": {
-                                "prediction": "Optimal"
-                            },
-                            "right": {
-                                "prediction": "Suboptimal"
-                            }
+                            "prediction": "Favorable"
                         }
                     },
                     "right": {
-                        "prediction": "Optimal"
+                        "prediction": "Unfavorable"
                     }
-                },
-                "right": {
-                    "prediction": "Suboptimal"
                 }
             },
             "right": {
-                "prediction": "Optimal"
+                "feature": "pH",
+                "threshold": 5.625,
+                "left": {
+                    "feature": "Temperature",
+                    "threshold": 18.664999961853027,
+                    "left": {
+                        "prediction": "Unfavorable"
+                    },
+                    "right": {
+                        "feature": "Temperature",
+                        "threshold": 31.515000343322754,
+                        "left": {
+                            "feature": "Moisture",
+                            "threshold": 59.39000129699707,
+                            "left": {
+                                "feature": "Temperature",
+                                "threshold": 21.039999961853027,
+                                "left": {
+                                    "feature": "Temperature",
+                                    "threshold": 19.295000076293945,
+                                    "left": {
+                                        "prediction": "Favorable"
+                                    },
+                                    "right": {
+                                        "prediction": "Unfavorable"
+                                    }
+                                },
+                                "right": {
+                                    "feature": "Temperature",
+                                    "threshold": 27.739999771118164,
+                                    "left": {
+                                        "feature": "Moisture",
+                                        "threshold": 59.310001373291016,
+                                        "left": {
+                                            "prediction": "Favorable"
+                                        },
+                                        "right": {
+                                            "feature": "pH",
+                                            "threshold": 5.244999885559082,
+                                            "left": {
+                                                "prediction": "Favorable"
+                                            },
+                                            "right": {
+                                                "prediction": "Unfavorable"
+                                            }
+                                        }
+                                    },
+                                    "right": {
+                                        "feature": "pH",
+                                        "threshold": 4.559999942779541,
+                                        "left": {
+                                            "prediction": "Unfavorable"
+                                        },
+                                        "right": {
+                                            "feature": "pH",
+                                            "threshold": 5.440000057220459,
+                                            "left": {
+                                                "prediction": "Favorable"
+                                            },
+                                            "right": {
+                                                "prediction": "Unfavorable"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "right": {
+                                "feature": "pH",
+                                "threshold": 4.115000009536743,
+                                "left": {
+                                    "feature": "Temperature",
+                                    "threshold": 20.510000228881836,
+                                    "left": {
+                                        "prediction": "Unfavorable"
+                                    },
+                                    "right": {
+                                        "prediction": "Favorable"
+                                    }
+                                },
+                                "right": {
+                                    "feature": "Temperature",
+                                    "threshold": 30.605000495910645,
+                                    "left": {
+                                        "feature": "pH",
+                                        "threshold": 5.5,
+                                        "left": {
+                                            "feature": "Temperature",
+                                            "threshold": 29.22499942779541,
+                                            "left": {
+                                                "prediction": "Favorable"
+                                            },
+                                            "right": {
+                                                "feature": "Temperature",
+                                                "threshold": 29.270000457763672,
+                                                "left": {
+                                                    "feature": "pH",
+                                                    "threshold": 5.145000219345093,
+                                                    "left": {
+                                                        "prediction": "Favorable"
+                                                    },
+                                                    "right": {
+                                                        "prediction": "Unfavorable"
+                                                    }
+                                                },
+                                                "right": {
+                                                    "prediction": "Favorable"
+                                                }
+                                            }
+                                        },
+                                        "right": {
+                                            "feature": "Moisture",
+                                            "threshold": 61.05999946594238,
+                                            "left": {
+                                                "feature": "Moisture",
+                                                "threshold": 59.95000076293945,
+                                                "left": {
+                                                    "prediction": "Favorable"
+                                                },
+                                                "right": {
+                                                    "prediction": "Unfavorable"
+                                                }
+                                            },
+                                            "right": {
+                                                "prediction": "Favorable"
+                                            }
+                                        }
+                                    },
+                                    "right": {
+                                        "feature": "Moisture",
+                                        "threshold": 62.21999931335449,
+                                        "left": {
+                                            "prediction": "Unfavorable"
+                                        },
+                                        "right": {
+                                            "feature": "Moisture",
+                                            "threshold": 79.79499816894531,
+                                            "left": {
+                                                "prediction": "Favorable"
+                                            },
+                                            "right": {
+                                                "prediction": "Unfavorable"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "right": {
+                            "prediction": "Unfavorable"
+                        }
+                    }
+                },
+                "right": {
+                    "feature": "pH",
+                    "threshold": 5.68999981880188,
+                    "left": {
+                        "feature": "pH",
+                        "threshold": 5.674999952316284,
+                        "left": {
+                            "feature": "Moisture",
+                            "threshold": 78.625,
+                            "left": {
+                                "prediction": "Unfavorable"
+                            },
+                            "right": {
+                                "feature": "Moisture",
+                                "threshold": 79.36999893188477,
+                                "left": {
+                                    "prediction": "Favorable"
+                                },
+                                "right": {
+                                    "prediction": "Unfavorable"
+                                }
+                            }
+                        },
+                        "right": {
+                            "prediction": "Favorable"
+                        }
+                    },
+                    "right": {
+                        "prediction": "Unfavorable"
+                    }
+                }
             }
         },
         "right": {
             "feature": "Moisture",
-            "threshold": 85.50500106811523,
+            "threshold": 84.67499923706055,
             "left": {
-                "feature": "Moisture",
-                "threshold": 85.48500061035156,
+                "feature": "pH",
+                "threshold": 5.4649999141693115,
                 "left": {
-                    "feature": "Moisture",
-                    "threshold": 85.3849983215332,
+                    "feature": "pH",
+                    "threshold": 4.169999837875366,
                     "left": {
-                        "prediction": "Suboptimal"
+                        "prediction": "Unfavorable"
                     },
                     "right": {
-                        "feature": "pH",
-                        "threshold": 4.4700000286102295,
+                        "feature": "Temperature",
+                        "threshold": 19.494999885559082,
                         "left": {
-                            "prediction": "Suboptimal"
+                            "prediction": "Unfavorable"
                         },
                         "right": {
-                            "feature": "pH",
-                            "threshold": 5.244999885559082,
+                            "feature": "Temperature",
+                            "threshold": 29.960000038146973,
                             "left": {
-                                "prediction": "Optimal"
+                                "feature": "Moisture",
+                                "threshold": 83.54999923706055,
+                                "left": {
+                                    "prediction": "Favorable"
+                                },
+                                "right": {
+                                    "feature": "Temperature",
+                                    "threshold": 20.140000343322754,
+                                    "left": {
+                                        "prediction": "Unfavorable"
+                                    },
+                                    "right": {
+                                        "feature": "Temperature",
+                                        "threshold": 21.954999923706055,
+                                        "left": {
+                                            "feature": "Temperature",
+                                            "threshold": 21.86500072479248,
+                                            "left": {
+                                                "prediction": "Favorable"
+                                            },
+                                            "right": {
+                                                "prediction": "Unfavorable"
+                                            }
+                                        },
+                                        "right": {
+                                            "prediction": "Favorable"
+                                        }
+                                    }
+                                }
                             },
                             "right": {
-                                "prediction": "Suboptimal"
+                                "prediction": "Unfavorable"
                             }
                         }
                     }
                 },
                 "right": {
-                    "prediction": "Optimal"
+                    "feature": "pH",
+                    "threshold": 5.625,
+                    "left": {
+                        "feature": "pH",
+                        "threshold": 5.609999895095825,
+                        "left": {
+                            "prediction": "Unfavorable"
+                        },
+                        "right": {
+                            "feature": "Temperature",
+                            "threshold": 29.739999771118164,
+                            "left": {
+                                "prediction": "Unfavorable"
+                            },
+                            "right": {
+                                "prediction": "Favorable"
+                            }
+                        }
+                    },
+                    "right": {
+                        "prediction": "Unfavorable"
+                    }
                 }
             },
             "right": {
-                "prediction": "Suboptimal"
+                "feature": "Moisture",
+                "threshold": 85.70000076293945,
+                "left": {
+                    "feature": "Moisture",
+                    "threshold": 85.67500305175781,
+                    "left": {
+                        "feature": "pH",
+                        "threshold": 5.320000171661377,
+                        "left": {
+                            "feature": "pH",
+                            "threshold": 4.644999980926514,
+                            "left": {
+                                "prediction": "Unfavorable"
+                            },
+                            "right": {
+                                "feature": "Moisture",
+                                "threshold": 85.375,
+                                "left": {
+                                    "prediction": "Favorable"
+                                },
+                                "right": {
+                                    "prediction": "Unfavorable"
+                                }
+                            }
+                        },
+                        "right": {
+                            "prediction": "Unfavorable"
+                        }
+                    },
+                    "right": {
+                        "prediction": "Favorable"
+                    }
+                },
+                "right": {
+                    "prediction": "Unfavorable"
+                }
             }
         }
     }

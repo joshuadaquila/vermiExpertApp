@@ -3,13 +3,17 @@ import { Buffer } from 'buffer'; // Import Buffer from the 'buffer' package
 import { faBars, faDroplet, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, SafeAreaView, Platform, PermissionsAndroid, Text, FlatList, TouchableOpacity} from "react-native";
+import { View, StyleSheet, SafeAreaView, Platform, PermissionsAndroid, Alert, Text, FlatList, TouchableOpacity} from "react-native";
 import BluetoothNotice from "../components/BluetoothNotice";
 import BtStat from "../components/BTStat";
 import BedDetailForm from '../components/BedDetailForm';
 import Sidebar from '../components/Sidebar';
+import { BluetoothContext } from '../components/BluetoothProvider';
+import { useContext } from 'react';
+import Loader from '../components/Loader';
 
 const BluetoothTest = ({ navigation }) => {
+    const { setBluetoothData } = useContext(BluetoothContext);
     const [isConnected, setIsConnected] = useState('false');
     const [deviceId, setDeviceId] = useState(null);
     const [devices, setDevices] = useState([]);
@@ -17,32 +21,115 @@ const BluetoothTest = ({ navigation }) => {
     const [receivedData, setReceivedData] = useState('');
     const [showBedForm, setShowBedForm] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
+    const [showLoader, setShowLoader] = useState(false);
 
     const [temperature, setTemperature]= useState(0);
     const [moisture, setMoisture] = useState(0);
     const [phLevel, setPhLevel] = useState(0);
 
-  const [hc05Device, setHc05Device] = useState(null);
-  const deviceAddress = '75:DA:C4:8A:87:0D';
+    const [hc05Device, setHc05Device] = useState(null);
+    const deviceAddress = '75:DA:C4:8A:87:0D';
+    
 
     useEffect(() => {
-        const bleManager = new BleManager();
-        setManager(bleManager);
+      const bleManager = new BleManager();
+      setManager(bleManager);
+      // checkConnection();
+      connectToDevice();
+      // Request permissions on Android
+      if (Platform.OS === 'android') {
+          requestPermissions();
+      }
+      
+      // Start scanning for devices
+      // startScan(bleManager);
 
-        // Request permissions on Android
-        if (Platform.OS === 'android') {
-            requestPermissions();
-        }
-
-        // Start scanning for devices
-        startScan(bleManager);
-
-        // Cleanup on unmount
-        return () => {
-            // bleManager.stopDeviceScan();
-            // bleManager.destroy();
-        };
+      // Cleanup on unmount
+      return () => {
+          // bleManager.stopDeviceScan();
+          // bleManager.destroy();
+      };
     }, []);
+    // useEffect(() => {
+    //   const subscription = bleManager.onStateChange((state) => {
+    //     console.log('Bluetooth state changed:', state);
+  
+    //     if (state !== 'PoweredOn') {
+    //       Alert.alert(
+    //         'Bluetooth Disabled',
+    //         'Please enable Bluetooth.',
+    //         [{ text: 'OK', onPress: () => console.log('Alert dismissed') }]
+    //       );
+    //     }
+    //   }, true); // `true` ensures the current state is checked immediately
+  
+    //   return () => {
+    //     subscription.remove(); // Cleanup on unmount
+    //   };
+    // }, []);
+
+    useEffect(() => {
+      // Simulate fetching Bluetooth data
+      const data = {
+        temperature: temperature,
+        moisture: moisture,
+        phLevel: phLevel,
+      };
+      if (temperature !== 0) setIsConnected('true')
+      setBluetoothData(data);
+    }, [temperature, moisture, phLevel]);
+    
+
+   
+
+    // useEffect(() => {
+    //   // Check connection periodically (e.g., every 5 seconds)
+    //   const interval = setInterval(() => {
+    //     checkConnection();
+    //   }, 1000);
+  
+    //   return () => {
+    //     clearInterval(interval);
+    //     // manager.destroy(); // Cleanup the BleManager instance
+    //   };
+    // }, [deviceId]);
+
+    // console.log(manager)
+    // useEffect(() => {
+    //   const subscription = bleManager.onDeviceDisconnected(deviceAddress, (error, device) => {
+    //     if (error) {
+    //       console.error('Error during disconnection:', error);
+    //     } else {
+    //       console.log('Device disconnected:', device.id);
+    //       connectToDevice();
+    //       setIsConnected('false');
+    //     }
+    //   });
+    
+    //   return () => {
+    //     subscription.remove(); // Cleanup on component unmount
+    //   };
+    // }, [bleManager, deviceId]);
+    
+
+    // const checkConnection = async () => {
+    //   if (deviceAddress) {
+    //     try {
+    //       const connected = await bleManager.isDeviceConnected(deviceAddress);
+    //       console.log(connected)
+    //       if (connected) {
+    //         setIsConnected('true');
+    //         console.log(`Device ${deviceId} is connected.`);
+    //       } else {
+    //         setIsConnected('false');
+    //         // connectToDevice();
+    //         console.log(`Device ${deviceId} is not connected.`);
+    //       }
+    //     } catch (error) {
+    //       console.error('Error checking device connection:', error);
+    //     }
+    //   }
+    // };
 
     const requestPermissions = async () => {
         if (Platform.OS === 'android') {
@@ -62,30 +149,8 @@ const BluetoothTest = ({ navigation }) => {
         }
     };
 
-    const startScan = (bleManager) => {
-        bleManager.startDeviceScan([], { allowDuplicates: false }, (error, device) => {
-            if (error) {
-                console.log('Error scanning devices', error);
-                return;
-            }
-
-            // Check if the device is already in the list
-            setDevices(prevDevices => {
-                if (!prevDevices.some(dev => dev.id === device.id)) {
-                    return [...prevDevices, device];
-                }
-                return prevDevices;
-            });
-        });
-
-        // Stop scanning after a few seconds
-        setTimeout(() => {
-            bleManager.stopDeviceScan();
-            console.log('Scan stopped');
-        }, 5000); // Stop after 5 seconds (or adjust as needed)
-    };
-
     const connectToDevice = () => {
+        // console.log("manager", manager)
         if (manager) {
             manager.connectToDevice(deviceAddress)
                 .then((device) => {
@@ -102,6 +167,7 @@ const BluetoothTest = ({ navigation }) => {
                 })
                 .then((device) => {
                     // Start listening to notifications from the device (replace with your characteristic UUID)
+                    console.log("trying to read")
                     const characteristicUUID = '0000ffe1-0000-1000-8000-00805f9b34fb'; // Replace with your characteristic UUID
                     device.monitorCharacteristicForService('0000ffe0-0000-1000-8000-00805f9b34fb', characteristicUUID, (error, characteristic) => {
                         if (error) {
@@ -116,7 +182,7 @@ const BluetoothTest = ({ navigation }) => {
                         // Split the data by newlines
                         const parts = data.split('\n');  // Split by newline
 
-
+                        // console.log(data);
                         const temperature = parseFloat(parts[0]); // Extracts temperature, e.g., '28.81'
                         const moisture = parseInt(parts[1], 10);  // Extracts moisture, e.g., '23'
                         const ph = parseFloat(parts[2]);          // Extracts pH level, e.g., '15.21'
@@ -128,7 +194,7 @@ const BluetoothTest = ({ navigation }) => {
                     });
                 })
                 .catch((error) => {
-                    console.log('Connection error', error);
+                    console.log('Connection errorr', error);
                 });
         }
     };
@@ -157,11 +223,27 @@ const BluetoothTest = ({ navigation }) => {
 
    return (
     <View style={styles.main}>
+      {showLoader && <Loader/>}
       {showSidebar&& <Sidebar toggleThis={()=> setShowSidebar(false)} menu={"dashboard"}/>}
       {isConnected && <BtStat status={isConnected}
       message={`${isConnected === 'true'? "Bluetooth connected!" : isConnected === 'connecting'?  "Connecting..." :"Sensors disconnected. Tap to connect!"}`} clicked={connectToDevice}/>}
-      {showBedForm && <BedDetailForm cancel={()=> setShowBedForm(false)} bedSet={proceedToResult}/>}
+      {showBedForm && (
+        <BedDetailForm 
+          cancel={() => setShowBedForm(false)} 
+          bedSet={() => {
+            setShowBedForm(false);
+            setShowLoader(true);
+            
+            setTimeout(() => {
+              setShowLoader(false);
+              proceedToResult();
+            }, 6000);  // Trigger proceedToResult after 5 seconds
+          }}
+        />
+      )}
+
       <View style={{ padding: 10 }}>
+        
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity onPress={()=> setShowSidebar(true)}>
            <FontAwesomeIcon icon={faBars} color="white" style={{ marginRight: 10 }} />
@@ -187,7 +269,7 @@ const BluetoothTest = ({ navigation }) => {
 
             <View style={{ alignItems: 'center' }}>
               <Text style={{ color: 'white', fontWeight: 'bold' }}>CONCLUSION</Text>
-              <Text style={{ color: 'white' }}>Optimal</Text>
+              <Text style={{ color: 'white' }}>Favorable</Text>
             </View>
           </View>
         </View>
@@ -241,7 +323,17 @@ const BluetoothTest = ({ navigation }) => {
         <View style={{ borderColor: 'white', borderWidth: 0.5, marginTop: 50 }}></View>
 
         <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
-          <TouchableOpacity style={styles.button} onPress={()=> setShowBedForm(true)}>
+          <TouchableOpacity style={styles.button} onPress={()=>{
+            if (deviceId){
+              setShowBedForm(true)
+            }else{
+              Alert.alert(
+                "Sensors Not Connected!",
+                "Please enable Bluetooth on your device and connect to the HC-06 Bluetooth module to proceed.",
+                [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+              );
+            }
+          }}>
             <Text style={styles.buttonText}>NEW ASSESSMENT</Text>
           </TouchableOpacity>
           {/* <Text style={{color:'white'}}>{temperature}</Text> */}

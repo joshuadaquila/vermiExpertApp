@@ -10,6 +10,7 @@ const Sidebar = ({ toggleThis, menu }) => {
   const navigation = useNavigation(); // Get navigation prop
 
   // Slide-in and slide-out animation for the sidebar
+  console.log("Sidebar is called")
   const toggleSidebar = (open) => {
     Animated.timing(slideAnim, {
       toValue: open ? 0 : -Dimensions.get("window").width, // Slide in or out
@@ -36,6 +37,11 @@ const Sidebar = ({ toggleThis, menu }) => {
   const isActive = (currentMenu) => menu === currentMenu; // Check if the menu item matches the passed prop
 
   const navigateToScreen = (screenName) => {
+    navigation.replace(screenName); // Navigate to the desired screen
+    handleClose(); // Close the sidebar after navigating
+  };
+
+  const navigateToScreenN = (screenName) => {
     navigation.navigate(screenName); // Navigate to the desired screen
     handleClose(); // Close the sidebar after navigating
   };
@@ -63,7 +69,7 @@ const Sidebar = ({ toggleThis, menu }) => {
 
           <TouchableOpacity
             style={[styles.menuItem, isActive("sensorMonitoring") && styles.activeMenu]}
-            onPress={() => navigateToScreen("SensorMonitoring")} // Add onPress for navigation
+            onPress={() => navigateToScreenN("SensorMonitoring")} // Add onPress for navigation
           >
             <FontAwesomeIcon icon={faLineChart} style={[styles.menuIcon, isActive("sensorMonitoring") && styles.activeMenuText]} />
             <Text style={[styles.menuText, isActive("sensorMonitoring") && styles.activeMenuText]}>Sensor Monitoring</Text>

@@ -7,14 +7,14 @@ const BtStat = ({ status, clicked, message }) => {
 
   useEffect(() => {
     // Hide the component after 3 seconds if status is true
-    if (status === "true") {
-      // const timer = setTimeout(() => {
-      //   setVisible(false);
-      // }, 3000); // 3 seconds timeout
+    // if (status === "true") {
+    //   const timer = setTimeout(() => {
+    //     setVisible(false);
+    //   }, 3000); // 3 seconds timeout
 
-      // Cleanup the timeout if the component is unmounted or status changes
-      // return () => clearTimeout(timer);
-    }
+    //   // Cleanup the timeout if the component is unmounted or status changes
+    //   return () => clearTimeout(timer);
+    // }
   }, [status]); // Re-run effect when status changes
 
   if (!visible) return null; // Don't render the component if it's not visible

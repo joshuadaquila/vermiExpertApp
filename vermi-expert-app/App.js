@@ -6,12 +6,14 @@ import BluetoothTest from './pages/BluetoothComponent';
 import DecisionTreeApp from './pages/DecisionTreeApp';
 import AnalysisResult from './pages/AnalysisResult';
 import Sensor from './pages/Sensor';
+import { BluetoothProvider } from './components/BluetoothProvider';
 // import ProfileScreen from './ProfileScreen';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
+    <BluetoothProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Dashboard" screenOptions={{
         gestureEnabled: true,
@@ -35,6 +37,7 @@ const App = () => {
         {/* <Stack.Screen name="Profile" component={BluetoothTest} /> */}
       </Stack.Navigator>
     </NavigationContainer>
+    </BluetoothProvider>
   );
 };
 

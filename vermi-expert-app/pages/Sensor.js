@@ -1,74 +1,62 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { BleManager } from "react-native-ble-plx"; // Import BleManager for Bluetooth
-import Sidebar from "../components/Sidebar";
-import { LineChart } from "react-native-chart-kit"; // For line graph visualization
+import React, { useState, useEffect, useContext } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { BluetoothContext } from '../components/BluetoothProvider';
+import Sidebar from '../components/Sidebar';
+import { LineChart } from 'react-native-charts-wrapper'; // Import LineChart
+import { processColor } from 'react-native-charts-wrapper'; // Import processColor
 
-const Sensor = () => {
+const Sensor = ({ route }) => {
+  const { bluetoothData } = useContext(BluetoothContext);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [temperature, setTemperature] = useState(0);
-  const [moisture, setMoisture] = useState(0);
-  const [phLevel, setPhLevel] = useState(0);
+  const [alertShown, setAlertShown] = useState(false);
   const [dataHistory, setDataHistory] = useState({
-    temperature: [22.5, 23.1, 24.0, 22.8, 23.5, 24.1, 23.7, 22.9, 23.3, 24.2],
-    moisture: [45, 50, 47, 49, 46, 51, 48, 52, 47, 50],
-    phLevel: [6.5, 6.7, 6.6, 6.8, 6.5, 6.9, 6.7, 6.6, 6.8, 6.7]
+    temperature: [],
+    moisture: [],
+    phLevel: [],
   });
 
-  // Thresholds for classification
-  const thresholds = {
-    temperature: { low: 22, high: 25 }, // 22-25 °C normal range
-    moisture: { low: 40, high: 55 }, // 40-55% normal range
-    phLevel: { low: 6.0, high: 7.5 } // 6.0-7.5 normal range
-  };
-
-  const deviceAddress = '75:DA:C4:8A:87:0D';
-  const bleManager = new BleManager(); // Bluetooth manager
+  useEffect(() => {
+    if (bluetoothData) {
+      setDataHistory((prevHistory) => {
+        const maxDataPoints = 15; // Limit to 100 data points
+  
+        const updatedTemperature = [...prevHistory.temperature, bluetoothData.temperature].slice(-maxDataPoints);
+        const updatedMoisture = [...prevHistory.moisture, bluetoothData.moisture].slice(-maxDataPoints);
+        const updatedPhLevel = [...prevHistory.phLevel, bluetoothData.phLevel].slice(-maxDataPoints);
+  
+        return {
+          temperature: updatedTemperature,
+          moisture: updatedMoisture,
+          phLevel: updatedPhLevel,
+        };
+      });
+    }
+  }, [bluetoothData]);
+  
 
   useEffect(() => {
-    // Function to fetch data from the connected device
-    const fetchData = () => {
-      bleManager.readCharacteristicForDevice(deviceAddress, '0000ffe0-0000-1000-8000-00805f9b34fb', '0000ffe1-0000-1000-8000-00805f9b34fb')
-        .then((characteristic) => {
-          const data = characteristic.value
-            ? Buffer.from(characteristic.value, 'base64').toString('utf-8')
-            : '';
+    if (bluetoothData && bluetoothData.temperature === 0 && !alertShown) {
+      Alert.alert(
+        'Sensors Not Connected!',
+        'Please enable Bluetooth on your device and connect to the HC-06 Bluetooth module to proceed.',
+        [
+          {
+            text: 'OK',
+            onPress: () => setAlertShown(true),
+          },
+        ]
+      );
+    }
+  }, [bluetoothData, alertShown]);
 
-          const parts = data.split('\n');
-          const newTemperature = parseFloat(parts[0]);
-          const newMoisture = parseInt(parts[1], 10);
-          const newPhLevel = parseFloat(parts[2]);
+  const thresholds = {
+    temperature: { low: 21, high: 29 },
+    moisture: { low: 60, high: 80 },
+    phLevel: { low: 4.3, high: 5.4 },
+  };
 
-          // Update states
-          setTemperature(newTemperature);
-          setMoisture(newMoisture);
-          setPhLevel(newPhLevel);
-
-          // Update the history for line graph visualization
-          setDataHistory(prevData => ({
-            temperature: [...prevData.temperature, newTemperature],
-            moisture: [...prevData.moisture, newMoisture],
-            phLevel: [...prevData.phLevel, newPhLevel]
-          }));
-        })
-        .catch((error) => {
-          console.log('Error reading characteristic:', error);
-        });
-    };
-
-    // Fetch data immediately after the component is mounted
-    fetchData();
-
-    // Set an interval to fetch data every 5 seconds
-    const interval = setInterval(fetchData, 5000);
-
-    // Cleanup interval on unmount
-    return () => clearInterval(interval);
-  }, []); // Empty dependency array to run once when the component mounts
-
-  // Function to determine the status (Normal, High, Low)
   const getStatus = (value, sensorType) => {
     if (sensorType === 'temperature') {
       if (value < thresholds.temperature.low) return 'Low';
@@ -87,110 +75,101 @@ const Sensor = () => {
     }
   };
 
+  const chartData = {
+    temperature: {
+      values: dataHistory.temperature.map((temp, index) => ({ x: index, y: temp })),
+      label: 'Temperature (°C)',
+      config: {
+        color:'white',
+        lineWidth: 2,
+        drawCubic: true,
+        drawFilled: false,
+      },
+    },
+    moisture: {
+      values: dataHistory.moisture.map((moisture, index) => ({ x: index, y: moisture })),
+      label: 'Moisture (%)',
+      config: {
+        // color: processColor('blue'),
+        lineWidth: 2,
+        drawCubic: true,
+        drawFilled: false,
+      },
+    },
+    phLevel: {
+      values: dataHistory.phLevel.map((ph, index) => ({ x: index, y: ph })),
+      label: 'pH Level',
+      color: 'green',
+      config: {
+        color: 'green',
+        lineWidth: 2,
+        drawCubic: true,
+        drawFilled: false,
+      },
+    },
+  };
+
   return (
     <View style={styles.main}>
-      {showSidebar && <Sidebar toggleThis={() => setShowSidebar(false)} menu={"sensorMonitoring"} />}
-
+      {showSidebar && <Sidebar toggleThis={() => setShowSidebar(false)} menu={'sensorMonitoring'} />}
       <View style={{ padding: 10 }}>
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
           <TouchableOpacity onPress={() => setShowSidebar(true)}>
-            <FontAwesomeIcon icon={faBars} color="white" style={{ marginRight: 10 }} />
+            <FontAwesomeIcon icon={faBars} color='white' style={{ marginRight: 10 }} />
           </TouchableOpacity>
           <View style={{ alignSelf: 'flex-start', paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }}>
             <Text style={{ color: '#111211', alignSelf: 'flex-start', fontWeight: 'bold' }}>SENSOR MONITORING</Text>
           </View>
         </View>
 
-        {/* <Text>Temperature: {temperature} °C ({getStatus(temperature, 'temperature')})</Text>
-        <Text>Moisture: {moisture} % ({getStatus(moisture, 'moisture')})</Text>
-        <Text>pH Level: {phLevel} ({getStatus(phLevel, 'phLevel')})</Text> */}
+        {/* <Text>Temperature: {bluetoothData.temperature} °C ({getStatus(bluetoothData.temperature, 'temperature')})</Text>
+        <Text>Moisture: {bluetoothData.moisture} % ({getStatus(bluetoothData.moisture, 'moisture')})</Text>
+        <Text>pH Level: {bluetoothData.phLevel} ({getStatus(bluetoothData.phLevel, 'phLevel')})</Text> */}
 
         <ScrollView>
           <View style={styles.chartTitleCon}>
-            <Text style={styles.chartTitle}>Temperature </Text>
-            <Text style={styles.dataTitle}>{temperature} °C ({getStatus(temperature, 'temperature')})</Text>
-
+            {/* <Text style={styles.dataTitle}>
+              Temperature: {bluetoothData.temperature} °C, Moisture: {bluetoothData.moisture} %, pH Level: {bluetoothData.phLevel}
+            </Text> */}
           </View>
+
+          {/* Line Chart for Temperature */}
+          <Text style={styles.chartTitle}>Temperature: {bluetoothData.temperature} °C ({getStatus(bluetoothData.temperature, 'temperature')})</Text>
           <LineChart
+            style={styles.chart}
             data={{
-              labels: Array.from({ length: dataHistory.temperature.length }, (_, index) => index + 1),
-              datasets: [{
-                data: dataHistory.temperature,
-                strokeWidth: 2,
-                color: () => '#FF6347',
-                name: "Temperature (°C)"
-              }]
+              dataSets: [chartData.temperature],
             }}
-            width={320}
-            height={180}
-            chartConfig={{
-              backgroundColor: "#111211",
-              backgroundGradientFrom: "#111211",
-              backgroundGradientTo: "#111211",
-              decimalPlaces: 2,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: { borderRadius: 16 }
-            }}
-            bezier
+            xAxis={{ drawLabels: false }}
+            yAxis={{ axisMaximum: 50, axisMinimum: 0 }}
+            chartDescription={{ text: '' }}
+            legend={{ enabled: false }}
           />
 
-          <View style={styles.chartTitleCon}>
-            <Text style={styles.chartTitle}>Moisture </Text>
-            <Text style={styles.dataTitle}>{moisture} % ({getStatus(moisture, 'moisture')})</Text>
-
-          </View>
+          {/* Line Chart for Moisture */}
+          <Text style={styles.chartTitle}>Moisture: {bluetoothData.moisture} % ({getStatus(bluetoothData.moisture, 'moisture')})</Text>
           <LineChart
+            style={styles.chart}
             data={{
-              labels: Array.from({ length: dataHistory.moisture.length }, (_, index) => index + 1),
-              datasets: [{
-                data: dataHistory.moisture,
-                strokeWidth: 2,
-                color: () => '#4682B4',
-                name: "Moisture (%)"
-              }]
+              dataSets: [chartData.moisture],
             }}
-            width={320}
-            height={180}
-            chartConfig={{
-              backgroundColor: "#111211",
-              backgroundGradientFrom: "#111211",
-              backgroundGradientTo: "#111211",
-              decimalPlaces: 2,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: { borderRadius: 16 }
-            }}
-            bezier
+            xAxis={{ drawLabels: false }}
+            yAxis={{ axisMaximum: 100, axisMinimum: 0 }}
+            chartDescription={{ text: '' }}
+            legend={{ enabled: false }}
           />
 
-          <View style={styles.chartTitleCon}>
-            <Text style={styles.chartTitle}>Moisture </Text>
-            <Text style={styles.dataTitle}>{moisture} °C ({getStatus(moisture, 'moisture')})</Text>
-
-          </View>
+          {/* Line Chart for pH Level */}
+          <Text style={styles.chartTitle}>pH Level: {bluetoothData.phLevel} ({getStatus(bluetoothData.phLevel, 'phLevel')})</Text>
           <LineChart
+            style={styles.chart}
             data={{
-              labels: Array.from({ length: dataHistory.phLevel.length }, (_, index) => index + 1),
-              datasets: [{
-                data: dataHistory.phLevel,
-                strokeWidth: 2,
-                color: () => '#32CD32',
-                name: "pH Level"
-              }]
+              dataSets: [chartData.phLevel],
             }}
-            width={320}
-            height={180}
-            chartConfig={{
-              backgroundColor: "#111211",
-              backgroundGradientFrom: "#111211",
-              backgroundGradientTo: "#111211",
-              decimalPlaces: 2,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: { borderRadius: 16 }
-            }}
-            bezier
+            xAxis={{ drawLabels: false }}
+            yAxis={{ axisMaximum: 14, axisMinimum: 0 }}
+            chartDescription={{ text: '' }}
+            legend={{ enabled: false }}
           />
         </ScrollView>
       </View>
@@ -208,18 +187,24 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#fff',
-    marginBottom: 10,
+    fontSize: 18,
+    marginBottom: 4,
   },
-  dataTitle:{
-    color: 'white',
-    fontSize: 25,
-    fontWeight: 'bold'
-  },
-  chartTitleCon:{
+  chartTitleCon: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
+  dataTitle: {
+    color: 'white',
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  chart: {
+    height: 220,
+    marginVertical: 10,
+    backgroundColor: 'white',
+  },
 });
 
 export default Sensor;

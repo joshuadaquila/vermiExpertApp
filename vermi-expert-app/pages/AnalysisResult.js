@@ -1,16 +1,18 @@
-import { View, StyleSheet, ScrollView, Text } from "react-native"
+import { View, StyleSheet, TouchableOpacity, ScrollView, Text } from "react-native"
 import { faBars, faDroplet, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 // import evaluateRules from "../components/knowledgeBase";
 import EvaluateRules from "../components/Knowledge";
 import { useEffect, useState } from "react";
 import loadModel from "../components/prediction";
+import Sidebar from "../components/Sidebar";
 
 const AnalysisResult = ({ route }) => {
   const { temp, ph, moisturelvl } = route.params;
   const [recommendations, setRecommendations] = useState([]);
   const [prediction, setPrediction] = useState('');
-  console.log(route.params)
+  const [showSidebar, setShowSidebar] = useState(false);
+  // console.log(route.params)
 
   useEffect(() => {
     // Prepare the data object for evaluateRules
@@ -28,8 +30,12 @@ const AnalysisResult = ({ route }) => {
 
   return(
     <View style={styles.main}>
+      {showSidebar&& <Sidebar toggleThis={()=> setShowSidebar(false)} menu={"analysisResult"}/>}
       <View style={{ padding: 10 }}>
-        <FontAwesomeIcon icon={faBars} color="white" style={{ marginRight: 10}} />
+        <TouchableOpacity onPress={()=> setShowSidebar(true)}>
+          <FontAwesomeIcon icon={faBars} color="white" style={{ marginRight: 10 }} />
+
+        </TouchableOpacity>
 
         <View style={{marginTop: 10}}>
           <Text style={{color: 'white'}}>Bed Name:</Text>
@@ -95,7 +101,7 @@ const AnalysisResult = ({ route }) => {
             <Text style={{textAlign: 'center', color:'white',
             fontWeight: 'bold', fontSize: 15, marginBottom: 2}}>{prediction}</Text>
             <Text style={{color:'white'}}>The vermibed has a temperature of {temp}°C, a moisture level of {moisturelvl}%, 
-              and a pH level of {ph}, creating a {prediction} environment for vermiworms.</Text>
+              and a pH level of {ph}, creating a/an {prediction} environment for vermiworms.</Text>
           </View>
         </View>
 
