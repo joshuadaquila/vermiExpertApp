@@ -7,6 +7,7 @@ import DecisionTreeApp from './pages/DecisionTreeApp';
 import AnalysisResult from './pages/AnalysisResult';
 import Sensor from './pages/Sensor';
 import { BluetoothProvider } from './components/BluetoothProvider';
+import Footer from './components/Footer';
 // import ProfileScreen from './ProfileScreen';
 
 const Stack = createStackNavigator();
@@ -15,10 +16,15 @@ const App = () => {
   return (
     <BluetoothProvider>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Dashboard" screenOptions={{
+      <Stack.Navigator initialRouteName="Footer" screenOptions={{
         gestureEnabled: true,
         ...TransitionPresets.SlideFromRightIOS, // Sliding transition preset
       }}>
+        <Stack.Screen
+          name="Footer"
+          component={Footer}
+          options={{ headerShown: false }} // This will hide the header for Home screen
+        />
         <Stack.Screen
           name="Dashboard"
           component={BluetoothTest}

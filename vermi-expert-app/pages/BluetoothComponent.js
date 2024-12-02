@@ -245,10 +245,10 @@ const BluetoothTest = ({ navigation }) => {
       <View style={{ padding: 10 }}>
         
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={()=> setShowSidebar(true)}>
+          {/* <TouchableOpacity onPress={()=> setShowSidebar(true)}>
            <FontAwesomeIcon icon={faBars} color="white" style={{ marginRight: 10 }} />
 
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View style={{ alignSelf: 'flex-start', paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }}>
             <Text style={{ color: '#111211', alignSelf: 'flex-start', fontWeight: 'bold' }}>DASHBOARD</Text>
           </View>
