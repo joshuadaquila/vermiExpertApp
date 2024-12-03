@@ -12,9 +12,8 @@ import { BluetoothContext } from '../components/BluetoothProvider';
 import { useContext } from 'react';
 import Loader from '../components/Loader';
 
-const BluetoothTest = ({ navigation }) => {
+const BluetoothTest = ({ navigation, connectToDevice, isConnected}) => {
     const { setBluetoothData } = useContext(BluetoothContext);
-    const [isConnected, setIsConnected] = useState('false');
     const [deviceId, setDeviceId] = useState(null);
     const [devices, setDevices] = useState([]);
     const [manager, setManager] = useState(null);
@@ -31,25 +30,25 @@ const BluetoothTest = ({ navigation }) => {
     const deviceAddress = '75:DA:C4:8A:87:0D';
     
 
-    useEffect(() => {
-      const bleManager = new BleManager();
-      setManager(bleManager);
-      // checkConnection();
-      connectToDevice();
-      // Request permissions on Android
-      if (Platform.OS === 'android') {
-          requestPermissions();
-      }
+    // useEffect(() => {
+    //   const bleManager = new BleManager();
+    //   setManager(bleManager);
+    //   // checkConnection();
+    //   connectToDevice();
+    //   // Request permissions on Android
+    //   if (Platform.OS === 'android') {
+    //       requestPermissions();
+    //   }
       
-      // Start scanning for devices
-      // startScan(bleManager);
+    //   // Start scanning for devices
+    //   // startScan(bleManager);
 
-      // Cleanup on unmount
-      return () => {
-          // bleManager.stopDeviceScan();
-          // bleManager.destroy();
-      };
-    }, []);
+    //   // Cleanup on unmount
+    //   return () => {
+    //       // bleManager.stopDeviceScan();
+    //       // bleManager.destroy();
+    //   };
+    // }, []);
     // useEffect(() => {
     //   const subscription = bleManager.onStateChange((state) => {
     //     console.log('Bluetooth state changed:', state);
@@ -68,16 +67,16 @@ const BluetoothTest = ({ navigation }) => {
     //   };
     // }, []);
 
-    useEffect(() => {
-      // Simulate fetching Bluetooth data
-      const data = {
-        temperature: temperature,
-        moisture: moisture,
-        phLevel: phLevel,
-      };
-      if (temperature !== 0) setIsConnected('true')
-      setBluetoothData(data);
-    }, [temperature, moisture, phLevel]);
+    // useEffect(() => {
+    //   // Simulate fetching Bluetooth data
+    //   const data = {
+    //     temperature: temperature,
+    //     moisture: moisture,
+    //     phLevel: phLevel,
+    //   };
+    //   if (temperature !== 0) setIsConnected('true')
+    //   setBluetoothData(data);
+    // }, [temperature, moisture, phLevel]);
     
 
    
@@ -131,88 +130,88 @@ const BluetoothTest = ({ navigation }) => {
     //   }
     // };
 
-    const requestPermissions = async () => {
-        if (Platform.OS === 'android') {
-            const granted = await PermissionsAndroid.requestMultiple([
-                PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-                PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            ]);
-            if (
-                granted['android.permission.BLUETOOTH_SCAN'] === PermissionsAndroid.RESULTS.GRANTED &&
-                granted['android.permission.BLUETOOTH_CONNECT'] === PermissionsAndroid.RESULTS.GRANTED
-            ) {
-                console.log('Bluetooth scan and connect permissions granted');
-            } else {
-                console.log('Bluetooth permissions not granted');
-            }
-        }
-    };
+    // const requestPermissions = async () => {
+    //     if (Platform.OS === 'android') {
+    //         const granted = await PermissionsAndroid.requestMultiple([
+    //             PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+    //             PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+    //             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    //         ]);
+    //         if (
+    //             granted['android.permission.BLUETOOTH_SCAN'] === PermissionsAndroid.RESULTS.GRANTED &&
+    //             granted['android.permission.BLUETOOTH_CONNECT'] === PermissionsAndroid.RESULTS.GRANTED
+    //         ) {
+    //             console.log('Bluetooth scan and connect permissions granted');
+    //         } else {
+    //             console.log('Bluetooth permissions not granted');
+    //         }
+    //     }
+    // };
 
-    const connectToDevice = () => {
-        // console.log("manager", manager)
-        if (manager) {
-            manager.connectToDevice(deviceAddress)
-                .then((device) => {
-                    setIsConnected(true);
-                    setDeviceId(device.id);
-                    console.log('Connected to device:', device.id);
-                    // console.log(device)
+    // const connectToDevice = () => {
+    //     // console.log("manager", manager)
+    //     if (manager) {
+    //         manager.connectToDevice(deviceAddress)
+    //             .then((device) => {
+    //                 setIsConnected(true);
+    //                 setDeviceId(device.id);
+    //                 console.log('Connected to device:', device.id);
+    //                 // console.log(device)
 
-                    setHc05Device(device);
-                    setIsConnected('true');
-                    // Discover services and characteristics
-                    return device.discoverAllServicesAndCharacteristics();
+    //                 setHc05Device(device);
+    //                 setIsConnected('true');
+    //                 // Discover services and characteristics
+    //                 return device.discoverAllServicesAndCharacteristics();
                     
-                })
-                .then((device) => {
-                    // Start listening to notifications from the device (replace with your characteristic UUID)
-                    console.log("trying to read")
-                    const characteristicUUID = '0000ffe1-0000-1000-8000-00805f9b34fb'; // Replace with your characteristic UUID
-                    device.monitorCharacteristicForService('0000ffe0-0000-1000-8000-00805f9b34fb', characteristicUUID, (error, characteristic) => {
-                        if (error) {
-                            console.log('Error reading characteristic:', error);
-                            return;
-                        }
+    //             })
+    //             .then((device) => {
+    //                 // Start listening to notifications from the device (replace with your characteristic UUID)
+    //                 console.log("trying to read")
+    //                 const characteristicUUID = '0000ffe1-0000-1000-8000-00805f9b34fb'; // Replace with your characteristic UUID
+    //                 device.monitorCharacteristicForService('0000ffe0-0000-1000-8000-00805f9b34fb', characteristicUUID, (error, characteristic) => {
+    //                     if (error) {
+    //                         console.log('Error reading characteristic:', error);
+    //                         return;
+    //                     }
 
-                        const data = characteristic.value
-                          ? Buffer.from(characteristic.value, 'base64').toString('utf-8')  // Decoding base64 to UTF-8 string
-                          : '';
+    //                     const data = characteristic.value
+    //                       ? Buffer.from(characteristic.value, 'base64').toString('utf-8')  // Decoding base64 to UTF-8 string
+    //                       : '';
 
-                        // Split the data by newlines
-                        const parts = data.split('\n');  // Split by newline
+    //                     // Split the data by newlines
+    //                     const parts = data.split('\n');  // Split by newline
 
-                        // console.log(data);
-                        const temperature = parseFloat(parts[0]); // Extracts temperature, e.g., '28.81'
-                        const moisture = parseInt(parts[1], 10);  // Extracts moisture, e.g., '23'
-                        const ph = parseFloat(parts[2]);          // Extracts pH level, e.g., '15.21'
+    //                     // console.log(data);
+    //                     const temperature = parseFloat(parts[0]); // Extracts temperature, e.g., '28.81'
+    //                     const moisture = parseInt(parts[1], 10);  // Extracts moisture, e.g., '23'
+    //                     const ph = parseFloat(parts[2]);          // Extracts pH level, e.g., '15.21'
 
-                        // Update states
-                        setTemperature(temperature);
-                        setMoisture(moisture);
-                        setPhLevel(ph);
-                    });
-                })
-                .catch((error) => {
-                    console.log('Connection errorr', error);
-                });
-        }
-    };
+    //                     // Update states
+    //                     setTemperature(temperature);
+    //                     setMoisture(moisture);
+    //                     setPhLevel(ph);
+    //                 });
+    //             })
+    //             .catch((error) => {
+    //                 console.log('Connection errorr', error);
+    //             });
+    //     }
+    // };
 
-    const disconnectFromDevice = () => {
-        if (manager && deviceId) {
-            manager.disconnectFromDevice(deviceId)
-                .then(() => {
-                    setIsConnected(false);
-                    setDeviceId(null);
-                    setReceivedData(''); // Clear the received data on disconnect
-                    console.log('Disconnected from device');
-                })
-                .catch((error) => {
-                    console.log('Disconnection error', error);
-                });
-        }
-    };
+    // const disconnectFromDevice = () => {
+    //     if (manager && deviceId) {
+    //         manager.disconnectFromDevice(deviceId)
+    //             .then(() => {
+    //                 setIsConnected(false);
+    //                 setDeviceId(null);
+    //                 setReceivedData(''); // Clear the received data on disconnect
+    //                 console.log('Disconnected from device');
+    //             })
+    //             .catch((error) => {
+    //                 console.log('Disconnection error', error);
+    //             });
+    //     }
+    // };
 
     console.log(temperature)
     const data = {temp: temperature, moisturelvl: moisture, ph: phLevel}
