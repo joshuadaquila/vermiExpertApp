@@ -7,16 +7,15 @@ import Sidebar from '../components/Sidebar';
 import { LineChart } from 'react-native-charts-wrapper'; // Import LineChart
 import { processColor } from 'react-native-charts-wrapper'; // Import processColor
 
-const Sensor = ({ route }) => {
-  const { bluetoothData } = useContext(BluetoothContext);
+const Sensor = ({ route, bluetoothData }) => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [alertShown, setAlertShown] = useState(false);
   const [dataHistory, setDataHistory] = useState({
     temperature: [],
     moisture: [],
     phLevel: [],
   });
 
+  console.log("buedata", bluetoothData)
   useEffect(() => {
     if (bluetoothData) {
       setDataHistory((prevHistory) => {
@@ -35,21 +34,6 @@ const Sensor = ({ route }) => {
     }
   }, [bluetoothData]);
   
-
-  useEffect(() => {
-    if (bluetoothData && bluetoothData.temperature === 0 && !alertShown) {
-      Alert.alert(
-        'Sensors Not Connected!',
-        'Please enable Bluetooth on your device and connect to the HC-06 Bluetooth module to proceed.',
-        [
-          {
-            text: 'OK',
-            onPress: () => setAlertShown(true),
-          },
-        ]
-      );
-    }
-  }, [bluetoothData, alertShown]);
 
   const thresholds = {
     temperature: { low: 21, high: 29 },
@@ -114,9 +98,6 @@ const Sensor = ({ route }) => {
       {showSidebar && <Sidebar toggleThis={() => setShowSidebar(false)} menu={'sensorMonitoring'} />}
       <View style={{ padding: 10 }}>
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
-          <TouchableOpacity onPress={() => setShowSidebar(true)}>
-            <FontAwesomeIcon icon={faBars} color='white' style={{ marginRight: 10 }} />
-          </TouchableOpacity>
           <View style={{ alignSelf: 'flex-start', paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }}>
             <Text style={{ color: '#111211', alignSelf: 'flex-start', fontWeight: 'bold' }}>SENSOR MONITORING</Text>
           </View>
@@ -134,7 +115,11 @@ const Sensor = ({ route }) => {
           </View>
 
           {/* Line Chart for Temperature */}
-          <Text style={styles.chartTitle}>Temperature: {bluetoothData.temperature} °C ({getStatus(bluetoothData.temperature, 'temperature')})</Text>
+          <View style={styles.tableTitleCon}>
+            <Text style={styles.parameter}>Temperature:</Text>
+            <Text style={styles.chartTitle}> {bluetoothData.temperature} °C {getStatus(bluetoothData.temperature, 'temperature')}</Text>
+          </View>
+          
           <LineChart
             style={styles.chart}
             data={{
@@ -147,7 +132,10 @@ const Sensor = ({ route }) => {
           />
 
           {/* Line Chart for Moisture */}
-          <Text style={styles.chartTitle}>Moisture: {bluetoothData.moisture} % ({getStatus(bluetoothData.moisture, 'moisture')})</Text>
+          <View style={styles.tableTitleCon}>
+            <Text style={styles.parameter}>Moisture Level: </Text>
+            <Text style={styles.chartTitle}>{bluetoothData.moisture} % {getStatus(bluetoothData.moisture, 'moisture')}</Text>
+          </View>
           <LineChart
             style={styles.chart}
             data={{
@@ -160,7 +148,11 @@ const Sensor = ({ route }) => {
           />
 
           {/* Line Chart for pH Level */}
-          <Text style={styles.chartTitle}>pH Level: {bluetoothData.phLevel} ({getStatus(bluetoothData.phLevel, 'phLevel')})</Text>
+          <View style={styles.tableTitleCon}>
+            <Text style={styles.parameter}>pH Level: </Text>
+            <Text style={styles.chartTitle}>{bluetoothData.phLevel} {getStatus(bluetoothData.phLevel, 'phLevel')}</Text>
+
+          </View>
           <LineChart
             style={styles.chart}
             data={{
@@ -188,12 +180,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     fontSize: 18,
-    marginBottom: 4,
+    padding: 4,
   },
   chartTitleCon: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    // borderWidth: 1
   },
   dataTitle: {
     color: 'white',
@@ -205,6 +198,18 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     backgroundColor: 'white',
   },
+  parameter:{
+    color: 'white',
+    paddingBottom: 3
+  },
+  tableTitleCon:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 20
+  }
 });
 
 export default Sensor;

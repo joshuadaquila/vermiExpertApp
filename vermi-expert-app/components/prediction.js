@@ -16,7 +16,7 @@ const predict = (tree, features) => {
 const loadModel = async (temperature, moisture, ph) => {
   try {
     // Read the model from the assets folder using readFileAssets
-    const jsonString = await RNFS.readFileAssets('model.json'); // Adjust the file path if necessary
+    const jsonString = await RNFS.readFileAssets('model.json'); 
 
     const tree = JSON.parse(jsonString);
 
@@ -29,7 +29,7 @@ const loadModel = async (temperature, moisture, ph) => {
 
     // Predict using the loaded decision tree model
     const result = predict(tree, features);
-    console.log(result);
+    console.log("result is ", typeof(result))
     return result;
   } catch (error) {
     console.error('Error loading model:', error);
