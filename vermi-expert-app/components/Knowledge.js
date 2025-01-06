@@ -27,7 +27,6 @@ const rules = [
 
 function EvaluateRules(data) {
   const recommendations = [];
-  // console.log("red", recommendations)
 
   rules.forEach((rule) => {
     if (rule.condition(data)) {

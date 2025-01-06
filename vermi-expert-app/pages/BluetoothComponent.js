@@ -1,6 +1,6 @@
 import { BleManager } from 'react-native-ble-plx';
 import { Buffer } from 'buffer'; // Import Buffer from the 'buffer' package
-import { faBars, faDroplet, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faDroplet, faFaceSmile, faSmileWink, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, SafeAreaView, Platform, PermissionsAndroid, Alert, Text, FlatList, TouchableOpacity} from "react-native";
@@ -11,20 +11,39 @@ import Sidebar from '../components/Sidebar';
 import { BluetoothContext } from '../components/BluetoothProvider';
 import { useContext } from 'react';
 import Loader from '../components/Loader';
+import { fetchLatestAnalysis } from '../components/db';
+import { formatDateTime } from '../components/FormatDateTime';
+import LottieView from 'lottie-react-native';
 
 const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, isBluetoothOn}) => {
     const [showBedForm, setShowBedForm] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
     const [showLoader, setShowLoader] = useState(false);
     const data = { temp: sensorVal.temperature, moisturelvl: sensorVal.moisture, ph: sensorVal.phLevel }
+    const [latestAnalysis, setLatestAnalysis] = useState();
     const proceedToResult = () =>{
       navigation.navigate("Result", data)
     }
 
+  useEffect(() => {
+    const fetchLatestAnalysisFunc = async () => {
+      try {
+        const data = await fetchLatestAnalysis();
+        setLatestAnalysis(data);
+      } catch (error) {
+        console.error("Error fetching latest analysis:", error);
+      }
+    };
+  
+    fetchLatestAnalysisFunc();
+  }, []); // Run only on initial render
+  
+  // console.log("ANALYSIS DATA", latestAnalysis)
+
    return (
     <View style={styles.main}>
       {showLoader && <Loader/>}
-      {showSidebar&& <Sidebar toggleThis={()=> setShowSidebar(false)} menu={"dashboard"}/>}
+      {/* {showSidebar&& <Sidebar togglefThis={()=> setShowSidebar(false)} menu={"dashboard"}/>} */}
       {/* <BtStat message={"Test"}/> */}
       
       {showBedForm && (
@@ -55,18 +74,18 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
           <Text style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: 10, color: 'white' }}>Latest Assessment</Text>
           <View style={styles.gridContainer}>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>BED NAME</Text>
-              <Text style={{ color: 'white' }}>Sample Bed</Text>
+              <Text style={[{ color: 'white', fontWeight: 'bold' }, styles.tableText]}>BED NAME</Text>
+              <Text style={{ color: 'white' }}>{latestAnalysis?.[0]?.name ?? "-"}</Text>
             </View>
 
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>DATE</Text>
-              <Text style={{ color: 'white' }}>2024-11-03 11:00</Text>
+              <Text style={[{ color: 'white', fontWeight: 'bold' }, styles.tableText]}>DATE</Text>
+              <Text style={{ color: 'white' }}>{latestAnalysis?.[0]?.timestamp ? new Date(latestAnalysis[0].timestamp).toLocaleDateString() : "-"}</Text>
             </View>
 
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>CONCLUSION</Text>
-              <Text style={{ color: 'white' }}>Favorable</Text>
+              <Text style={[{ color: 'white', fontWeight: 'bold' }, styles.tableText]}>CONCLUSION</Text>
+              <Text style={{ color: 'white' }}>{latestAnalysis?.[0]?.conclusion ?? "-"}</Text>
             </View>
           </View>
         </View>
@@ -80,10 +99,15 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
                 <FontAwesomeIcon icon={faTemperature2} color="white" />
               </View>
 
-              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>26</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>
+                {latestAnalysis?.[0]?.temperature 
+                  ? parseFloat(latestAnalysis[0].temperature).toFixed(1) 
+                  : "-"}
+              </Text>
+
 
               <View style={{ width: '100%' }}>
-                <Text style={{ color: 'white', textAlign: 'right' }}>C</Text>
+                <Text style={{ color: 'white', textAlign: 'right' }}>°C</Text>
               </View>
             </View>
           </View>
@@ -96,7 +120,7 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
                 <FontAwesomeIcon icon={faWater} color="white" />
               </View>
 
-              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>75</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>{latestAnalysis?.[0]?.moisture ?? "-"}</Text>
 
               <View style={{ width: '100%' }}>
                 <Text style={{ color: 'white', textAlign: 'right' }}>%</Text>
@@ -112,14 +136,22 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
                 <FontAwesomeIcon icon={faDroplet} color="white" />
               </View>
 
-              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>4.5</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>{latestAnalysis?.[0]?.pH ?? "-"}</Text>
             </View>
           </View>
         </View>
 
-        <View style={{ borderColor: 'white', borderWidth: 0.5, marginTop: 50 }}></View>
+        <View style={{ borderColor: 'white', borderWidth: 0.5, marginTop: 50, marginBottom: 50 }}></View>
 
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          {/* <LottieView
+            source={require('../resources/animation.json')}
+            autoPlay
+            loop
+            style={styles.animation}
+            onAnimationFinish={() => console.log('Animation Finished')}
+          />
+          <Text style={{color: 'white', textAlign: 'center', marginBottom: 4}}>Check my bed now!</Text> */}
           <TouchableOpacity style={styles.button} onPress={()=>{
             if (isConnected){
               setShowBedForm(true)
@@ -150,7 +182,7 @@ const styles = StyleSheet.create({
     color: 'white',
     padding: 14,
     margin: 10,
-    marginTop: 50,
+    marginTop: 20,
     borderWidth: 2,
     borderColor: 'white',
     borderRadius: 15,
@@ -189,6 +221,14 @@ const styles = StyleSheet.create({
     color: '#111211',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  tableText:{
+    // fontSize: 12
+  },
+  animation: {
+    width: 400,
+    height: 200,
+    resizeMode: 'cover'
   },
 });
 

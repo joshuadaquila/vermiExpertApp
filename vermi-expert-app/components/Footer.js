@@ -7,6 +7,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faEllipsisV, faGauge, faHamburger, faHeart, faHistory, faInbox, faInfoCircle, faLineChart, faWorm } from "@fortawesome/free-solid-svg-icons";
 import { BleManager } from 'react-native-ble-plx';
 import BtStat from "./BTStat";
+import Vermibeds from "../pages/Vermibeds";
+import About from "../pages/About";
+import History from "../pages/History";
+import { Buffer } from 'buffer';
 
 const Footer = ({ navigation }) => {
   const [activeComponent, setActiveComponent] = useState("Dashboard");
@@ -24,49 +28,49 @@ const Footer = ({ navigation }) => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
 
-  const [temperature, setTemperature]= useState(10);
-  const [moisture, setMoisture] = useState(20);
-  const [phLevel, setPhLevel] = useState(30);
-
+  const [temperature, setTemperature]= useState(0);
+  const [moisture, setMoisture] = useState(0);
+  const [phLevel, setPhLevel] = useState(0);
+  const [selectedBedId, setSelectedBedId] = useState(0);
   const [hc05Device, setHc05Device] = useState(null);
   const deviceAddress = '75:DA:C4:8A:87:0D';
   
+  // console.log("Footer Rendered")
+  useEffect(() => {
+    const bleManager = new BleManager();
+    setManager(bleManager);
+    // checkConnection();
+    connectToDevice();
+    // Request permissions on Android
+    if (Platform.OS === 'android') {
+        requestPermissions();
+    }
+    
+    return () => {
+        // bleManager.stopDeviceScan();
+        // bleManager.destroy();
+    };
+  }, []);
 
-    useEffect(() => {
-      const bleManager = new BleManager();
-      setManager(bleManager);
-      // checkConnection();
-      connectToDevice();
-      // Request permissions on Android
-      if (Platform.OS === 'android') {
-          requestPermissions();
-      }
-      
-      return () => {
-          // bleManager.stopDeviceScan();
-          // bleManager.destroy();
-      };
-    }, []);
+  useEffect(() => {
+      // Only set up the interval if not connected
+    if (isConnected) return;
 
-    useEffect(() => {
-       // Only set up the interval if not connected
-      if (isConnected) return;
-
-      const interval = setInterval(() => {
-        checkConnection(); // Perform connection check
-      }, 2000);
-      
-      return () => {
-        clearInterval(interval);
-        // manager.destroy(); // Cleanup the BleManager instance
-      };
-    }, [isConnected, deviceId, manager]);
+    const interval = setInterval(() => {
+      checkConnection(); // Perform connection check
+    }, 2000);
+    
+    return () => {
+      clearInterval(interval);
+      // manager.destroy(); // Cleanup the BleManager instance
+    };
+  }, [isConnected, deviceId, manager]);
 
     const checkConnection = async () => {
       if (deviceAddress && manager) {
         try {
           const connected = await manager.isDeviceConnected(deviceAddress);
-          console.log(connected)
+          // console.log(connected)
           if (connected) {
             setIsConnected(true);
             // console.log(`Device ${deviceId} is connected.`);
@@ -84,8 +88,8 @@ const Footer = ({ navigation }) => {
     useEffect(() => {
       if (manager) {
         const subscription = manager.onStateChange((state) => {
-          console.log('Bluetooth state changed:', state);
-          console.log('Alert', alertShown)
+          // console.log('Bluetooth state changed:', state);
+          // console.log('Alert', alertShown)
           if (state === 'PoweredOff') {
             setIsBluetoothOn(false)
           } else if (state === 'PoweredOn'){
@@ -182,6 +186,8 @@ const Footer = ({ navigation }) => {
                       setMoisture(moisture);
                       setPhLevel(ph);
 
+                      console.log("ACTUAL DATA", temperature, moisture, ph)
+
                   });
               })
               .catch((error) => {
@@ -209,14 +215,20 @@ const Footer = ({ navigation }) => {
     setBluetoothData({temperature: temperature, moisture: moisture, phLevel: phLevel})
   }, [temperature, moisture, phLevel])
 
-  console.log("bluetoothdata", bluetoothData);
+  // console.log("bluetoothdata", bluetoothData);
   const renderContent = () => {
     switch (activeComponent) {
       case "Dashboard":
         return <BluetoothTest sensorVal={bluetoothData} connectToDevice={connectToDevice} isConnected={isConnected} 
-          navigation={navigation} isBluetoothOn={isBluetoothOn}/>;
+          navigation={navigation} isBluetoothOn={isBluetoothOn} />;
       case "Sensor":
         return <Sensor bluetoothData={bluetoothData}/>;
+      case "Vermibeds":
+        return <Vermibeds />
+      case "About":
+        return <About />
+      case "History":
+        return <History navigation={navigation}/>
       default:
         return <BluetoothTest />;
     }
@@ -231,12 +243,17 @@ const Footer = ({ navigation }) => {
       </View>
       {showMore && 
         <View style={styles.OptionsCon}>
-          <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4, alignItems: 'center'}}>
+          <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4, alignItems: 'center'}}
+            onPress={() => {setActiveComponent("History"); setShowMore(false)}}
+
+          >
             <FontAwesomeIcon icon={faHistory}/>
             <Text style={styles.buttonText}>History</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4,  alignItems: 'center'}}>
+          <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4,  alignItems: 'center'}}
+             onPress={() => {setActiveComponent("Vermibeds"); setShowMore(false)}}
+          >
             <FontAwesomeIcon icon={faInbox}/>
             <Text style={styles.buttonText}>Vermibeds</Text>
           </TouchableOpacity>
@@ -246,7 +263,9 @@ const Footer = ({ navigation }) => {
             <Text style={styles.buttonText}>Favorites</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4,  alignItems: 'center'}}>
+          <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4,  alignItems: 'center'}}
+            onPress={() => {setActiveComponent("About"); setShowMore(false)}}
+          >
             <FontAwesomeIcon icon={faInfoCircle}/>
             <Text style={styles.buttonText}>About Us</Text>
           </TouchableOpacity>

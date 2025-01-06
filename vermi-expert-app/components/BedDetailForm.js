@@ -1,42 +1,103 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
-import { Picker } from "@react-native-picker/picker"; // Updated import
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import { fetchBeds } from "./db";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const BedDetailForm = ({ bedSet, cancel }) => {
   const [vermibedName, setVermibedName] = useState("");
-  const [selectedBedName, setSelectedBedName] = useState("");
+  const [selectedBedName, setSelectedBedName] = useState({id: null, name: ""});
+  const [beds, setBeds] = useState([]);
+
+  const storeId = async (id) => {
+    try{
+      await AsyncStorage.setItem('bedId', id)
+    } catch(err){
+      console.log("Failed to set bed id async storage", err);
+    }
+  }
+
+  const storeBed = async (name) => {
+    try{
+      await AsyncStorage.setItem('bedName', name)
+    } catch(err){
+      console.log("Failed to set bed name async storage", err);
+    }
+  }
+
+  useEffect(() => {
+    const fetchBed = async () => {
+      const data = await fetchBeds();
+      setBeds(data);
+    };
+
+    fetchBed();
+  }, []);
+  const handlePress = async () => {
+    if (selectedBedName && selectedBedName.id !== null) {
+      // Call the bedSet function if a valid selection is made
+      bedSet();
+    } else {
+      // Clear AsyncStorage keys properly if no valid selection is made
+      try {
+        await AsyncStorage.multiRemove(["bedId", "bedName"]);
+        bedSet();
+      } catch (error) {
+        console.error("Error clearing AsyncStorage:", error);
+      }
+    }
+  };
+
+  const handleSelection = (value) => {
+    const selected = beds.find((bed) => bed.bedId === value);
+    if (selected) {
+      setSelectedBedName({ id: selected.bedId, name: selected.name });
+      storeBed(selected.name)
+    }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <Text style={styles.label}>Vermibed Name</Text>
-        <TextInput
+        <Text style={styles.label}>Vermibed</Text>
+        {/* <TextInput
           style={styles.input}
           value={vermibedName}
           onChangeText={setVermibedName}
           placeholder="Enter Vermibed Name"
         />
 
-        <Text style={styles.label}>or</Text>
+        <Text style={styles.label}>or</Text> */}
+        
+        {/* Dynamically render beds from the fetched state */}
+
+        <View style={{borderWidth: 1, justifyContent: 'center', borderColor: '#adadad'}}>
         <Picker
-          selectedValue={selectedBedName}
-          onValueChange={(itemValue) => setSelectedBedName(itemValue)}
+          selectedValue={selectedBedName.id}
+          onValueChange={(itemValue) => {handleSelection(itemValue); storeId(itemValue.toString())}}
           style={styles.picker}
         >
-          <Picker.Item label="Select a Bed Name" value="" />
-          <Picker.Item label="Bed 1" value="bed1" />
-          <Picker.Item label="Bed 2" value="bed2" />
-          <Picker.Item label="Bed 3" value="bed3" />
+          <Picker.Item label="Select a Bed" value="" />
+          {beds.map((bed) => (
+            <Picker.Item 
+              key={bed.bedId} 
+              label={bed.name} 
+              value={bed.bedId} 
+            />
+          ))}
         </Picker>
-        <View style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center', padding: 10,}}>
+        </View>
+
+        <Text style={{fontStyle: 'italic', marginTop: 4}}>Proceeding without selecting a bed won't save the analysis report.</Text>
+
+        <View style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center', padding: 10 }}>
           <TouchableOpacity style={styles.buttoncancel} onPress={cancel}>
-            <Text style={{color: 'white', paddingHorizontal: 6, fontWeight: 'bold'}}>CANCEL</Text>
+            <Text style={{ color: 'white', paddingHorizontal: 6, fontWeight: 'bold' }}>CANCEL</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={bedSet}>
-            <Text style={{color: 'white', paddingHorizontal: 6, fontWeight: 'bold'}}>PROCEED</Text>
+          <TouchableOpacity style={styles.button} onPress={handlePress}>
+            <Text style={{ color: 'white', paddingHorizontal: 6, fontWeight: 'bold' }}>PROCEED</Text>
           </TouchableOpacity>
-          {/* <Text style={{color:'white'}}>{temperature}</Text> */}
         </View>
       </View>
     </View>
@@ -45,12 +106,10 @@ const BedDetailForm = ({ bedSet, cancel }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     height: '100%',
     width: '100%',
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: "#f5f5f5",
     position: 'absolute',
     zIndex: 1,
   },
@@ -93,7 +152,7 @@ const styles = StyleSheet.create({
   },
   buttoncancel: {
     backgroundColor: '#6b0e0e',
-    marginRight:6,
+    marginRight: 6,
     padding: 10,
     borderRadius: 20,
     alignItems: 'center',

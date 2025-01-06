@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, ScrollView, Share, Alert, Text } from "react-native"
+import { View, StyleSheet, Alert, TouchableOpacity, ScrollView, Share, Text } from "react-native"
 import { faArrowCircleLeft, faBars, faDroplet, faHeart, faShare, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 // import evaluateRules from "../components/knowledgeBase";
@@ -6,73 +6,25 @@ import EvaluateRules from "../components/Knowledge";
 import { useEffect, useState } from "react";
 import loadModel from "../components/prediction";
 import Sidebar from "../components/Sidebar";
-import { fetchBedName, insertAnalysis } from "../components/db";
+import { fetchBedName } from "../components/db";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const AnalysisResult = ({ navigation, route }) => {
-  const { temp, ph, moisturelvl } = route.params;
-  const [bedId, setBedId] = useState(0);
-  const [bed, setBed] = useState("");
-  const [recommendations, setRecommendations] = useState([]);
-  const [prediction, setPrediction] = useState("");
-  const [showSidebar, setShowSidebar] = useState(false);
-  const [data, setData] = useState({bedId: null , temperature: null, moisture: null, pH: null, conclusion: null, recommendation: null})
+const HistoryReport = ({ navigation, route }) => {
+  const { detail } = route.params;
 
-  useEffect(()=>{
-    const fetchId = async () => {
-      const bedId = await AsyncStorage.getItem("bedId");
-      setBedId(parseInt(bedId));
-    };
+  const showToast = () => {
+    Toast.show({
+      type: "success",
+      text1: "Success!",
+      text2: "Shared Successfully.",
+      position: "top"
+    });
+  };
 
-    fetchId();
-  }, [])
-
-  useEffect(()=>{
-    const getStoredBed = async () => {
-      const bed = await AsyncStorage.getItem("bedName");
-      setBed(bed);
-    };
-
-    getStoredBed();
-  }, [])
-
-  useEffect(() => {
-    const fetchPrediction = async () => {
-      const data = { temperature: temp, pH: ph, moisture: moisturelvl };
-  
-      try {
-        // Wait for the prediction result
-        const predictionResult = await loadModel(temp, moisturelvl, ph);
-        console.log("prediction is", predictionResult.toUpperCase());
-  
-        // Proceed with the recommendations after getting the prediction
-        const recommendationsList = EvaluateRules(data);
-  
-        // Update state with prediction and recommendations
-        setPrediction(predictionResult);
-        setRecommendations(recommendationsList);
-      } catch (error) {
-        console.error("Error fetching prediction:", error);
-      }
-    };
-  
-    fetchPrediction();
-  }, [temp, ph, moisturelvl]);
-
-  useEffect(()=>{
-    const setValues = async () => {
-      if (bedId != 0 && temp && ph && moisturelvl && prediction !== "" && recommendations.length !== 0){
-        setData({bedId: bedId, temperature: temp, moisture: moisturelvl, pH: ph, conclusion: prediction, recommendation: recommendations})
-      }
-    }
-    setValues();
-  },[bedId, temp, ph, moisturelvl, prediction, recommendations])
-
-  console.log("data to insert", data);
   const handleShare = async () => {
     try {
       const result = await Share.share({
-        message: `My vermibed ${bed? bed :  ""} is in ${prediction.toUpperCase()} condition as of ${new Date().toISOString()}. Analyze your vermibed with VermiExpert App now!`,
+        message: `My vermibed ${detail.name} is in ${detail.conclusion.toUpperCase()} condition as of ${detail.timestamp}. Analyze your vermibed with VermiExpert App now!`,
         title: 'Analysis Result',
       });
 
@@ -85,19 +37,6 @@ const AnalysisResult = ({ navigation, route }) => {
     }
   };
 
-  useEffect(()=>{
-    const insertValue = async () =>{
-      if (data.bedId != 0 && data.temperature && data.pH && data.moisture && data.conclusion !== "" && data.recommendation !==  ""){
-        await insertAnalysis(data)
-        console.log("data to inserted");
-      }else{
-        console.log("Data are not complete")
-      }
-    }
-
-    insertValue();
-  }, [data])
-
   return (
     <View style={styles.main}>
       <View style={{ padding: 10 }}>
@@ -106,9 +45,9 @@ const AnalysisResult = ({ navigation, route }) => {
         </TouchableOpacity>
 
         <View style={{ marginTop: 10, flexDirection: 'row' }}>
-          <Text style={{ color: 'white', marginRight: 20 }}>Bed Name: {bed? bed:  "-"}</Text>
+          <Text style={{ color: 'white', marginRight: 20 }}>Bed Name: {detail.name? detail.name:  "-"}</Text>
           <Text style={{ color: 'white' }}>
-            {new Date().toLocaleString()}
+            {detail.timestamp}
           </Text>
           
         </View>
@@ -123,7 +62,7 @@ const AnalysisResult = ({ navigation, route }) => {
               <Text style={styles.propertyText}>Temperature (C)</Text>
             </View>
             <View style={styles.propertyInner}>
-              <Text style={styles.propertyValue}>{temp}</Text>
+              <Text style={styles.propertyValue}>{detail.temperature}</Text>
             </View>
           </View>
         </View>
@@ -135,7 +74,7 @@ const AnalysisResult = ({ navigation, route }) => {
               <Text style={styles.propertyText}>Moisture (%)</Text>
             </View>
             <View style={styles.propertyInner}>
-              <Text style={styles.propertyValue}>{moisturelvl}</Text>
+              <Text style={styles.propertyValue}>{detail.moisture}</Text>
             </View>
           </View>
         </View>
@@ -147,15 +86,15 @@ const AnalysisResult = ({ navigation, route }) => {
               <Text style={styles.propertyText}>pH Level</Text>
             </View>
             <View style={styles.propertyInner}>
-              <Text style={styles.propertyValue}>{ph}</Text>
+              <Text style={styles.propertyValue}>{detail.pH}</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.analysisBox}>
           <Text style={styles.analysisText}>Conclusion:</Text>
-          <Text style={[styles.analysisHeader, prediction.toLowerCase() == "favorable"? {color: 'green'} : {color: 'red'}]}> 
-            {prediction ? prediction.toUpperCase() : 'No Prediction Available'}
+          <Text style={[styles.analysisHeader, detail.conclusion.toLowerCase() == "favorable"? {color: 'green'} : {color: 'red'}]}> 
+            {detail.conclusion ? detail.conclusion.toUpperCase() : 'No Prediction Available'}
           </Text>
           {/* <Text style={styles.analysisText}>
             The vermibed has a temperature of {temp}°C, a moisture level of {moisturelvl}%, 
@@ -166,11 +105,12 @@ const AnalysisResult = ({ navigation, route }) => {
         <View style={{ marginTop: 10 }}>
           <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ height: 370 }}>
             <Text style={styles.recommendationHeader}>Recommendation</Text>
-            {recommendations.map((recommendation, index) => (
+            {/* {recommendations.map((recommendation, index) => (
               <Text key={index} style={styles.recommendationText}>
                 {index + 1}. {recommendation}
               </Text>
-            ))}
+            ))} */}
+            <Text style={styles.recommendationText}>{detail.recommendations}</Text>
           </ScrollView>
         </View>
       </View>
@@ -277,4 +217,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AnalysisResult;
+export default HistoryReport;

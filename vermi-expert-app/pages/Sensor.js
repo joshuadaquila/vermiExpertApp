@@ -15,23 +15,28 @@ const Sensor = ({ route, bluetoothData }) => {
     phLevel: [],
   });
 
-  console.log("buedata", bluetoothData)
+  // console.log("buedata", bluetoothData)
   useEffect(() => {
-    if (bluetoothData) {
-      setDataHistory((prevHistory) => {
-        const maxDataPoints = 15; // Limit to 100 data points
-  
-        const updatedTemperature = [...prevHistory.temperature, bluetoothData.temperature].slice(-maxDataPoints);
-        const updatedMoisture = [...prevHistory.moisture, bluetoothData.moisture].slice(-maxDataPoints);
-        const updatedPhLevel = [...prevHistory.phLevel, bluetoothData.phLevel].slice(-maxDataPoints);
-  
-        return {
-          temperature: updatedTemperature,
-          moisture: updatedMoisture,
-          phLevel: updatedPhLevel,
-        };
-      });
-    }
+    const interval = setInterval(() => {
+      if (bluetoothData) {
+        setDataHistory((prevHistory) => {
+          const maxDataPoints = 15; // Limit to 15 data points
+
+          const updatedTemperature = [...prevHistory.temperature, bluetoothData.temperature].slice(-maxDataPoints);
+          const updatedMoisture = [...prevHistory.moisture, bluetoothData.moisture].slice(-maxDataPoints);
+          const updatedPhLevel = [...prevHistory.phLevel, bluetoothData.phLevel].slice(-maxDataPoints);
+
+          return {
+            temperature: updatedTemperature,
+            moisture: updatedMoisture,
+            phLevel: updatedPhLevel,
+          };
+        });
+      }
+    }, 1500); // Run every 1500 ms
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, [bluetoothData]);
   
 

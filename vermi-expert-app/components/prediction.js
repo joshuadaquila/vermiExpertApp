@@ -29,7 +29,7 @@ const loadModel = async (temperature, moisture, ph) => {
 
     // Predict using the loaded decision tree model
     const result = predict(tree, features);
-    console.log("result is ", typeof(result))
+
     return result;
   } catch (error) {
     console.error('Error loading model:', error);
