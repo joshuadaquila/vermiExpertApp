@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native"; // Import Image component
 import { BlurView } from '@react-native-community/blur'; // Import the BlurView component
 
-export default function BluetoothNotice() {
+function BluetoothNotice({ bedSet }) {
   return (
     <View style={styles.container}>
       {/* Full-screen BlurView */}
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   noticeContainer: {
     marginTop: 80,
-    width: '80%', // Make the container take up a percentage of the screen width
+    width: '70%', // Make the container take up a percentage of the screen width
     height: '50%',
     backgroundColor: 'white', // White background for the notice
     padding: 20,
@@ -88,3 +88,5 @@ const styles = StyleSheet.create({
     fontSize: 16, // Text size
   },
 });
+
+export default BluetoothNotice;
