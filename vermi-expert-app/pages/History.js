@@ -4,8 +4,10 @@ import { View, Text, TouchableOpacity } from "react-native"
 import { fetchAllAnalysis } from "../components/db"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faInfo, faSadCry, faSadTear, faWarning } from "@fortawesome/free-solid-svg-icons"
+import { useTheme } from '../components/ThemeContext'
 
 const History = ({ navigation }) => {
+  const { isDarkMode, toggleTheme } = useTheme();
   const [analysis, setAnalysis] = useState([])
   const [selectedBedId, setSelectedBedId] = useState(0)
 
@@ -27,11 +29,13 @@ const History = ({ navigation }) => {
     navigation.navigate('HistoryReport', { detail })
   }
   return(
-    <View style={styles.main}>
+    <View style={[styles.main, { backgroundColor: isDarkMode? '#111211' : 'white' }]}>
       <View style={{ padding: 10 }}>
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <View style={styles.header}>
-            <Text style={styles.headerText}>HISTORY</Text>
+          
+          <View style={[{ display: 'flex', alignItems: 'center', justifyContent: 'center', 
+             paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }, {backgroundColor: isDarkMode? 'white': '#111211'}]}>
+            <Text style={{ color: isDarkMode? '#111211' : 'white', fontWeight: 'bold' }}>HISTORY</Text>  
           </View>
         </View>
 
@@ -44,13 +48,13 @@ const History = ({ navigation }) => {
         keyExtractor={(item) => item.analysisId.toString()} // Ensure unique IDs for each list item
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.bedItem}
+            style={[styles.bedItem, {borderBottomColor: isDarkMode? 'white' : '#111211'}]}
             onPress={() => handlePress(item)}
           >
             <View style={{flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', marginLeft: 6}}>
 
             
-            <Text style={styles.bedText}>{item.name || "Unknown Bed"}</Text>
+            <Text style={[styles.bedText, {color: isDarkMode? 'white' : '#111211'}]}>{item.name || "Unknown Bed"}</Text>
             <Text style={{fontSize: 12, color: 'white'}}>{item.timestamp}</Text>
             </View>
             {selectedBedId === item.bedId && showMore && <EdDel bedId={selectedBedId} toggleThis={()=> setShowMore(false)}/>}
@@ -58,8 +62,8 @@ const History = ({ navigation }) => {
         )}
         ListEmptyComponent={
           <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-            <FontAwesomeIcon icon={faSadCry} color="white" size={40}/>
-            <Text style={{color: 'white', marginTop: 14}}>No Assessment History Available</Text>
+            <FontAwesomeIcon icon={faSadCry} style={{color: isDarkMode? 'white' : '#111211'}} size={40}/>
+            <Text style={{color: isDarkMode? 'white' : '#111211', marginTop: 14}}>No Assessment History Available</Text>
 
           </View>
         }

@@ -14,6 +14,7 @@ import Vermibeds from './pages/Vermibeds';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { BaseToast, ErrorToast } from 'react-native-toast-message';
 import HistoryReport from './pages/HistoryReport';
+import { ThemeProvider, useTheme } from './components/ThemeContext';
 // import ProfileScreen from './ProfileScreen';
 
 const Stack = createStackNavigator();
@@ -96,6 +97,7 @@ const App = () => {
 
   return (
     <BluetoothProvider>
+    <ThemeProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Footer" screenOptions={{
         gestureEnabled: true,
@@ -135,6 +137,7 @@ const App = () => {
       </Stack.Navigator>
     </NavigationContainer>
     <Toast config={toastConfig}/>
+    </ThemeProvider>
     </BluetoothProvider>
   );
 };

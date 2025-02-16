@@ -6,8 +6,10 @@ import { faAdd, faSadCry } from "@fortawesome/free-solid-svg-icons";
 import BedDetails from "../components/BedDetails";
 import BedForm from "../components/BedForm";
 import EdDel from "../components/EdDel";
+import { useTheme } from "../components/ThemeContext";
 
 const Vermibeds = ({ navigation }) => {
+  const { isDarkMode, toggleTheme } = useTheme();
   const [beds, setBeds] = useState([]);
   const [showBedDet, setShowBedDet] = useState(false);
   const [showBed, setShowBed] = useState();
@@ -36,13 +38,14 @@ const Vermibeds = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.main}>
+    <View style={[styles.main, { backgroundColor: isDarkMode? '#111211' : 'white' }]}>
       {showBedDet && <BedDetails toggleThis={()=> setShowBedDet(false)} bed={showBed}/>}
       {showAddBed && <BedForm toggleThis={()=> setShowAddBed(false)}/>}
       <View style={{ padding: 10 }}>
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <View style={styles.header}>
-            <Text style={styles.headerText}>VERMIBEDS</Text>
+          <View style={[{ display: 'flex', alignItems: 'center', justifyContent: 'center', 
+             paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }, {backgroundColor: isDarkMode? 'white': '#111211'}]}>
+            <Text style={{ color: isDarkMode? '#111211' : 'white', fontWeight: 'bold' }}>VERMIBEDS</Text>  
           </View>
         </View>
       </View>
@@ -52,29 +55,29 @@ const Vermibeds = ({ navigation }) => {
         keyExtractor={(item) => item.bedId.toString()} // Ensure unique IDs for each list item
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.bedItem}
+          style={[styles.bedItem, {borderBottomColor: isDarkMode? 'white' : '#111211'}]}
             onPress={() => handlePress(item)}
             onPressIn = {()=> setShowMore(false)}
             onLongPress={()=> {setShowMore(true); setSelectedbedId(item.bedId)}}
           >             
-            <Text style={styles.bedText}>{item.name || "Unknown Bed"}</Text>
+            <Text style={[styles.bedText, { color: isDarkMode? 'white' : '#111211' }]}>{item.name || "Unknown Bed"}</Text>
             {selectedBedId === item.bedId && showMore && <EdDel bedId={selectedBedId} toggleThis={()=> setShowMore(false)}/>}
           </TouchableOpacity>
         )}
         ListEmptyComponent={
 
           <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-            <FontAwesomeIcon icon={faSadCry} color="white" size={40}/>
-            <Text style={{color: 'white', marginTop: 14}}>No Vermibed Available</Text>
+            <FontAwesomeIcon icon={faSadCry} style={{color: isDarkMode? 'white' : '#111211'}} size={40}/>
+            <Text style={{color: isDarkMode? 'white':'#111211', marginTop: 14}}>No Vermibed Available</Text>
 
           </View>
         }
       />
 
-      <TouchableOpacity onPress={()=> setShowAddBed(true)} style={{position: 'absolute', bottom: 0, right: 10,
-        backgroundColor: 'white', padding: 10, borderRadius: 5
+      <TouchableOpacity onPress={()=> setShowAddBed(true)} style={{position: 'absolute', bottom: 10, right: 10,
+        backgroundColor: isDarkMode? 'white' : '#111211', padding: 10, borderRadius: 5
       }}>
-        <FontAwesomeIcon icon={faAdd}/>
+        <FontAwesomeIcon icon={faAdd} style={{color: isDarkMode? '#111211' : 'white'}}/>
       </TouchableOpacity>
     </View>
   );

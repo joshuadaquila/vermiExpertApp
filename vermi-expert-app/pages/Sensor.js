@@ -6,9 +6,11 @@ import { BluetoothContext } from '../components/BluetoothProvider';
 import Sidebar from '../components/Sidebar';
 import { LineChart } from 'react-native-charts-wrapper'; // Import LineChart
 import { processColor } from 'react-native-charts-wrapper'; // Import processColor
+import { useTheme } from '../components/ThemeContext';
 
 const Sensor = ({ route, bluetoothData }) => {
   const [showSidebar, setShowSidebar] = useState(false);
+  const { isDarkMode, toggleTheme } = useTheme();
   const [dataHistory, setDataHistory] = useState({
     temperature: [],
     moisture: [],
@@ -99,12 +101,13 @@ const Sensor = ({ route, bluetoothData }) => {
   };
 
   return (
-    <View style={styles.main}>
+    <View style={[styles.main, {backgroundColor: isDarkMode? '#111211' : 'white'}]}>
       {showSidebar && <Sidebar toggleThis={() => setShowSidebar(false)} menu={'sensorMonitoring'} />}
       <View style={{ padding: 10 }}>
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
-          <View style={{ alignSelf: 'flex-start', paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }}>
-            <Text style={{ color: '#111211', alignSelf: 'flex-start', fontWeight: 'bold' }}>SENSOR MONITORING</Text>
+          <View style={[{ display: 'flex', alignItems: 'center', justifyContent: 'center', 
+             paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }, {backgroundColor: isDarkMode? 'white': '#111211'}]}>
+            <Text style={{ color: isDarkMode? '#111211' : 'white', fontWeight: 'bold' }}>SENSOR</Text>  
           </View>
         </View>
 
@@ -120,9 +123,9 @@ const Sensor = ({ route, bluetoothData }) => {
           </View>
 
           {/* Line Chart for Temperature */}
-          <View style={styles.tableTitleCon}>
-            <Text style={styles.parameter}>Temperature:</Text>
-            <Text style={styles.chartTitle}> {bluetoothData.temperature} °C {getStatus(bluetoothData.temperature, 'temperature')}</Text>
+          <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211'}]}>
+            <Text style={[styles.parameter, {color: isDarkMode? 'white' : '#111211'}]}>Temperature:</Text>
+            <Text style={[styles.chartTitle, {color: isDarkMode? 'white' : '#111211'}]}> {bluetoothData.temperature} °C {getStatus(bluetoothData.temperature, 'temperature')}</Text>
           </View>
           
           <LineChart
@@ -137,9 +140,9 @@ const Sensor = ({ route, bluetoothData }) => {
           />
 
           {/* Line Chart for Moisture */}
-          <View style={styles.tableTitleCon}>
-            <Text style={styles.parameter}>Moisture Level: </Text>
-            <Text style={styles.chartTitle}>{bluetoothData.moisture} % {getStatus(bluetoothData.moisture, 'moisture')}</Text>
+          <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211'}]}>
+            <Text style={[styles.parameter, {color: isDarkMode? 'white' : '#111211'}]}>Moisture Level: </Text>
+            <Text style={[styles.chartTitle, {color: isDarkMode? 'white' : '#111211'}]}>{bluetoothData.moisture} % {getStatus(bluetoothData.moisture, 'moisture')}</Text>
           </View>
           <LineChart
             style={styles.chart}
@@ -153,9 +156,9 @@ const Sensor = ({ route, bluetoothData }) => {
           />
 
           {/* Line Chart for pH Level */}
-          <View style={styles.tableTitleCon}>
-            <Text style={styles.parameter}>pH Level: </Text>
-            <Text style={styles.chartTitle}>{bluetoothData.phLevel} {getStatus(bluetoothData.phLevel, 'phLevel')}</Text>
+          <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211'}]}>
+            <Text style={[styles.parameter, {color: isDarkMode? 'white' : '#111211'}]}>pH Level: </Text>
+            <Text style={[styles.chartTitle, {color: isDarkMode? 'white' : '#111211'}]}>{bluetoothData.phLevel} {getStatus(bluetoothData.phLevel, 'phLevel')}</Text>
 
           </View>
           <LineChart

@@ -4,15 +4,17 @@ import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture
 import BluetoothTest from "../pages/BluetoothComponent";
 import Sensor from "../pages/Sensor";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faEllipsisV, faGauge, faHamburger, faHeart, faHistory, faInbox, faInfoCircle, faLineChart, faWorm } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisV, faGauge, faHamburger, faHeart, faHistory, faHomeLg, faInbox, faInfoCircle, faLineChart, faWorm } from "@fortawesome/free-solid-svg-icons";
 import { BleManager } from 'react-native-ble-plx';
 import BtStat from "./BTStat";
 import Vermibeds from "../pages/Vermibeds";
 import About from "../pages/About";
 import History from "../pages/History";
 import { Buffer } from 'buffer';
+import { useTheme } from "./ThemeContext";
 
 const Footer = ({ navigation }) => {
+  const { isDarkMode, toggleTheme } = useTheme();
   const [activeComponent, setActiveComponent] = useState("Dashboard");
   const [showMore, setShowMore] = useState(false);
   const [alertShown, setAlertShown] = useState(false)
@@ -235,53 +237,48 @@ const Footer = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: isDarkMode? '#111211' : 'white'}]}>
       <BtStat status={isConnected}
       message={`${isConnected? "Sensors connected!" : !isBluetoothOn?  "Bluetooth is off, and sensors are disconnected." :"Sensors disconnected. Reconnecting..."}`} clicked={connectToDevice}/>
       <View style={styles.content}>
         {renderContent()}
       </View>
       {showMore && 
-        <View style={styles.OptionsCon}>
+        <View style={[styles.OptionsCon, {backgroundColor: isDarkMode? 'white' : 'white'}]}>
           <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4, alignItems: 'center'}}
             onPress={() => {setActiveComponent("History"); setShowMore(false)}}
 
           >
-            <FontAwesomeIcon icon={faHistory}/>
-            <Text style={styles.buttonText}>History</Text>
+            <FontAwesomeIcon icon={faHistory} style={{color: isDarkMode? '#111211' : '#111211'}}/>
+            <Text style={[styles.buttonText, {color: isDarkMode? '#111211' : '#111211'}]}>History</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4,  alignItems: 'center'}}
              onPress={() => {setActiveComponent("Vermibeds"); setShowMore(false)}}
           >
-            <FontAwesomeIcon icon={faInbox}/>
-            <Text style={styles.buttonText}>Vermibeds</Text>
+            <FontAwesomeIcon icon={faInbox} style={{color: isDarkMode? '#111211' : '#111211'}}/>
+            <Text style={[styles.buttonText, {color: isDarkMode? '#111211' : '#111211'}]}>Vermibeds</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4,  alignItems: 'center'}}>
-            <FontAwesomeIcon icon={faHeart}/>
-            <Text style={styles.buttonText}>Favorites</Text>
+            <FontAwesomeIcon icon={faHeart} style={{color: isDarkMode? '#111211' : '#111211'}}/>
+            <Text style={[styles.buttonText, {color: isDarkMode? '#111211' : '#111211'}]}>Favorites</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4,  alignItems: 'center'}}
             onPress={() => {setActiveComponent("About"); setShowMore(false)}}
           >
-            <FontAwesomeIcon icon={faInfoCircle}/>
-            <Text style={styles.buttonText}>About Us</Text>
+            <FontAwesomeIcon icon={faInfoCircle} style={{color: isDarkMode? '#111211' : '#111211'}}/>
+            <Text style={[styles.buttonText, {color: isDarkMode? '#111211' : '#111211'}]}>About Us</Text>
           </TouchableOpacity>
         </View>}
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setActiveComponent("Dashboard")}
-        >
-          <FontAwesomeIcon icon={faGauge}/>
-          <Text style={styles.buttonText}>Dashboard</Text>
-        </TouchableOpacity>
+      <View style={[styles.footer, {backgroundColor: isDarkMode? '#ffffff' : '#111211'}]}>
+        
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            if (isConnected) {
+            if (isConnected) { //isConnected
               setActiveComponent("Sensor");
             } else {
               Alert.alert(
@@ -292,16 +289,24 @@ const Footer = ({ navigation }) => {
             }
           }}
         >
-          <FontAwesomeIcon icon={faLineChart}/>
-          <Text style={styles.buttonText}>Sensor Monitoring</Text>
+          <FontAwesomeIcon icon={faLineChart} style={{color: isDarkMode? '#111211' : 'white'}}/>
+          <Text style={[styles.buttonText, {color: isDarkMode? '#111211' : 'white'}]}>Sensor</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-            style={styles.button}
+          style={styles.button}
+          onPress={() => setActiveComponent("Dashboard")}
+        >
+          <FontAwesomeIcon icon={faHomeLg} size={25} style={{color: isDarkMode? '#111211' : 'white'}}/>
+          <Text style={[styles.buttonText, {color: isDarkMode? '#111211' : 'white'}]}>Home</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+            style={styles.wormbutton}
             onPress={() => setShowMore(!showMore)}
         >
-          <FontAwesomeIcon icon={faWorm} size={20} color="green"/>
-          {/* <Text style={styles.buttonText}>Sensor Monitoring</Text> */}
+          <FontAwesomeIcon icon={faWorm} style={{color: isDarkMode? '#111211' : 'white'}} />
+          <Text style={[styles.buttonText, {color: isDarkMode? '#111211' : 'white'}]}>More</Text>
         </TouchableOpacity>
       </View>
         
@@ -318,13 +323,13 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: "#111211",
-    marginBottom: 15,
+    // paddingBottom: 15,
   },
   footer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: 'space-evenly',
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 8,
     backgroundColor: "#ffffff",
     borderTopWidth: 1,
     borderTopColor: "#cccccc",
@@ -332,7 +337,14 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 10,
     alignItems: 'center',
-    // backgroundColor: 'red'
+
+  },
+  wormbutton: {
+    paddingHorizontal: 10,
+    // paddingVertical: 5,
+    alignItems: 'center',
+    // backgroundColor: 'red',
+    // height: 'auto'
   },
   buttonText: {
     fontSize: 14,

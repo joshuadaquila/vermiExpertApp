@@ -1,9 +1,9 @@
 import { BleManager } from 'react-native-ble-plx';
 import { Buffer } from 'buffer'; // Import Buffer from the 'buffer' package
-import { faBars, faDroplet, faFaceSmile, faSmileWink, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faDroplet, faFaceSmile, faMoon, faSmileWink, faSun, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, SafeAreaView, Platform, PermissionsAndroid, Alert, Text, FlatList, TouchableOpacity} from "react-native";
+import { View, StyleSheet, SafeAreaView, Platform, PermissionsAndroid, Alert, Text, FlatList, TouchableOpacity, Switch} from "react-native";
 import BluetoothNotice from "../components/BluetoothNotice";
 import BtStat from "../components/BTStat";
 import BedDetailForm from '../components/BedDetailForm';
@@ -14,14 +14,17 @@ import Loader from '../components/Loader';
 import { fetchLatestAnalysis } from '../components/db';
 import { formatDateTime } from '../components/FormatDateTime';
 import LottieView from 'lottie-react-native';
+import { useTheme } from '../components/ThemeContext';
 
 const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, isBluetoothOn}) => {
+    const { isDarkMode, toggleTheme } = useTheme();
     const [showBedForm, setShowBedForm] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
     const [showLoader, setShowLoader] = useState(false);
     const data = { temp: sensorVal.temperature, moisturelvl: sensorVal.moisture, ph: sensorVal.phLevel }
     const [latestAnalysis, setLatestAnalysis] = useState();
-    const proceedToResult = () =>{
+    const proceedToResult = (data) =>{
+      setShowLoader(false);
       navigation.navigate("Result", data)
     }
 
@@ -41,8 +44,8 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
   // console.log("ANALYSIS DATA", latestAnalysis)
 
    return (
-    <View style={styles.main}>
-      {showLoader && <Loader/>}
+    <View style={[isDarkMode? styles.main : styles.lightMain ]}>
+      {showLoader && <Loader data={data} proceed={proceedToResult}/>}
       {/* {showSidebar&& <Sidebar togglefThis={()=> setShowSidebar(false)} menu={"dashboard"}/>} */}
       {/* <BtStat message={"Test"}/> */}
       
@@ -54,52 +57,65 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
             setShowLoader(true);
             
             setTimeout(() => {
-              setShowLoader(false);
-              proceedToResult();
-            }, 6000);  // Trigger proceedToResult after 5 seconds
+              // setShowLoader(false);
+              // proceedToResult();
+            }, 6500);  // Trigger proceedToResult after 5 seconds
           }}
         />
       )}
 
       <View style={{ padding: 10 }}>
         
-        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
       
-          <View style={{ alignSelf: 'flex-start', paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }}>
-            <Text style={{ color: '#111211', alignSelf: 'flex-start', fontWeight: 'bold' }}>DASHBOARD</Text>
+          <View style={[{ display: 'flex', alignItems: 'center', justifyContent: 'center', 
+             paddingHorizontal: 5, borderRadius: 10, backgroundColor: 'white' }, {backgroundColor: isDarkMode? 'white': '#111211'}]}>
+            <Text style={{ color: isDarkMode? '#111211' : 'white', fontWeight: 'bold' }}>DASHBOARD</Text>  
           </View>
+
+          <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+          <FontAwesomeIcon icon={faSun} style={{color: isDarkMode? 'white' : '#111211'}} />
+          <View style={{backgroundColor: isDarkMode? '#D9EAFD' : '#D9EAFD', borderRadius: 25, marginHorizontal: 10, elevation: 5}}>
+          <Switch
+            value={isDarkMode}
+            onValueChange={toggleTheme}
+            trackColor={{ false: 'D9EAFD', true: '#9AA6B2' }} // track color when OFF and ON
+            thumbColor={isDarkMode ? '#111211' : '#111211'} // thumb color based on the current theme
+          /></View><FontAwesomeIcon icon={faMoon} style={{color: isDarkMode? 'white' : '#111211'}} />
+          </View>
+          
         </View>
 
-        <View style={styles.latestAss}>
-          <Text style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: 10, color: 'white' }}>Latest Assessment</Text>
+        <View style={[styles.latestAss, {borderColor: isDarkMode? 'white' : '#111211'}]}>
+          <Text style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: 10, color: isDarkMode? 'white' : '#111211' }}>Latest Assessment</Text>
           <View style={styles.gridContainer}>
             <View style={{ alignItems: 'center' }}>
-              <Text style={[{ color: 'white', fontWeight: 'bold' }, styles.tableText]}>BED NAME</Text>
-              <Text style={{ color: 'white' }}>{latestAnalysis?.[0]?.name ?? "-"}</Text>
+              <Text style={[{ color: isDarkMode? 'white' : '#111211', fontWeight: 'bold' }, styles.tableText]}>BED NAME</Text>
+              <Text style={{ color: isDarkMode? 'white' : '#111211' }}>{latestAnalysis?.[0]?.name ?? "-"}</Text>
             </View>
 
             <View style={{ alignItems: 'center' }}>
-              <Text style={[{ color: 'white', fontWeight: 'bold' }, styles.tableText]}>DATE</Text>
-              <Text style={{ color: 'white' }}>{latestAnalysis?.[0]?.timestamp ? new Date(latestAnalysis[0].timestamp).toLocaleDateString() : "-"}</Text>
+              <Text style={[{ color: isDarkMode? 'white' : '#111211', fontWeight: 'bold' }, styles.tableText]}>DATE</Text>
+              <Text style={{ color: isDarkMode? 'white' : '#111211' }}>{latestAnalysis?.[0]?.timestamp ? new Date(latestAnalysis[0].timestamp).toLocaleDateString() : "-"}</Text>
             </View>
 
             <View style={{ alignItems: 'center' }}>
-              <Text style={[{ color: 'white', fontWeight: 'bold' }, styles.tableText]}>CONCLUSION</Text>
-              <Text style={{ color: 'white' }}>{latestAnalysis?.[0]?.conclusion ?? "-"}</Text>
+              <Text style={[{ color: isDarkMode? 'white' : '#111211', fontWeight: 'bold' }, styles.tableText]}>CONCLUSION</Text>
+              <Text style={{ color: isDarkMode? 'white' : '#111211' }}>{latestAnalysis?.[0]?.conclusion ?? "-"}</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.gridContainer}>
           <View style={styles.propertyCon}>
-            <Text style={{ color: 'white' }}>Temperature</Text>
+            <Text style={{ color: isDarkMode? 'white' : '#111211' }}>Temperature</Text>
 
-            <View style={styles.propertyInner}>
+            <View style={[styles.propertyInner, {borderColor: isDarkMode? 'white' : '#111211'}]}>
               <View style={{ width: '100%' }}>
-                <FontAwesomeIcon icon={faTemperature2} color="white" />
+                <FontAwesomeIcon icon={faTemperature2} style={{color: isDarkMode? 'white' : '#111211'}} />
               </View>
 
-              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: isDarkMode? 'white' : '#111211' }}>
                 {latestAnalysis?.[0]?.temperature 
                   ? parseFloat(latestAnalysis[0].temperature).toFixed(1) 
                   : "-"}
@@ -107,41 +123,41 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
 
 
               <View style={{ width: '100%' }}>
-                <Text style={{ color: 'white', textAlign: 'right' }}>°C</Text>
+                <Text style={{ color: isDarkMode? 'white' : '#111211', textAlign: 'right' }}>°C</Text>
               </View>
             </View>
           </View>
 
           <View style={styles.propertyCon}>
-            <Text style={{ color: 'white' }}>Moisture</Text>
+            <Text style={{ color: isDarkMode? 'white' : '#111211' }}>Moisture</Text>
 
-            <View style={styles.propertyInner}>
+            <View style={[styles.propertyInner, {borderColor: isDarkMode? 'white' : '#111211'}]}>
               <View style={{ width: '100%' }}>
-                <FontAwesomeIcon icon={faWater} color="white" />
+                <FontAwesomeIcon icon={faWater} style={{color: isDarkMode? 'white' : '#111211'}} />
               </View>
 
-              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>{latestAnalysis?.[0]?.moisture ?? "-"}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: isDarkMode? 'white' : '#111211' }}>{latestAnalysis?.[0]?.moisture ?? "-"}</Text>
 
               <View style={{ width: '100%' }}>
-                <Text style={{ color: 'white', textAlign: 'right' }}>%</Text>
+                <Text style={{ color: isDarkMode? 'white' : '#111211', textAlign: 'right' }}>%</Text>
               </View>
             </View>
           </View>
 
           <View style={styles.propertyCon}>
-            <Text style={{ color: 'white' }}>pH Level</Text>
+            <Text style={{ color: isDarkMode? 'white' : '#111211' }}>pH Level</Text>
 
-            <View style={styles.propertyInner}>
+            <View style={[styles.propertyInner, {borderColor: isDarkMode? 'white' : '#111211'}]}>
               <View style={{ width: '100%' }}>
-                <FontAwesomeIcon icon={faDroplet} color="white" />
+                <FontAwesomeIcon icon={faDroplet} style={{color: isDarkMode? 'white' : '#111211'}} />
               </View>
 
-              <Text style={{ fontWeight: 'bold', fontSize: 35, color: 'white' }}>{latestAnalysis?.[0]?.pH ?? "-"}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: isDarkMode? 'white' : '#111211' }}>{latestAnalysis?.[0]?.pH ?? "-"}</Text>
             </View>
           </View>
         </View>
 
-        <View style={{ borderColor: 'white', borderWidth: 0.5, marginTop: 50, marginBottom: 50 }}></View>
+        <View style={{ borderColor: isDarkMode? 'white' : '#111211', borderWidth: 0.5, marginTop: 50, marginBottom: 50 }}></View>
 
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           {/* <LottieView
@@ -152,8 +168,8 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
             onAnimationFinish={() => console.log('Animation Finished')}
           />
           <Text style={{color: 'white', textAlign: 'center', marginBottom: 4}}>Check my bed now!</Text> */}
-          <TouchableOpacity style={styles.button} onPress={()=>{
-            if (isConnected){
+          <TouchableOpacity style={[styles.button, {backgroundColor: isDarkMode? 'white' : '#111211'}]} onPress={()=>{
+            if (true){ //isConnected
               setShowBedForm(true)
             }else{
               Alert.alert(
@@ -163,7 +179,7 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
               );
             }
           }}>
-            <Text style={styles.buttonText}>NEW ASSESSMENT</Text>
+            <Text style={[styles.buttonText, {color: isDarkMode? '#111211' : 'white'}]}>NEW ASSESSMENT</Text>
           </TouchableOpacity>
           {/* <Text style={{color:'white'}}>{temperature}</Text> */}
         </View>
@@ -177,6 +193,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#111211',
     height: '100%',
     color: 'white',
+  },
+  lightMain: {
+    backgroundColor: 'white',
+    height: '100%',
+    color: '#111211',
   },
   latestAss: {
     color: 'white',

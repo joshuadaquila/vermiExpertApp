@@ -8,8 +8,10 @@ import loadModel from "../components/prediction";
 import Sidebar from "../components/Sidebar";
 import { fetchBedName, insertAnalysis } from "../components/db";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from "../components/ThemeContext";
 
 const AnalysisResult = ({ navigation, route }) => {
+  const { isDarkMode, toggleTheme } = useTheme();
   const { temp, ph, moisturelvl } = route.params;
   const [bedId, setBedId] = useState(0);
   const [bed, setBed] = useState("");
@@ -61,7 +63,7 @@ const AnalysisResult = ({ navigation, route }) => {
 
   useEffect(()=>{
     const setValues = async () => {
-      if (bedId != 0 && temp && ph && moisturelvl && prediction !== "" && recommendations.length !== 0){
+      if (bedId != 0 && temp && ph && moisturelvl && prediction !== "" && recommendations.length !== 0){ //bedId != 0 && temp && ph && moisturelvl && prediction !== "" && recommendations.length !== 0
         setData({bedId: bedId, temperature: temp, moisture: moisturelvl, pH: ph, conclusion: prediction, recommendation: recommendations})
       }
     }
@@ -87,9 +89,9 @@ const AnalysisResult = ({ navigation, route }) => {
 
   useEffect(()=>{
     const insertValue = async () =>{
-      if (data.bedId != 0 && data.temperature && data.pH && data.moisture && data.conclusion !== "" && data.recommendation !==  ""){
+      if (data.bedId != 0 && data.temperature && data.pH && data.moisture && data.conclusion !== "" && data.recommendation !==  ""){ //data.bedId != 0 && data.temperature && data.pH && data.moisture && data.conclusion !== "" && data.recommendation !==  ""
         await insertAnalysis(data)
-        console.log("data to inserted");
+        console.log("DATA INSERTED");
       }else{
         console.log("Data are not complete")
       }
@@ -99,43 +101,31 @@ const AnalysisResult = ({ navigation, route }) => {
   }, [data])
 
   return (
-    <View style={styles.main}>
+    <View style={[styles.main, {backgroundColor: isDarkMode? '#111211' : 'white'}]}>
       <View style={{ padding: 10 }}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesomeIcon icon={faArrowCircleLeft} color="white" style={{ marginRight: 10 }} size={23} />
+          <FontAwesomeIcon icon={faArrowCircleLeft}  style={{ marginRight: 10, color: isDarkMode? 'white' : '#111211' }} size={23} />
         </TouchableOpacity>
 
         <View style={{ marginTop: 10, flexDirection: 'row' }}>
-          <Text style={{ color: 'white', marginRight: 20 }}>Bed Name: {bed? bed:  "-"}</Text>
-          <Text style={{ color: 'white' }}>
+          <Text style={{ color: isDarkMode? 'white' : '#111211', marginRight: 20 }}>Bed Name: {bed? bed:  "-"}</Text>
+          <Text style={{ color: isDarkMode? 'white' : '#111211' }}>
             {new Date().toLocaleString()}
           </Text>
           
         </View>
         <Text style={{
-            color: 'white', fontWeight: 'bold',
+            color: isDarkMode? 'white' : '#111211', fontWeight: 'bold',
             textAlign: 'center', marginVertical: 10
           }}>Analysis Result</Text>
         <View style={styles.propertyWrapper}>
           <View style={styles.propertyCon}>
             <View style={styles.propertyLabel}>
-              <FontAwesomeIcon icon={faTemperature2} color="white" />
-              <Text style={styles.propertyText}>Temperature (C)</Text>
+              <FontAwesomeIcon icon={faTemperature2} style={{color: isDarkMode? 'white' : '#111211'}}/>
+              <Text style={[styles.propertyText, {color: isDarkMode? 'white' : '#111211'}]}>Temperature (C)</Text>
             </View>
-            <View style={styles.propertyInner}>
-              <Text style={styles.propertyValue}>{temp}</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.propertyWrapper}>
-          <View style={styles.propertyCon}>
-            <View style={styles.propertyLabel}>
-              <FontAwesomeIcon icon={faWater} color="white" />
-              <Text style={styles.propertyText}>Moisture (%)</Text>
-            </View>
-            <View style={styles.propertyInner}>
-              <Text style={styles.propertyValue}>{moisturelvl}</Text>
+            <View style={[styles.propertyInner, {borderColor: isDarkMode? 'white' : '#111211'}]}>
+              <Text style={[styles.propertyValue, {color: isDarkMode? 'white' : '#111211'}]}>{temp}</Text>
             </View>
           </View>
         </View>
@@ -143,17 +133,29 @@ const AnalysisResult = ({ navigation, route }) => {
         <View style={styles.propertyWrapper}>
           <View style={styles.propertyCon}>
             <View style={styles.propertyLabel}>
-              <FontAwesomeIcon icon={faDroplet} color="white" />
-              <Text style={styles.propertyText}>pH Level</Text>
+              <FontAwesomeIcon icon={faWater} style={{color: isDarkMode? 'white' : '#111211'}}/>
+              <Text style={[styles.propertyText, {color: isDarkMode? 'white' : '#111211'}]}>Moisture (%)</Text>
             </View>
-            <View style={styles.propertyInner}>
-              <Text style={styles.propertyValue}>{ph}</Text>
+            <View style={[styles.propertyInner, {borderColor: isDarkMode? 'white' : '#111211'}]}>
+              <Text style={[styles.propertyValue, {color: isDarkMode? 'white' : '#111211'}]}>{moisturelvl}</Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.analysisBox}>
-          <Text style={styles.analysisText}>Conclusion:</Text>
+        <View style={styles.propertyWrapper}>
+          <View style={styles.propertyCon}>
+            <View style={styles.propertyLabel}>
+              <FontAwesomeIcon icon={faDroplet} style={{color: isDarkMode? 'white' : '#111211'}}/>
+              <Text style={[styles.propertyText, {color: isDarkMode? 'white' : '#111211'}]}>pH Level</Text>
+            </View>
+            <View style={[styles.propertyInner, {borderColor: isDarkMode? 'white' : '#111211'}]}>
+              <Text style={[styles.propertyValue, {color: isDarkMode? 'white' : '#111211'}]}>{ph}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={[styles.analysisBox, {borderColor: isDarkMode? 'white' : '#111211'}]}>
+          
           <Text style={[styles.analysisHeader, prediction.toLowerCase() == "favorable"? {color: 'green'} : {color: 'red'}]}> 
             {prediction ? prediction.toUpperCase() : 'No Prediction Available'}
           </Text>
@@ -164,10 +166,11 @@ const AnalysisResult = ({ navigation, route }) => {
         </View>
 
         <View style={{ marginTop: 10 }}>
+          <Text style={[styles.recommendationHeader, {color: isDarkMode? 'white' : '#111211', marginBottom: 5}]}>Recommendation</Text>
           <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ height: 370 }}>
-            <Text style={styles.recommendationHeader}>Recommendation</Text>
+            
             {recommendations.map((recommendation, index) => (
-              <Text key={index} style={styles.recommendationText}>
+              <Text key={index} style={[styles.recommendationText, {color: isDarkMode? 'white' : '#111211'}]}>
                 {index + 1}. {recommendation}
               </Text>
             ))}
@@ -178,15 +181,15 @@ const AnalysisResult = ({ navigation, route }) => {
       <View style={styles.footer}>
         <TouchableOpacity>
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-            <FontAwesomeIcon icon={faHeart} style={{color: 'white', marginRight: 2}}/>
-            <Text style={styles.footerText}>Mark</Text>
+            <FontAwesomeIcon icon={faHeart} style={{color: isDarkMode? 'white' : '#111211', marginRight: 2}}/>
+            <Text style={[styles.footerText, {color: isDarkMode? 'white' : '#111211'}]}>Mark</Text>
           </View>
         </TouchableOpacity>
         
         <TouchableOpacity onPress={handleShare}>
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-            <FontAwesomeIcon icon={faShare} style={{color: 'white', marginRight: 2}}/>
-            <Text style={styles.footerText}>Share</Text>
+            <FontAwesomeIcon icon={faShare} style={{color: isDarkMode? 'white' : '#111211', marginRight: 2}}/>
+            <Text style={[styles.footerText, {color: isDarkMode? 'white' : '#111211'}]}>Share</Text>
           </View>
         </TouchableOpacity>
         
@@ -229,7 +232,7 @@ const styles = StyleSheet.create({
   propertyValue: {
     fontWeight: 'bold',
     width: 100,
-    fontSize: 35,
+    fontSize: 30,
     color: 'white',
     textAlign: 'center',
   },
@@ -241,11 +244,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   analysisHeader: {
+    
     textAlign: 'center',
     color: 'white',
     fontWeight: 'bold',
     fontSize: 15,
-    marginBottom: 2,
   },
   analysisText: {
     color: 'white',
