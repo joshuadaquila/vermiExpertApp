@@ -1,4 +1,4 @@
-package com.vermiexpertapp
+package com.smgapp
 
 import android.app.Application
 import android.content.res.Configuration

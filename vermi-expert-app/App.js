@@ -8,13 +8,14 @@ import AnalysisResult from './pages/AnalysisResult';
 import Sensor from './pages/Sensor';
 import { BluetoothProvider } from './components/BluetoothProvider';
 import Footer from './components/Footer';
-import { fetchLatestAnalysis, initializeDatabase, insertSampleAnalysis, insertSampleBed } from './components/db';
+import { fetchLatestAnalysis, initializeDatabase, insertDefaultPlants, insertSampleAnalysis, insertSampleBed } from './components/db';
 import { dropAllTables } from './components/db';
 import Vermibeds from './pages/Vermibeds';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { BaseToast, ErrorToast } from 'react-native-toast-message';
 import HistoryReport from './pages/HistoryReport';
-// import ProfileScreen from './ProfileScreen';
+import { StatusBar, View } from 'react-native';
+import PlantDetail from './pages/PlantDetail';
 
 const Stack = createStackNavigator();
 
@@ -22,29 +23,21 @@ const App = () => {
   useEffect(() => {
     const initializeAndInsertData = async () => {
       try {
-        // await dropAllTables();
-        // Initialize database
-        await initializeDatabase();
-        // Insert SampleBed
-        // await insertSampleBed();
-        // // Insert SampleAnalysis only after SampleBed has been successfully inserted
-        // await insertSampleAnalysis();
 
-        // await fetchLatestAnalysis();
+        // Initialize database and insert default data
+        // await dropAllTables();
+        await initializeDatabase();
+        await insertDefaultPlants();
+        
       } catch (error) {
         console.error("Error during database initialization and sample data insertion:", error);
       }
     };
-  
+
     initializeAndInsertData();
   }, []);
-  
 
   const toastConfig = {
-    /*
-      Overwrite 'success' type,
-      by modifying the existing `BaseToast` component
-    */
     success: (props) => (
       <BaseToast
         {...props}
@@ -52,18 +45,14 @@ const App = () => {
         contentContainerStyle={{ paddingHorizontal: 15, paddingVertical: 4 }}
         text1Style={{
           fontSize: 15,
-          fontWeight: 'bold'
+          fontWeight: 'bold',
         }}
         text2Style={{
           fontSize: 12,
-          color: '#111211'
+          color: '#111211',
         }}
       />
     ),
-    /*
-      Overwrite 'error' type,
-      by modifying the existing `ErrorToast` component
-    */
     error: (props) => (
       <ErrorToast
         {...props}
@@ -71,70 +60,64 @@ const App = () => {
         contentContainerStyle={{ paddingHorizontal: 15, paddingVertical: 4 }}
         text1Style={{
           fontSize: 15,
-          fontWeight: 'bold'
+          fontWeight: 'bold',
         }}
         text2Style={{
           fontSize: 12,
-          color: '#111211'
+          color: '#111211',
         }}
       />
     ),
-    /*
-      Or create a completely new type - `tomatoToast`,
-      building the layout from scratch.
-  
-      I can consume any custom `props` I want.
-      They will be passed when calling the `show` method (see below)
-    */
-    tomatoToast: ({ text1, props }) => (
-      <View style={{ height: 60, width: '100%', backgroundColor: 'tomato' }}>
-        <Text>{text1}</Text>
-        <Text>{props.uuid}</Text>
-      </View>
-    )
   };
 
   return (
     <BluetoothProvider>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Footer" screenOptions={{
-        gestureEnabled: true,
-        ...TransitionPresets.SlideFromRightIOS, // Sliding transition preset
-      }}>
-        <Stack.Screen
-          name="Footer"
-          component={Footer}
-          options={{ headerShown: false }} // This will hide the header for Home screen
+      <NavigationContainer>
+        {/* Global Status Bar */}
+        <StatusBar
+          backgroundColor="#1F4529" // Change to your desired color
+          barStyle="light-content" // Change text and icon color
         />
-        <Stack.Screen
-          name="Dashboard"
-          component={BluetoothTest}
-          options={{ headerShown: false }} // This will hide the header for Home screen
-        />
-        <Stack.Screen
-          name="Result"
-          component={AnalysisResult}
-          options={{ headerShown: false }} // This will hide the header for Home screen
-        />
-        <Stack.Screen
-          name="SensorMonitoring"
-          component={Sensor}
-          options={{ headerShown: false }} // This will hide the header for Home screen
-        />
-        <Stack.Screen
-          name="Vermibeds"
-          component={Vermibeds}
-          options={{ headerShown: false }} // This will hide the header for Home screen
-        />
-        <Stack.Screen
-          name="HistoryReport"
-          component={HistoryReport}
-          options={{ headerShown: false }} // This will hide the header for Home screen
-        />
-        {/* <Stack.Screen name="Profile" component={BluetoothTest} /> */}
-      </Stack.Navigator>
-    </NavigationContainer>
-    <Toast config={toastConfig}/>
+        <Stack.Navigator
+          initialRouteName="Footer"
+          screenOptions={{
+            gestureEnabled: true,
+            ...TransitionPresets.SlideFromRightIOS, // Sliding transition preset
+          }}
+        >
+          <Stack.Screen
+            name="Footer"
+            component={Footer}
+            options={{ headerShown: false }} // Hide header for Footer
+          />
+          <Stack.Screen
+            name="Dashboard"
+            component={BluetoothTest}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Result"
+            component={AnalysisResult}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SensorMonitoring"
+            component={Sensor}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="PlantDetail"
+            component={PlantDetail}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="HistoryReport"
+            component={HistoryReport}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <Toast config={toastConfig} />
     </BluetoothProvider>
   );
 };

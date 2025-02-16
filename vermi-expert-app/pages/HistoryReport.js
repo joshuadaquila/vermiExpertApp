@@ -1,219 +1,114 @@
-import { View, StyleSheet, Alert, TouchableOpacity, ScrollView, Share, Text } from "react-native"
-import { faArrowCircleLeft, faBars, faDroplet, faHeart, faShare, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
+import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions } from "react-native";
+import { faArrowCircleLeft, faSun, faThermometerHalf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-// import evaluateRules from "../components/knowledgeBase";
-import EvaluateRules from "../components/Knowledge";
-import { useEffect, useState } from "react";
-import loadModel from "../components/prediction";
-import Sidebar from "../components/Sidebar";
-import { fetchBedName } from "../components/db";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useContext, useEffect, useState } from "react";
+import { BluetoothContext } from "../components/BluetoothProvider";
+import { insertAnalysis } from "../components/db";
 
 const HistoryReport = ({ navigation, route }) => {
+
   const { detail } = route.params;
 
-  const showToast = () => {
-    Toast.show({
-      type: "success",
-      text1: "Success!",
-      text2: "Shared Successfully.",
-      position: "top"
-    });
+  const plantImages = {
+    1: require('../resources/plantId1.jpg'),
+    2: require('../resources/plantId2.jpg'),
+    3: require('../resources/plantId3.jpg'),
+    4: require('../resources/plantId4.jpg'),
+    5: require('../resources/plantId5.jpg'),
+    6: require('../resources/plantId6.jpg'),
+    7: require('../resources/plantId7.jpg'),
+    8: require('../resources/plantId8.jpg'),
   };
+  const plantImage = plantImages[detail.plantId];
+  const screenWidth = Dimensions.get("window").width;
 
-  const handleShare = async () => {
-    try {
-      const result = await Share.share({
-        message: `My vermibed ${detail.name} is in ${detail.conclusion.toUpperCase()} condition as of ${detail.timestamp}. Analyze your vermibed with VermiExpert App now!`,
-        title: 'Analysis Result',
-      });
-
-      if (result.action === Share.sharedAction) {
-        showToast();
-      } 
-    } catch (error) {
-      Alert.alert('Error', 'Something went wrong with sharing');
-      console.log('Error: ', error);
-    }
-  };
-
+  console.log(detail)
   return (
     <View style={styles.main}>
-      <View style={{ padding: 10 }}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesomeIcon icon={faArrowCircleLeft} color="white" style={{ marginRight: 10 }} size={23} />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.goBackButton}>
+        <FontAwesomeIcon icon={faArrowCircleLeft} color="#1F4529" size={25} />
+      </TouchableOpacity>
 
-        <View style={{ marginTop: 10, flexDirection: 'row' }}>
-          <Text style={{ color: 'white', marginRight: 20 }}>Bed Name: {detail.name? detail.name:  "-"}</Text>
-          <Text style={{ color: 'white' }}>
-            {detail.timestamp}
-          </Text>
+      <View>
+        <Image source={plantImage} style={{ height: 500, width: screenWidth }} />
+        
+        <View style={styles.dataMain}>
+          <Text style={{paddingVertical: 8, fontSize: 18, fontWeight: 'bold', elevation: 20,
+          backgroundColor: 'white', borderRadius: 8, marginBottom: 5, paddingHorizontal: 8,  color: '#1F4529'}}>{detail.name}</Text>
+
+          <View style={styles.dataOverlay}>
+            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 10, 
+              borderWidth: 1, padding: 5, borderColor: 'white'}}>
+              <FontAwesomeIcon icon={faSun} color="white" style={{marginRight: 5}} />
+              <Text style={styles.dataText}>Light: {detail?.light || 0} %</Text>
+            </View>
+
+            <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+              borderWidth: 1, padding: 5, borderColor: 'white' }}>
+              <FontAwesomeIcon icon={faThermometerHalf} color="white" style={{marginRight: 5}} />
+              <Text style={styles.dataText}>Temperature: {detail?.temperature || 0} °C</Text>
+            </View>
+
+            
+          </View>
+
+          
           
         </View>
-        <Text style={{
-            color: 'white', fontWeight: 'bold',
-            textAlign: 'center', marginVertical: 10
-          }}>Analysis Result</Text>
-        <View style={styles.propertyWrapper}>
-          <View style={styles.propertyCon}>
-            <View style={styles.propertyLabel}>
-              <FontAwesomeIcon icon={faTemperature2} color="white" />
-              <Text style={styles.propertyText}>Temperature (C)</Text>
-            </View>
-            <View style={styles.propertyInner}>
-              <Text style={styles.propertyValue}>{detail.temperature}</Text>
-            </View>
-          </View>
-        </View>
+        
+      </View>
 
-        <View style={styles.propertyWrapper}>
-          <View style={styles.propertyCon}>
-            <View style={styles.propertyLabel}>
-              <FontAwesomeIcon icon={faWater} color="white" />
-              <Text style={styles.propertyText}>Moisture (%)</Text>
-            </View>
-            <View style={styles.propertyInner}>
-              <Text style={styles.propertyValue}>{detail.moisture}</Text>
-            </View>
-          </View>
-        </View>
+      <View style={{ padding: 10, backgroundColor: 'white' }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Recommendation:</Text>
+        <Text style={{ marginTop: 10, fontSize: 15 }}>{detail.recommendations}</Text>
 
-        <View style={styles.propertyWrapper}>
-          <View style={styles.propertyCon}>
-            <View style={styles.propertyLabel}>
-              <FontAwesomeIcon icon={faDroplet} color="white" />
-              <Text style={styles.propertyText}>pH Level</Text>
-            </View>
-            <View style={styles.propertyInner}>
-              <Text style={styles.propertyValue}>{detail.pH}</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.analysisBox}>
-          <Text style={styles.analysisText}>Conclusion:</Text>
-          <Text style={[styles.analysisHeader, detail.conclusion.toLowerCase() == "favorable"? {color: 'green'} : {color: 'red'}]}> 
-            {detail.conclusion ? detail.conclusion.toUpperCase() : 'No Prediction Available'}
+        {/* <View>
+          <Text style={{ opacity: 0.5, padding: 10, alignSelf: 'flex-end' }}>
+             {detail.timestamp}
           </Text>
-          {/* <Text style={styles.analysisText}>
-            The vermibed has a temperature of {temp}°C, a moisture level of {moisturelvl}%, 
-            and a pH level of {ph}, creating a/an {prediction} environment for vermiworms.
-          </Text> */}
-        </View>
-
-        <View style={{ marginTop: 10 }}>
-          <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ height: 370 }}>
-            <Text style={styles.recommendationHeader}>Recommendation</Text>
-            {/* {recommendations.map((recommendation, index) => (
-              <Text key={index} style={styles.recommendationText}>
-                {index + 1}. {recommendation}
-              </Text>
-            ))} */}
-            <Text style={styles.recommendationText}>{detail.recommendations}</Text>
-          </ScrollView>
-        </View>
+        </View> */}
       </View>
 
-      <View style={styles.footer}>
-        <TouchableOpacity>
-          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-            <FontAwesomeIcon icon={faHeart} style={{color: 'white', marginRight: 2}}/>
-            <Text style={styles.footerText}>Mark</Text>
-          </View>
-        </TouchableOpacity>
-        
-        <TouchableOpacity onPress={handleShare}>
-          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-            <FontAwesomeIcon icon={faShare} style={{color: 'white', marginRight: 2}}/>
-            <Text style={styles.footerText}>Share</Text>
-          </View>
-        </TouchableOpacity>
-        
-      </View>
+
+      <Text style={{padding: 10, opacity: 0.6}}>Date of Assessment: {detail.timestamp}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: '#111211',
+    backgroundColor: "#EED3B1",
     flex: 1,
-    color: 'white',
+    position: "relative",
   },
-  propertyWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 5,
+  goBackButton: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    zIndex: 1,
   },
-  propertyCon: {
+  dataMain: {
+    position: "absolute",
+    display: 'flex',
+    flexDirection: 'column',
+
+    bottom: 20,
+    left: 20
+  },
+  
+  dataOverlay: {
+    width: 'auto',
+    
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    width: '100%',
-  },
-  propertyLabel: {
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    flexDirection: 'row',
-    width: 150,
-  },
-  propertyText: {
-    color: 'white',
-    marginLeft: 4,
-  },
-  propertyInner: {
-    borderColor: 'white',
-    borderWidth: 1,
-    borderRadius: 10,
-  },
-  propertyValue: {
-    fontWeight: 'bold',
-    width: 100,
-    fontSize: 35,
-    color: 'white',
-    textAlign: 'center',
-  },
-  analysisBox: {
-    borderWidth: 1,
-    borderColor: 'white',
-    marginTop: 10,
-    borderRadius: 10,
+    justifyContent: 'space-around',
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
     padding: 10,
+    borderRadius: 8,
   },
-  analysisHeader: {
-    textAlign: 'center',
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 15,
-    marginBottom: 2,
-  },
-  analysisText: {
-    color: 'white',
-  },
-  recommendationHeader: {
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
-  },
-  recommendationText: {
-    color: 'white',
-    marginBottom: 5,
-  },
-  footer: {
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    // backgroundColor: 'red',
-    padding: 10,
-    justifyContent: 'space-evenly',
-    // alignItems: 'flex-end',
-    // borderTopWidth: 1,
-    borderColor: 'white',
-  },
-  footerText: {
-    color: 'white',
-    fontWeight: 'bold',
+  dataText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

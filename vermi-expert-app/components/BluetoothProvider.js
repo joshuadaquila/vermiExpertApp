@@ -3,10 +3,10 @@ import React, { createContext, useState } from "react";
 export const BluetoothContext = createContext();
 
 export const BluetoothProvider = ({ children }) => {
-  const [bluetoothData, setBluetoothData] = useState(null);
+  const [sensorData, setSensorData] = useState(null);
 
   return (
-    <BluetoothContext.Provider value={{ bluetoothData, setBluetoothData }}>
+    <BluetoothContext.Provider value={{ sensorData, setSensorData }}>
       {children}
     </BluetoothContext.Provider>
   );

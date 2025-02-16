@@ -4,20 +4,22 @@ import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture
 import BluetoothTest from "../pages/BluetoothComponent";
 import Sensor from "../pages/Sensor";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faEllipsisV, faGauge, faHamburger, faHeart, faHistory, faInbox, faInfoCircle, faLineChart, faWorm } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faEllipsisV, faGauge, faHamburger, faHeart, faHistory, faHome, faInbox, faInfoCircle, faLineChart, faList, faWorm } from "@fortawesome/free-solid-svg-icons";
 import { BleManager } from 'react-native-ble-plx';
 import BtStat from "./BTStat";
 import Vermibeds from "../pages/Vermibeds";
 import About from "../pages/About";
 import History from "../pages/History";
 import { Buffer } from 'buffer';
+import PlantDetail from "../pages/PlantDetail";
+import { BluetoothContext } from "./BluetoothProvider";
 
 const Footer = ({ navigation }) => {
   const [activeComponent, setActiveComponent] = useState("Dashboard");
   const [showMore, setShowMore] = useState(false);
   const [alertShown, setAlertShown] = useState(false)
   const [bluetoothData, setBluetoothData] = useState({})
-  // const { setBluetoothData } = useContext(BluetoothContext);
+  const {sensorData, setSensorData} = useContext(BluetoothContext);
   const [isConnected, setIsConnected] = useState(false);
   const [isBluetoothOn, setIsBluetoothOn] = useState(false);
   const [deviceId, setDeviceId] = useState(null);
@@ -33,7 +35,7 @@ const Footer = ({ navigation }) => {
   const [phLevel, setPhLevel] = useState(0);
   const [selectedBedId, setSelectedBedId] = useState(0);
   const [hc05Device, setHc05Device] = useState(null);
-  const deviceAddress = '75:DA:C4:8A:87:0D';
+  const deviceAddress = '00:23:09:01:A8:4F'; //75:DA:C4:8A:87:0D
   
   // console.log("Footer Rendered")
   useEffect(() => {
@@ -179,14 +181,12 @@ const Footer = ({ navigation }) => {
                       // console.log(data);
                       const temperature = parseFloat(parts[0]); // Extracts temperature, e.g., '28.81'
                       const moisture = parseInt(parts[1], 10);  // Extracts moisture, e.g., '23'
-                      const ph = parseFloat(parts[2]);          // Extracts pH level, e.g., '15.21'
+                      
 
                       // Update states
                       setTemperature(temperature);
                       setMoisture(moisture);
-                      setPhLevel(ph);
-
-                      console.log("ACTUAL DATA", temperature, moisture, ph)
+                    
 
                   });
               })
@@ -211,10 +211,17 @@ const Footer = ({ navigation }) => {
       }
   };
 
-  useEffect(()=>{
-    setBluetoothData({temperature: temperature, moisture: moisture, phLevel: phLevel})
-  }, [temperature, moisture, phLevel])
+   useEffect(() => {
+    const interval = setInterval(() => {
+      setBluetoothData({ temperature: temperature, light: moisture });
+      setSensorData({ temperature: temperature, light: moisture });
+    }, 1500); // 1000ms = 1 second
 
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, [temperature, moisture]);
+
+  // console.log(bluetoothData)
   // console.log("bluetoothdata", bluetoothData);
   const renderContent = () => {
     switch (activeComponent) {
@@ -223,10 +230,6 @@ const Footer = ({ navigation }) => {
           navigation={navigation} isBluetoothOn={isBluetoothOn} />;
       case "Sensor":
         return <Sensor bluetoothData={bluetoothData}/>;
-      case "Vermibeds":
-        return <Vermibeds />
-      case "About":
-        return <About />
       case "History":
         return <History navigation={navigation}/>
       default:
@@ -275,8 +278,7 @@ const Footer = ({ navigation }) => {
           style={styles.button}
           onPress={() => setActiveComponent("Dashboard")}
         >
-          <FontAwesomeIcon icon={faGauge}/>
-          <Text style={styles.buttonText}>Dashboard</Text>
+          <FontAwesomeIcon size={25} icon={faHome} color="#1F4529"/>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
@@ -292,15 +294,14 @@ const Footer = ({ navigation }) => {
             }
           }}
         >
-          <FontAwesomeIcon icon={faLineChart}/>
-          <Text style={styles.buttonText}>Sensor Monitoring</Text>
+          <FontAwesomeIcon icon={faGauge} size={25} color="#1F4529"/>
         </TouchableOpacity>
 
         <TouchableOpacity
             style={styles.button}
-            onPress={() => setShowMore(!showMore)}
+            onPress={() => setActiveComponent("History")}
         >
-          <FontAwesomeIcon icon={faWorm} size={20} color="green"/>
+          <FontAwesomeIcon icon={faList} size={25} color="#1F4529"/>
           {/* <Text style={styles.buttonText}>Sensor Monitoring</Text> */}
         </TouchableOpacity>
       </View>
@@ -318,16 +319,15 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: "#111211",
-    marginBottom: 15,
+    // marginBottom: 15,
   },
   footer: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    paddingVertical: 10,
-    backgroundColor: "#ffffff",
-    borderTopWidth: 1,
-    borderTopColor: "#cccccc",
+    paddingVertical: 13,
+    backgroundColor: "white",
+    // marginLeft: 10,
   },
   button: {
     paddingHorizontal: 10,

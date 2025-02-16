@@ -20,53 +20,32 @@ export const initializeDatabase = async () => {
     database.transaction(tx => {
       // Create the bed table
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS bed (
-          bedId INTEGER PRIMARY KEY AUTOINCREMENT, 
+        `CREATE TABLE IF NOT EXISTS plant (
+          plantId INTEGER PRIMARY KEY AUTOINCREMENT, 
           name TEXT, 
-          length TEXT,
-          width TEXT,
-          depth TEXT,
-          material TEXT,
-          location TEXT,
-          dateCreated DATETIME
+          category TEXT,
+          description TEXT
         )`,
         [],
         () => {
-          console.log('Bed table created successfully');
+          console.log('Plant table created successfully');
         },
         error => {
-          console.error('Error creating bed table:', error);
+          console.error('Error creating Plant table:', error);
         }
       );
 
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS favorites (
-          favoriteId INTEGER PRIMARY KEY AUTOINCREMENT, 
-          bedId INTEGER, 
-          timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (bedId) REFERENCES bed (bedId)
-        )`,
-        [],
-        () => {
-          console.log('Favorite table created successfully');
-        },
-        error => {
-          console.error('Error creating favorite table:', error);
-        }
-      );
-
+      
       // Create the analysis table
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS analysis (
           analysisId INTEGER PRIMARY KEY AUTOINCREMENT,
-          bedId INTEGER,
+          plantId INTEGER,
+          light REAL,
           temperature REAL,
-          moisture REAL,
-          pH REAL,
-          conclusion TEXT,
           recommendations TEXT,
           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (bedId) REFERENCES bed (bedId)
+          FOREIGN KEY (plantId) REFERENCES plant (plantId)
         )`,
         [],
         () => {
@@ -82,143 +61,147 @@ export const initializeDatabase = async () => {
   }
 };
 
-// Insert a sample row into the bed table
 
-
-export const addBed = async (bed) => {
-  try {
-    const database = await db;
-    database.transaction(tx => {
-      tx.executeSql(
-        `INSERT INTO bed (name, length, width, depth, material, location, dateCreated)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [bed.name, bed.length, bed.width, bed.depth, bed.material, bed.location, bed.dateCreated ],
-        () => {
-          console.log('New row inserted into bed table');
-        },
-        error => {
-          console.error('Error inserting new bed row into bed table:', error);
-        }
-      );
-    });
-  } catch (error) {
-    console.error('Error inserting sample bed:', error);
+// Insert a sample row into the analysis table
+const defaultPlants = [
+  {
+    name: "Peace Lily (Spathiphyllum)",
+    category: "Temperature: 18-27°C, Light: 296-874 lux",
+    description: "Thrives in low shaded area. These lovely plants not only brighten up a living space, but are also excellent at cleaning the air of the room they are in"
+  },
+  {
+    name: "Boston Fern (Nephrolepis exaltata)",
+    category: "Temperature: 18-27°C, Light: 652-870 lux",
+    description: "Prefers moderate light conditions. Apart from enhancing the aesthetics, they are also useful in removing harmful air pollutants from the environment"
+  },
+  {
+    name: "ZZ Plant (Zamioculcas zamiifolia)",
+    category: "Temperature: 20-25°C, Light: 4348-13043 lux",
+    description: "Can tolerate low light and neglect. It can be used as an ornamental plant and to improve indoor air quality"
+  },
+  {
+    name: "Rubber Plant (Ficus elastica)",
+    category: "Temperature: 20-30°C, Light: 8739-12696 lux",
+    description: "Requires bright, indirect light. Because of the large surface area, it's perfect for purifying the air. Proper rubber plant care is thought to produce plants that pick up pollutants and chemicals, absorb them and turn them into harmless compounds."
+  },
+  {
+    name: "Spider Plant (Chlorophytum comosum)",
+    category: "Temperature: 20-25°C, Light: 4348-13043 lux",
+    description: "Easy to care for and thrives in various light conditions. Spider plant helps clean indoor air. Studies have shown that spider plant is quite effective in cleaning indoor air by absorbing chemicals including formaldehyde, xylene, benzene, and carbon monoxide in homes or offices. Thick, fleshy roots allow spider plant to tolerate inconsistent watering."
+  },
+  {
+    name: "Dieffenbachia (Dieffenbachia spp.)",
+    category: "Temperature: 20-25°C, Light: 2174-13043 lux",
+    description: "Prefers indirect light and moderate humidity. Gardeners prize this houseplant for its variegated leaves, not flowers, and also for its ability to purify indoor air"
+  },
+  {
+    name: "Chinese Evergreen (Aglaonema)",
+    category: "Temperature: 20-30°C, Light: 2174-13043 lux",
+    description: "Adaptable to low light conditions. It's considered one of the best foliage plants for cleansing room air of toxins such as benzene and formaldehyde"
+  },
+  {
+    name: "Fiddle Leaf Fig (Ficus lyrata)",
+    category: "Temperature: 20-30°C, Light: 4348-13043 lux",
+    description: "Needs bright, indirect light to thrive. It can improve indoor air quality, enhance the look of a space, and promote mental and physical well-being"
   }
-};
+];
 
-export const addFavorite = async (bedId) => {
+export const insertDefaultPlants = async () => {
   try {
-    const database = await db;
+    const database = await db; // Ensure the database connection
     database.transaction(tx => {
-      tx.executeSql(
-        `INSERT INTO favorites (bedId)
-         VALUES (?)`,
-        [bedId],
-        () => {
-          console.log('New row inserted into favorite table');
-        },
-        error => {
-          console.error('Error inserting new bed row into favorite table:', error);
-        }
-      );
-    });
-  } catch (error) {
-    console.error('Error inserting favorite bed:', error);
-  }
-};
-
-export const updateBed = async (bed) => {
-  try {
-    const database = await db; // Wait for database connection
-    database.transaction(tx => {
-      tx.executeSql(
-        `UPDATE bed 
-         SET name = ?, length = ?, width = ?, depth = ?, material = ?, location = ?, dateCreated = ?
-         WHERE bedId = ?`, // Added WHERE clause to specify which row to update
-        [bed.name, bed.length, bed.width, bed.depth, bed.material, bed.location, bed.dateCreated, bed.bedId],
-        () => {
-          console.log('Bed row successfully updated');
-        },
-        error => {
-          console.error('Error updating bed row in bed table:', error);
-        }
-      );
-    });
-  } catch (error) {
-    console.error('Error during the database transaction:', error);
-  }
-};
-
-
-export const deleteBed = async (bedId) => {
-  try {
-    const database = await db; // Ensure the database is ready
-    return new Promise((resolve, reject) => {
-      database.transaction(tx => {
+      // Loop through default plants and insert them into the database
+      defaultPlants.forEach(plant => {
         tx.executeSql(
-          'DELETE FROM bed WHERE bedId = ?',
-          [bedId],
-          (tx, result) => {
-            if (result.rowsAffected > 0) {
-              console.log(`Bed with id ${bedId} deleted successfully`);
-              resolve(true);
+          `SELECT * FROM plant WHERE name = ?`,
+          [plant.name],
+          (_, result) => {
+            if (result?.rows?.length) {
+              console.log(`Plant ${plant.name} already exists.`);
             } else {
-              console.log('No row found to delete');
-              resolve(false);
+              // Insert new plant into the database if it doesn't exist
+              tx.executeSql(
+                `INSERT INTO plant (name, category, description)
+                 VALUES (?, ?, ?)`,
+                [plant.name, plant.category, plant.description],
+                () => {
+                  console.log(`${plant.name} inserted into the plant table.`);
+                },
+                error => {
+                  console.error(`Error inserting ${plant.name} into the plant table:`, error);
+                }
+              );
             }
           },
-          (tx, error) => {
-            console.log('Error deleting bed', error);
-            reject(error);
+          error => {
+            console.error('Error querying plant table:', error);
           }
         );
       });
     });
   } catch (error) {
-    console.log('Error opening database', error);
-    throw error;
+    console.error('Unexpected error during default plant insertion:', error);
   }
 };
 
-
-// Insert a sample row into the analysis table
-export const insertSampleAnalysis = async () => {
-  try {
-    const database = await db; // Ensure the database connection
+// Function to fetch all beds from the bed table
+export const fetchPlants = async () => {
+  const database = await db;
+  return new Promise((resolve, reject) => {
     database.transaction(tx => {
-      // Query to find the corresponding bedId
       tx.executeSql(
-        `SELECT * FROM bed WHERE name = ?`,
-        ['Vermibed A'],
-        (_, result) => {
-          if (result?.rows?.length) {
-            const bedId = result.rows.item(0).bedId; // Extract the bedId safely
-            console.log('Fetched bedId:', bedId);
+        `SELECT * FROM plant`,
+        [],
+        (_, results) => {
+          // console.log('Total rows in bed table:', results.rows.length);
+          const bedArray = [];
+          const len = results.rows.length;
 
-            // Insert analysis only if the bedId is valid
-            tx.executeSql(
-              `INSERT INTO analysis (bedId, temperature, moisture, pH, conclusion, recommendations)
-               VALUES (?, ?, ?, ?, ?, ?)`,
-              [bedId, 25.5, 60.3, 7.2, 'Favorable', 'Maintain current environment and monitor regularly.'],
-              () => {
-                console.log('Sample row inserted into analysis table');
-              },
-              error => {
-                console.error('Error inserting sample row into analysis table:', error);
-              }
-            );
-          } else {
-            console.error('Error: Bed ID not found');
+          for (let i = 0; i < len; i++) {
+            let row = results.rows.item(i);
+              // console.log('Row item:', row);
+            bedArray.push(row);
           }
+
+          resolve(bedArray);
         },
         error => {
-          console.error('Error querying bed table:', error);
+          console.error('Error fetching beds:', error);
+          reject(error);
         }
       );
     });
-  } catch (error) {
-    console.error('Unexpected error during sample analysis insertion:', error);
-  }
+  });
+};
+
+
+export const fetchPlantsInfo = async (plantId) => {
+  const database = await db;
+  return new Promise((resolve, reject) => {
+    database.transaction(tx => {
+      tx.executeSql(
+        `SELECT * FROM plant WHERE plantId = ?`,
+        [plantId],
+        (_, results) => {
+          // console.log('Total rows in bed table:', results.rows.length);
+          const bedArray = [];
+          const len = results.rows.length;
+
+          for (let i = 0; i < len; i++) {
+            let row = results.rows.item(i);
+              // console.log('Row item:', row);
+            bedArray.push(row);
+          }
+
+          resolve(bedArray);
+        },
+        error => {
+          console.error('Error fetching beds:', error);
+          reject(error);
+        }
+      );
+    });
+  });
 };
 
 export const insertAnalysis = async (data) => {
@@ -229,9 +212,9 @@ export const insertAnalysis = async (data) => {
       // Query to find the corresponding bedId
       // Insert analysis only if the bedId is valid
       tx.executeSql(
-        `INSERT INTO analysis (bedId, temperature, moisture, pH, conclusion, recommendations)
-          VALUES (?, ?, ?, ?, ?, ?)`,
-        [data.bedId, data.temperature, data.moisture, data.pH, data.conclusion, data.recommendation],
+        `INSERT INTO analysis (plantId, light, temperature, recommendations)
+          VALUES (?, ?, ?, ?)`,
+        [data.plantId, data.light, data.temperature, data.recommendations],
         () => {
           console.log('Analysis inserted into analysis table');
         },
@@ -300,35 +283,6 @@ export const dropAllTables = async () => {
   }
 };
 
-// Function to fetch all beds from the bed table
-export const fetchBeds = async () => {
-  const database = await db;
-  return new Promise((resolve, reject) => {
-    database.transaction(tx => {
-      tx.executeSql(
-        `SELECT * FROM bed`,
-        [],
-        (_, results) => {
-          // console.log('Total rows in bed table:', results.rows.length);
-          const bedArray = [];
-          const len = results.rows.length;
-
-          for (let i = 0; i < len; i++) {
-            let row = results.rows.item(i);
-              // console.log('Row item:', row);
-            bedArray.push(row);
-          }
-
-          resolve(bedArray);
-        },
-        error => {
-          console.error('Error fetching beds:', error);
-          reject(error);
-        }
-      );
-    });
-  });
-};
 
 export const fetchFavorites = async () => {
   const database = await db;
@@ -437,7 +391,7 @@ export const fetchAllAnalysis = async () => {
     return new Promise((resolve, reject) => {
       databaseConnection.transaction(tx => {
         tx.executeSql(
-          `SELECT a.*, b.* FROM analysis a INNER JOIN bed b ON a.bedId = b.bedId ORDER BY timestamp DESC;`,
+          `SELECT a.*, p.* FROM analysis a INNER JOIN plant p ON a.plantId = p.plantId ORDER BY timestamp DESC;`,
           [],
           (_, result) => {
 

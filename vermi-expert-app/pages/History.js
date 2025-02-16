@@ -3,11 +3,11 @@ import { StyleSheet, FlatList } from "react-native"
 import { View, Text, TouchableOpacity } from "react-native"
 import { fetchAllAnalysis } from "../components/db"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
-import { faInfo, faSadCry, faSadTear, faWarning } from "@fortawesome/free-solid-svg-icons"
+import { faHistory, faInfo, faSadCry, faSadTear, faWarning } from "@fortawesome/free-solid-svg-icons"
 
 const History = ({ navigation }) => {
   const [analysis, setAnalysis] = useState([])
-  const [selectedBedId, setSelectedBedId] = useState(0)
+  
 
   useEffect(()=>{
     const fetchAnalysis = async () => {
@@ -31,14 +31,15 @@ const History = ({ navigation }) => {
       <View style={{ padding: 10 }}>
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <View style={styles.header}>
+            <FontAwesomeIcon icon={faHistory} color="#1F4529" />
             <Text style={styles.headerText}>HISTORY</Text>
           </View>
         </View>
-
-
-        
       </View>
 
+      <View style={{backgroundColor: 'white', padding: 20, position: 'absolute', bottom: 0, width: '100%', borderTopLeftRadius: 25,
+        borderTopRightRadius: 25, elevation: 10, height: '90%'
+      }}>
       <FlatList
         data={analysis} // Data source for the FlatList
         keyExtractor={(item) => item.analysisId.toString()} // Ensure unique IDs for each list item
@@ -53,7 +54,7 @@ const History = ({ navigation }) => {
             <Text style={styles.bedText}>{item.name || "Unknown Bed"}</Text>
             <Text style={{fontSize: 12, color: 'white'}}>{item.timestamp}</Text>
             </View>
-            {selectedBedId === item.bedId && showMore && <EdDel bedId={selectedBedId} toggleThis={()=> setShowMore(false)}/>}
+            {/* {selectedBedId === item.bedId && showMore && <EdDel bedId={selectedBedId} toggleThis={()=> setShowMore(false)}/>} */}
           </TouchableOpacity>
         )}
         ListEmptyComponent={
@@ -64,36 +65,44 @@ const History = ({ navigation }) => {
           </View>
         }
       />
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: '#111211',
+    backgroundColor: '#EED3B1',
     height: '100%',
     color: 'white',
   },
   header: {
-    paddingHorizontal: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
     borderRadius: 10,
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
   headerText: {
-    color: '#111211',
+    color: '#1F4529',
+    marginLeft: 2,
     fontWeight: 'bold',
+    fontSize: 15
   },
   bedItem: {
-    padding: 6,
-    marginVertical: 5,
+    // padding: 6,
+    // marginVertical: 3,
     // position: 'relative',
     borderRadius: 5,
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: 'white'
+    borderBottomColor: '#1F4529'
   },
   bedText: {
-    color: 'white',
+    color: 'black',
+    fontSize: 15,
+    fontWeight: 'semibold'
     // marginLeft: 12
     // fontWeight: '600',
   },

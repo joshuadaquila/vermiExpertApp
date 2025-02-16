@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'vermiexpertapp'
+rootProject.name = 'smgapp'
 
 dependencyResolutionManagement {
   versionCatalogs {

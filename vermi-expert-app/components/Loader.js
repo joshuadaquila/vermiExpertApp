@@ -33,8 +33,8 @@ const Loader = () => {
           <Spinner
             isVisible={loading}
             size={50}
-            type="Wave" // You can choose any spinner type you prefer
-            color="#111211" // Blue color for the spinner
+            type="ChasingDots" // You can choose any spinner type you prefer
+            color="#1F4529" // Blue color for the spinner
           />
         )}
       </View>

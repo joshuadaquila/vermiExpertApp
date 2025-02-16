@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "vermi-expert-app",
-    "slug": "vermi-expert-app",
-    "version": "1.0.0"
+    "name": "smg-app",
+    "displayName": "SMG App",
+    "slug": "smg-app",
+    "version": "1.0.1"
   }
 }

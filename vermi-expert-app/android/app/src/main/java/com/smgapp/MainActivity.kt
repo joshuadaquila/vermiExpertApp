@@ -1,4 +1,4 @@
-package com.vermiexpertapp
+package com.smgapp
 
 import android.os.Build
 import android.os.Bundle
