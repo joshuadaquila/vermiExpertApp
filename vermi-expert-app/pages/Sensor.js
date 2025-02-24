@@ -131,13 +131,23 @@ const Sensor = ({ route, bluetoothData }) => {
           <LineChart
             style={styles.chart}
             data={{
-              dataSets: [chartData.temperature],
+              dataSets: [{
+                ...chartData.temperature, // Assuming chartData.temperature contains values
+                config: {
+                  ...chartData.temperature.config, // Keep any existing configurations
+                  mode: "CUBIC_BEZIER", // Enables cubic bezier curve
+                  drawCircles: false, // Optional: Removes data point circles
+                  lineWidth: 2, // Optional: Adjust line thickness
+                  // color: processColor('blue'), // Adjust color as needed
+                },
+              }],
             }}
             xAxis={{ drawLabels: false }}
             yAxis={{ axisMaximum: 50, axisMinimum: 0 }}
             chartDescription={{ text: '' }}
             legend={{ enabled: false }}
           />
+
 
           {/* Line Chart for Moisture */}
           <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211'}]}>
@@ -147,13 +157,23 @@ const Sensor = ({ route, bluetoothData }) => {
           <LineChart
             style={styles.chart}
             data={{
-              dataSets: [chartData.moisture],
+              dataSets: [{
+                ...chartData.moisture, // Assuming chartData.moisture contains values
+                config: {
+                  ...chartData.moisture.config, // Keep any existing configurations
+                  mode: "CUBIC_BEZIER", // Enables cubic bezier curve
+                  drawCircles: false, // Optional: Removes data point circles
+                  lineWidth: 2, // Optional: Adjust line thickness
+                  // color: processColor('blue'), // Adjust color as needed
+                },
+              }],
             }}
             xAxis={{ drawLabels: false }}
-            yAxis={{ axisMaximum: 100, axisMinimum: 0 }}
+            yAxis={{ axisMaximum: 50, axisMinimum: 0 }}
             chartDescription={{ text: '' }}
             legend={{ enabled: false }}
-          />
+/>
+
 
           {/* Line Chart for pH Level */}
           <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211'}]}>
@@ -164,13 +184,23 @@ const Sensor = ({ route, bluetoothData }) => {
           <LineChart
             style={styles.chart}
             data={{
-              dataSets: [chartData.phLevel],
+              dataSets: [{
+                ...chartData.phLevel, // Assuming chartData.phLevel contains values
+                config: {
+                  ...chartData.phLevel.config, // Keep any existing configurations
+                  mode: "CUBIC_BEZIER", // Enables cubic bezier curve
+                  drawCircles: false, // Optional: Removes data point circles
+                  lineWidth: 2, // Optional: Adjust line thickness
+                  // color: processColor('blue'), // Adjust color as needed
+                },
+              }],
             }}
             xAxis={{ drawLabels: false }}
-            yAxis={{ axisMaximum: 14, axisMinimum: 0 }}
+            yAxis={{ axisMaximum: 50, axisMinimum: 0 }}
             chartDescription={{ text: '' }}
             legend={{ enabled: false }}
           />
+
         </ScrollView>
       </View>
     </View>

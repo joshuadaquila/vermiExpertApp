@@ -1,3 +1,5 @@
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
 import Spinner from "react-native-spinkit";
@@ -23,9 +25,10 @@ const Loader = ({ data, proceed }) => {
 
   useEffect(() => {
     if (readings.length === 3) {
-      const meanTemp = readings.reduce((sum, item) => sum + item.temp, 0) / 3;
-      const meanMoisture = readings.reduce((sum, item) => sum + item.moisturelvl, 0) / 3;
-      const meanPH = readings.reduce((sum, item) => sum + item.ph, 0) / 3;
+      const meanTemp = parseFloat((readings.reduce((sum, item) => sum + item.temp, 0) / 3).toFixed(2));
+      const meanMoisture = parseFloat((readings.reduce((sum, item) => sum + item.moisturelvl, 0) / 3).toFixed(2));
+      const meanPH = parseFloat((readings.reduce((sum, item) => sum + item.ph, 0) / 3).toFixed(2));
+
 
       const calculatedMeanData = { temp: meanTemp, moisturelvl: meanMoisture, ph: meanPH };
       setMeanData(calculatedMeanData);
@@ -70,8 +73,10 @@ const Loader = ({ data, proceed }) => {
       {showPrompt && (
         <View style={styles.overlay}>
           <View style={styles.overlayBox}>
+            <FontAwesomeIcon icon={faExclamationCircle} size={30} style={{marginBottom: 10}}/>
             <Text style={styles.overlayText}>
-              Move the sensor to a different location, then press "Continue."
+              
+              Move the sensors to a different location, then press "Continue."
             </Text>
             <TouchableOpacity style={{backgroundColor: '#111211', padding: 10, borderRadius: 25, paddingHorizontal: 20 }}
               onPress={handleNextReading} ><Text style={{color: 'white', fontWeight: 'bold'}}>Continue</Text></TouchableOpacity>

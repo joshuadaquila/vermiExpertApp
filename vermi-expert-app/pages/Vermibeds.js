@@ -77,7 +77,7 @@ const Vermibeds = ({ navigation }) => {
       <TouchableOpacity onPress={()=> setShowAddBed(true)} style={{position: 'absolute', bottom: 10, right: 10,
         backgroundColor: isDarkMode? 'white' : '#111211', padding: 10, borderRadius: 5
       }}>
-        <FontAwesomeIcon icon={faAdd} style={{color: isDarkMode? '#111211' : 'white'}}/>
+        <FontAwesomeIcon icon={faAdd} style={{color: isDarkMode? '#111211' : 'white'}} size={20}/>
       </TouchableOpacity>
     </View>
   );

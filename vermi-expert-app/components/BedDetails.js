@@ -49,7 +49,7 @@ const BedDetails = ({ toggleThis, bed, onEdit }) => {
   const handleDel = () => {
     Alert.alert(
       "Confirmation",
-      "Are you sure you want to delete this bed?",
+      "Deleting this bed will remove all associated assessment records and favorites. Do you confirm?",
       [
         {
           text: "Cancel",

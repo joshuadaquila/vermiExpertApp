@@ -25,7 +25,7 @@ const BedForm = ({ toggleThis, bed, onEdit }) => {
     Toast.show({
       type: "error",
       text1: "Error",
-      text2: "All fields must be filled.",
+      text2: "Bed name field must be filled.",
       position: "top",
     });
   };
@@ -43,7 +43,7 @@ const BedForm = ({ toggleThis, bed, onEdit }) => {
     const { name, length, depth, width, material, location, dateCreated } = editedBed;
 
     // Validation: Ensure all required fields are filled
-    if (!name || !length || !depth || !width || !material || !location || !dateCreated) {
+    if (!name) {
       showErrorToast();
       return;
     }
@@ -79,7 +79,7 @@ const BedForm = ({ toggleThis, bed, onEdit }) => {
 
             <View style={styles.formRowContainer}>
               <View style={styles.formColumn}>
-                <Text style={styles.fieldLabel}>Name:</Text>
+                <Text style={styles.fieldLabel}>Name: *</Text>
                 <TextInput
                   style={styles.input}
                   value={editedBed.name}

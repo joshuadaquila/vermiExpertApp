@@ -86,6 +86,7 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
           
         </View>
 
+        <View style={{backgroundColor: isDarkMode? '#111211' : '#D9EAFD', borderRadius: 20, padding: 5, marginVertical: 20, borderWidth: 1, borderColor: 'white'}}>
         <View style={[styles.latestAss, {borderColor: isDarkMode? 'white' : '#111211'}]}>
           <Text style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: 10, color: isDarkMode? 'white' : '#111211' }}>Latest Assessment</Text>
           <View style={styles.gridContainer}>
@@ -127,6 +128,7 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
               </View>
             </View>
           </View>
+          
 
           <View style={styles.propertyCon}>
             <Text style={{ color: isDarkMode? 'white' : '#111211' }}>Moisture</Text>
@@ -153,8 +155,13 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
               </View>
 
               <Text style={{ fontWeight: 'bold', fontSize: 35, color: isDarkMode? 'white' : '#111211' }}>{latestAnalysis?.[0]?.pH ?? "-"}</Text>
+              
+              <View style={{ width: '100%' }}>
+                <Text style={{ color: isDarkMode? 'white' : '#111211', textAlign: 'right' }}></Text>
+              </View>
             </View>
           </View>
+        </View>
         </View>
 
         <View style={{ borderColor: isDarkMode? 'white' : '#111211', borderWidth: 0.5, marginTop: 50, marginBottom: 50 }}></View>
@@ -169,7 +176,7 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
           />
           <Text style={{color: 'white', textAlign: 'center', marginBottom: 4}}>Check my bed now!</Text> */}
           <TouchableOpacity style={[styles.button, {backgroundColor: isDarkMode? 'white' : '#111211'}]} onPress={()=>{
-            if (true){ //isConnected
+            if (isConnected){ //isConnected
               setShowBedForm(true)
             }else{
               Alert.alert(
@@ -202,15 +209,15 @@ const styles = StyleSheet.create({
   latestAss: {
     color: 'white',
     padding: 14,
-    margin: 10,
-    marginTop: 20,
-    borderWidth: 2,
+    // margin: 10,
+    // marginTop: 20,
+    // borderWidth: 2,
     borderColor: 'white',
     borderRadius: 15,
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   propertyCon: {
-    height: 100,
+    // height: 100,
     width: 100,
     margin: 4,
     alignItems: 'center',
@@ -220,12 +227,13 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     width: '100%',
-    height: '100%',
+    // height: '100%',
     borderColor: 'white',
     borderWidth: 1,
     borderRadius: 10,
   },
   gridContainer: {
+    // backgroundColor: 'yellow',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',

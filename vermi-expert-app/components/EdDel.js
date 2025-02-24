@@ -21,7 +21,7 @@ const EdDel = ({ bedId, toggleThis }) => {
   const handleDel = () => {
     Alert.alert(
       "Confirmation",
-      "Are you sure you want to delete delete this bed?",
+      "Deleting this bed will remove all associated assessment records and favorites. Do you confirm?",
       [
         {
           text: "Cancel",
@@ -30,7 +30,7 @@ const EdDel = ({ bedId, toggleThis }) => {
         },
         {
           text: "OK",
-          onPress: () => {deleteBed(bedId); toggleThis(); showToast()},
+          onPress: () => {console.log("eleting ", bedId); deleteBed(bedId); toggleThis(); showToast()},
           
         },
       ],

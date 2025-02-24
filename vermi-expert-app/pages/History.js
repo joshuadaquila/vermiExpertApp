@@ -55,7 +55,7 @@ const History = ({ navigation }) => {
 
             
             <Text style={[styles.bedText, {color: isDarkMode? 'white' : '#111211'}]}>{item.name || "Unknown Bed"}</Text>
-            <Text style={{fontSize: 12, color: 'white'}}>{item.timestamp}</Text>
+            <Text style={{fontSize: 12, color: isDarkMode? 'white' : '#111211'}}>{item.timestamp}</Text>
             </View>
             {selectedBedId === item.bedId && showMore && <EdDel bedId={selectedBedId} toggleThis={()=> setShowMore(false)}/>}
           </TouchableOpacity>

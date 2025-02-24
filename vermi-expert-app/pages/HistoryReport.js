@@ -1,18 +1,18 @@
 import { View, StyleSheet, Alert, TouchableOpacity, ScrollView, Share, Text } from "react-native"
-import { faArrowCircleLeft, faBars, faDroplet, faHeart, faShare, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
+import { faArrowCircleLeft, faBars, faDroplet, faHeart, faShare, faTemperature0, faTemperature1, faTemperature2, faTrash, faWater } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 // import evaluateRules from "../components/knowledgeBase";
 import EvaluateRules from "../components/Knowledge";
 import { useEffect, useState } from "react";
 import loadModel from "../components/prediction";
 import Sidebar from "../components/Sidebar";
-import { fetchBedName } from "../components/db";
+import { deleteFavorite, fetchBedName } from "../components/db";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "../components/ThemeContext";
 
 const HistoryReport = ({ navigation, route }) => {
   const { isDarkMode, toggleTheme } = useTheme();
-  const { detail } = route.params;
+  const { detail, favorite } = route.params;
 
   const showToast = () => {
     Toast.show({
@@ -37,6 +37,29 @@ const HistoryReport = ({ navigation, route }) => {
       Alert.alert('Error', 'Something went wrong with sharing');
       console.log('Error: ', error);
     }
+  };
+  handleFavorite = async () => {
+    Alert.alert(
+      "Confirmation",
+      "Are you sure you want to remove this from your favorites?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            try {
+              await deleteFavorite(detail.analysisId);
+              navigation.goBack(); // Navigate back after deletion
+            } catch (error) {
+              console.error("Error removing favorite:", error);
+            }
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -112,25 +135,41 @@ const HistoryReport = ({ navigation, route }) => {
                 {index + 1}. {recommendation}
               </Text>
             ))} */}
-            <Text style={[styles.recommendationText, {color: isDarkMode? 'white' : '#111211'} ]}>{detail.recommendations}</Text>
+            {detail.recommendations.split('.,').map((rec, index) => (
+              <Text key={index} style={[styles.recommendationText, { color: isDarkMode ? 'white' : '#111211' }]}>
+                {index + 1}. {rec.trim()}.
+              </Text>
+            ))}
+
           </ScrollView>
         </View>
       </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
             <FontAwesomeIcon icon={faHeart} style={{color: isDarkMode? 'white' : '#111211', marginRight: 2}}/>
             <Text style={[styles.footerText, {color: isDarkMode? 'white' : '#111211'}]}>Mark</Text>
           </View>
-        </TouchableOpacity>
-        
+        </TouchableOpacity> */}
+        {
+          favorite && (
+            <TouchableOpacity onPress={handleFavorite}>
+              <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                <FontAwesomeIcon icon={faHeart} color="red" size={25} style={{color: isDarkMode? 'white' : '#111211', marginRight: 2}}/>
+                {/* <Text style={[styles.footerText, {color: isDarkMode? 'white' : '#111211'}]}>Share</Text> */}
+              </View>
+            </TouchableOpacity>
+          )
+        }
+
         <TouchableOpacity onPress={handleShare}>
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-            <FontAwesomeIcon icon={faShare} style={{color: isDarkMode? 'white' : '#111211', marginRight: 2}}/>
-            <Text style={[styles.footerText, {color: isDarkMode? 'white' : '#111211'}]}>Share</Text>
+            <FontAwesomeIcon icon={faShare} size={25} style={{color: isDarkMode? 'white' : '#111211', marginRight: 2}}/>
+            {/* <Text style={[styles.footerText, {color: isDarkMode? 'white' : '#111211'}]}>Share</Text> */}
           </View>
         </TouchableOpacity>
+        
         
       </View>
     </View>
@@ -198,6 +237,7 @@ const styles = StyleSheet.create({
   },
   recommendationText: {
     color: 'white',
+    fontSize: 15,
     marginBottom: 5,
   },
   footer: {

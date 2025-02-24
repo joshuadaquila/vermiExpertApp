@@ -42,9 +42,9 @@ export const initializeDatabase = async () => {
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS favorites (
           favoriteId INTEGER PRIMARY KEY AUTOINCREMENT, 
-          bedId INTEGER, 
+          analysisId INTEGER, 
           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (bedId) REFERENCES bed (bedId)
+          FOREIGN KEY (analysisId) REFERENCES analysis (analysisId)
         )`,
         [],
         () => {
@@ -111,7 +111,7 @@ export const addFavorite = async (bedId) => {
     const database = await db;
     database.transaction(tx => {
       tx.executeSql(
-        `INSERT INTO favorites (bedId)
+        `INSERT INTO favorites (analysisId)
          VALUES (?)`,
         [bedId],
         () => {
@@ -155,8 +155,72 @@ export const deleteBed = async (bedId) => {
     const database = await db; // Ensure the database is ready
     return new Promise((resolve, reject) => {
       database.transaction(tx => {
+        // Step 0: Disable Foreign Key Constraints
+        tx.executeSql('PRAGMA foreign_keys = OFF;', [], () => {
+          console.log('Foreign key constraints disabled.');
+
+          // Step 1: Delete from favorites (if records exist)
+          tx.executeSql(
+            'DELETE FROM favorites WHERE analysisId IN (SELECT analysisId FROM analysis WHERE bedId = ?)',
+            [bedId],
+            (_, result) => console.log(`Deleted ${result.rowsAffected} favorite(s) linked to bedId ${bedId}`),
+            (_, error) => {
+              console.log('Error deleting from favorites', error);
+              reject(error);
+            }
+          );
+
+          // Step 2: Delete from analysis
+          tx.executeSql(
+            'DELETE FROM analysis WHERE bedId = ?',
+            [bedId],
+            (_, result) => console.log(`Deleted ${result.rowsAffected} analysis record(s) for bed ${bedId}`),
+            (_, error) => {
+              console.log('Error deleting from analysis', error);
+              reject(error);
+            }
+          );
+
+          // Step 3: Delete from bed table
+          tx.executeSql(
+            'DELETE FROM bed WHERE bedId = ?',
+            [bedId],
+            (_, result) => {
+              if (result.rowsAffected > 0) {
+                console.log(`Bed with id ${bedId} deleted successfully`);
+              } else {
+                console.log('No row found to delete in bed table');
+              }
+              resolve(true);
+            },
+            (_, error) => {
+              console.log('Error deleting bed', error);
+              reject(error);
+            }
+          );
+
+          // Step 4: Re-enable Foreign Key Constraints
+          tx.executeSql('PRAGMA foreign_keys = ON;', [], () => {
+            console.log('Foreign key constraints enabled.');
+          });
+        });
+      });
+    });
+  } catch (error) {
+    console.log('Error opening database', error);
+    throw error;
+  }
+};
+
+
+
+export const deleteFavorite = async (bedId) => {
+  try {
+    const database = await db; // Ensure the database is ready
+    return new Promise((resolve, reject) => {
+      database.transaction(tx => {
         tx.executeSql(
-          'DELETE FROM bed WHERE bedId = ?',
+          'DELETE FROM favorites WHERE analysisId = ?',
           [bedId],
           (tx, result) => {
             if (result.rowsAffected > 0) {
@@ -330,12 +394,39 @@ export const fetchBeds = async () => {
   });
 };
 
+export const fetchLatestAssessmentId = async () => {
+  const database = await db;
+  return new Promise((resolve, reject) => {
+    database.transaction(tx => {
+      tx.executeSql(
+        `SELECT analysisId FROM analysis ORDER BY analysisId DESC LIMIT 1`, // Get the latest analysisId
+        [],
+        (_, results) => {
+          if (results.rows.length > 0) {
+            resolve(results.rows.item(0).analysisId); // Return only the latest analysisId
+          } else {
+            resolve(null); // Return null if no data found
+          }
+        },
+        error => {
+          console.error('Error fetching latest analysisId:', error);
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+
 export const fetchFavorites = async () => {
   const database = await db;
   return new Promise((resolve, reject) => {
     database.transaction(tx => {
       tx.executeSql(
-        `SELECT * FROM favorites`,
+        `SELECT f.*, a.*, b.* FROM favorites f
+          INNER JOIN analysis a ON f.analysisId = a.analysisId
+          INNER JOIN bed b ON a.bedId = b.bedId
+          `,
         [],
         (_, results) => {
           // console.log('Total rows in bed table:', results.rows.length);

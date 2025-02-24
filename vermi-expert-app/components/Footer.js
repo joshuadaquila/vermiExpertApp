@@ -12,6 +12,7 @@ import About from "../pages/About";
 import History from "../pages/History";
 import { Buffer } from 'buffer';
 import { useTheme } from "./ThemeContext";
+import Favorites from "../pages/Favorites";
 
 const Footer = ({ navigation }) => {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -179,16 +180,17 @@ const Footer = ({ navigation }) => {
                       const parts = data.split('\n');  // Split by newline
 
                       // console.log(data);
-                      const temperature = parseFloat(parts[0]); // Extracts temperature, e.g., '28.81'
-                      const moisture = parseInt(parts[1], 10);  // Extracts moisture, e.g., '23'
-                      const ph = parseFloat(parts[2]);          // Extracts pH level, e.g., '15.21'
+                      const temperature = parseFloat(parseFloat(parts[0]).toFixed(2)); // Ensures two decimal places
+                      const moisture = parseFloat(parseFloat(parts[1]).toFixed(2));    // Ensures two decimal places
+                      const ph = parseFloat(parseFloat(parts[2]).toFixed(2));          // Ensures two decimal places
+
 
                       // Update states
                       setTemperature(temperature);
                       setMoisture(moisture);
                       setPhLevel(ph);
 
-                      console.log("ACTUAL DATA", temperature, moisture, ph)
+                      // console.log("ACTUAL DATA", temperature, moisture, ph)
 
                   });
               })
@@ -231,6 +233,8 @@ const Footer = ({ navigation }) => {
         return <About />
       case "History":
         return <History navigation={navigation}/>
+      case "Favorites":
+        return <Favorites navigation={navigation}/>
       default:
         return <BluetoothTest />;
     }
@@ -260,7 +264,9 @@ const Footer = ({ navigation }) => {
             <Text style={[styles.buttonText, {color: isDarkMode? '#111211' : '#111211'}]}>Vermibeds</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4,  alignItems: 'center'}}>
+          <TouchableOpacity style={{flexDirection: 'row', marginVertical: 4,  alignItems: 'center'}}
+            onPress={() => {setActiveComponent("Favorites"); setShowMore(false)}}
+          >
             <FontAwesomeIcon icon={faHeart} style={{color: isDarkMode? '#111211' : '#111211'}}/>
             <Text style={[styles.buttonText, {color: isDarkMode? '#111211' : '#111211'}]}>Favorites</Text>
           </TouchableOpacity>
