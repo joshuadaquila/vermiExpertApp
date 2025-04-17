@@ -6,7 +6,7 @@ import EvaluateRules from "../components/Knowledge";
 import { useEffect, useState } from "react";
 import loadModel from "../components/prediction";
 import Sidebar from "../components/Sidebar";
-import { addFavorite, deleteFavorite, fetchBedName, fetchLatestAssessmentId, insertAnalysis } from "../components/db";
+import { addFavorite, deleteFavorite, fetchAnalysisByBedId, fetchBedName, fetchLatestAssessmentId, getLatestAnalysisByBedId, insertAnalysis } from "../components/db";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "../components/ThemeContext";
 
@@ -20,6 +20,7 @@ const AnalysisResult = ({ navigation, route }) => {
   const [prediction, setPrediction] = useState("");
   const [favorited, setFavorited] = useState(false);
   const [data, setData] = useState({bedId: null , temperature: null, moisture: null, pH: null, conclusion: null, recommendation: null})
+  const [prevResult, setPrevResult] = useState()
 
   useEffect(()=>{
     const fetchId = async () => {
@@ -39,6 +40,9 @@ const AnalysisResult = ({ navigation, route }) => {
 
     getStoredBed();
   }, [])
+
+
+  
 
   useEffect(() => {
     const fetchPrediction = async () => {
@@ -72,7 +76,20 @@ const AnalysisResult = ({ navigation, route }) => {
     setValues();
   },[bedId, temp, ph, moisturelvl, prediction, recommendations])
 
-  console.log("data to insert", data);
+  // console.log("data to insert", data);
+  useEffect(() => {
+    const getAnalysisById = async () => {
+      try {
+        const result = await getLatestAnalysisByBedId(bedId);
+        setPrevResult(result);
+      } catch (error) {
+        console.error('Error fetching latest analysis:', error);
+      }
+    };
+  
+    getAnalysisById();
+  }, [bedId]);
+
   const handleShare = async () => {
     try {
       const result = await Share.share({
@@ -119,6 +136,7 @@ const AnalysisResult = ({ navigation, route }) => {
    
   } 
 
+  console.log("prevResult", prevResult)
   return (
     <View style={[styles.main, {backgroundColor: isDarkMode? '#111211' : 'white'}]}>
       <View style={{ padding: 10 }}>
@@ -137,6 +155,10 @@ const AnalysisResult = ({ navigation, route }) => {
             color: isDarkMode? 'white' : '#111211', fontWeight: 'bold',
             textAlign: 'center', marginVertical: 10
           }}>Analysis Result</Text>
+
+        {prevResult && (
+          <Text style={[{color: 'white', marginVertical: 10, fontStyle: 'italic', textAlign: 'center'}, {color: isDarkMode? 'white' : '#111211'}]}>Present VS Previous Result {prevResult.timestamp}</Text>
+        )}
         <View style={styles.propertyWrapper}>
           <View style={styles.propertyCon}>
             <View style={styles.propertyLabel}>
@@ -146,6 +168,13 @@ const AnalysisResult = ({ navigation, route }) => {
             <View style={[styles.propertyInner, {borderColor: isDarkMode? 'white' : '#111211'}]}>
               <Text style={[styles.propertyValue, {color: isDarkMode? 'white' : '#111211'}]}>{temp}</Text>
             </View>
+
+            {prevResult && (
+            <View style={{ display: prevResult ? 'flex' : 'none' }}>
+              <Text style={[styles.propertyValuePrev, {color: isDarkMode? 'white' : '#111211'}]}>{prevResult.temperature}</Text>
+            </View>
+
+            )}
           </View>
         </View>
 
@@ -158,6 +187,12 @@ const AnalysisResult = ({ navigation, route }) => {
             <View style={[styles.propertyInner, {borderColor: isDarkMode? 'white' : '#111211'}]}>
               <Text style={[styles.propertyValue, {color: isDarkMode? 'white' : '#111211'}]}>{moisturelvl}</Text>
             </View>
+
+            {prevResult && (
+            <View >
+              <Text style={[styles.propertyValuePrev, {color: isDarkMode? 'white' : '#111211'}]}>{prevResult.moisture}</Text>
+            </View>
+            )}
           </View>
         </View>
 
@@ -170,6 +205,13 @@ const AnalysisResult = ({ navigation, route }) => {
             <View style={[styles.propertyInner, {borderColor: isDarkMode? 'white' : '#111211'}]}>
               <Text style={[styles.propertyValue, {color: isDarkMode? 'white' : '#111211'}]}>{ph}</Text>
             </View>
+            
+            {prevResult && (
+            <View >
+              <Text style={[styles.propertyValuePrev, {color: isDarkMode? 'white' : '#111211'}]}>{prevResult.pH}</Text>
+            </View>
+            )}
+
           </View>
         </View>
 
@@ -269,6 +311,14 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: 'white',
     textAlign: 'center',
+  },
+  propertyValuePrev: {
+    // fontWeight: 'bold',
+    marginLeft: 5,
+    width: 100,
+    fontSize: 25,
+    color: 'white',
+    textAlign: 'left',
   },
   analysisBox: {
     borderWidth: 1,

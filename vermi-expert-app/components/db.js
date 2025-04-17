@@ -595,5 +595,81 @@ export const fetchAnalysisByBedId = async bedId => {
   }
 };
 
+export const getLatestAnalysisByBedId = async (bedId) => {
+  try {
+    const databaseConnection = await db;
+    if (!databaseConnection) {
+      throw new Error('Database connection failed.');
+    }
 
-export default db;
+    return new Promise((resolve, reject) => {
+      databaseConnection.transaction(tx => {
+        tx.executeSql(
+          `
+          SELECT a.*, b.*
+          FROM analysis a
+          INNER JOIN bed b ON a.bedId = b.bedId
+          WHERE a.bedId = ? AND a.timestamp = (
+            SELECT MAX(sub.timestamp)
+            FROM analysis sub
+            WHERE sub.bedId = ?
+          )
+          LIMIT 1;
+          `,
+          [bedId, bedId],
+          (_, result) => {
+            if (result?.rows?.length) {
+              const latest = result.rows.item(0);
+              resolve(latest);
+            } else {
+              console.log('No analysis found for bedId:', bedId);
+              resolve(null);
+            }
+          },
+          error => {
+            console.error('Query error:', error);
+            reject(error);
+          }
+        );
+      });
+    });
+  } catch (error) {
+    console.error('Unexpected error during query:', error);
+    throw error;
+  }
+};
+
+
+// export const getLatestAnalysisByBedId = async bedId => {
+//   try {
+//     return new Promise((resolve, reject) => {
+//       db.transaction(tx => {
+//         tx.executeSql(
+//           `SELECT * FROM analysis WHERE bedId = ? ORDER BY createdAt DESC LIMIT 1`, // Change this line based on your schema
+//           [bedId],
+//           (_, result) => {
+//             console.log('Number of rows fetched for latest analysis:', result.rows.length);
+
+//             if (result?.rows?.length) {
+//               const latestAnalysis = result.rows.item(0);
+//               console.log('Latest analysis row:', latestAnalysis);
+//               resolve(latestAnalysis);
+//             } else {
+//               console.log('No analysis found for the given bedId.');
+//               resolve(null);
+//             }
+//           },
+//           error => {
+//             console.error('Query error:', error);
+//             reject(error);
+//           }
+//         );
+//       });
+//     });
+//   } catch (error) {
+//     console.error('Unexpected error during getLatestAnalysisByBedId:', error);
+//     throw error;
+//   }
+// };
+
+// export default db;

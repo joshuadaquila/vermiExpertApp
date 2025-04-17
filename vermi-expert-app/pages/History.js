@@ -3,8 +3,10 @@ import { StyleSheet, FlatList } from "react-native"
 import { View, Text, TouchableOpacity } from "react-native"
 import { fetchAllAnalysis } from "../components/db"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
-import { faInfo, faSadCry, faSadTear, faWarning } from "@fortawesome/free-solid-svg-icons"
+import { faDownload, faInfo, faSadCry, faSadTear, faWarning } from "@fortawesome/free-solid-svg-icons"
 import { useTheme } from '../components/ThemeContext'
+import RNFS from 'react-native-fs';
+import Share from 'react-native-share';
 
 const History = ({ navigation }) => {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -24,6 +26,37 @@ const History = ({ navigation }) => {
 
     fetchAnalysis();
   },[])
+
+  const convertToCSV = (jsonData) => {
+    if (!jsonData.length) return '';
+    const header = Object.keys(jsonData[0]).join(',') + '\n';
+    const rows = jsonData.map(obj =>
+      Object.values(obj)
+        .map(val => `"${val}"`)
+        .join(',')
+    ).join('\n');
+
+    return header + rows;
+  };
+
+  const handleDownload = async () => {
+    try {
+      const csv = convertToCSV(analysis);
+      const path = `${RNFS.DocumentDirectoryPath}/analysis.csv`;
+      await RNFS.writeFile(path, csv, 'utf8');
+      console.log('CSV written to:', path);
+
+      await Share.open({
+        url: 'file://' + path,
+        type: 'text/csv',
+        filename: 'analysis.csv',
+      });
+    } catch (err) {
+      console.error('Error exporting CSV:', err);
+    }
+  };
+
+  
 
   const handlePress = (detail) => {
     navigation.navigate('HistoryReport', { detail })
@@ -68,6 +101,15 @@ const History = ({ navigation }) => {
           </View>
         }
       />
+
+      {/* Download Button */}
+      <TouchableOpacity
+        style={[styles.downloadButton, { backgroundColor: isDarkMode ? 'white' : '#111211' }]}
+        onPress={handleDownload}
+      >
+        <FontAwesomeIcon icon={faDownload} size={18} color={isDarkMode ? '#111211' : 'white'} />
+        <Text style={{ marginLeft: 6, color: isDarkMode ? '#111211' : 'white' }}>Share CSV</Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -100,6 +142,20 @@ const styles = StyleSheet.create({
     color: 'white',
     // marginLeft: 12
     // fontWeight: '600',
+  },
+  downloadButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    backgroundColor: '#111211',
+    borderRadius: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
 })
 export default History

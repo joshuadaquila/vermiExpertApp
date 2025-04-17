@@ -138,7 +138,9 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
                 <FontAwesomeIcon icon={faWater} style={{color: isDarkMode? 'white' : '#111211'}} />
               </View>
 
-              <Text style={{ fontWeight: 'bold', fontSize: 35, color: isDarkMode? 'white' : '#111211' }}>{latestAnalysis?.[0]?.moisture ?? "-"}</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 35, color: isDarkMode? 'white' : '#111211' }}>{latestAnalysis?.[0]?.moisture 
+                  ? parseFloat(latestAnalysis[0].moisture).toFixed(1) 
+                  : "-"}</Text>
 
               <View style={{ width: '100%' }}>
                 <Text style={{ color: isDarkMode? 'white' : '#111211', textAlign: 'right' }}>%</Text>
@@ -176,7 +178,7 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
           />
           <Text style={{color: 'white', textAlign: 'center', marginBottom: 4}}>Check my bed now!</Text> */}
           <TouchableOpacity style={[styles.button, {backgroundColor: isDarkMode? 'white' : '#111211'}]} onPress={()=>{
-            if (isConnected){ //isConnected
+            if (true){ //isConnected
               setShowBedForm(true)
             }else{
               Alert.alert(
