@@ -226,17 +226,19 @@ const AnalysisResult = ({ navigation, route }) => {
           </Text> */}
         </View>
 
-        <View style={{ marginTop: 10 }}>
-          <Text style={[styles.recommendationHeader, {color: isDarkMode? 'white' : '#111211', marginBottom: 5}]}>Recommendation</Text>
-          <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ height: 370 }}>
-            
-            {recommendations.map((recommendation, index) => (
-              <Text key={index} style={[styles.recommendationText, {color: isDarkMode? 'white' : '#111211'}]}>
-                {index + 1}. {recommendation}
-              </Text>
-            ))}
-          </ScrollView>
-        </View>
+        
+      </View>
+
+      <View style={{ flex: 1, marginTop: 10 }}>
+        <Text style={[styles.recommendationHeader, {color: isDarkMode? 'white' : '#111211', marginBottom: 5}]}>Recommendation</Text>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 10}} >
+          
+          {recommendations.map((recommendation, index) => (
+            <Text key={index} style={[styles.recommendationText, {color: isDarkMode? 'white' : '#111211'}]}>
+              {index + 1}. {recommendation}
+            </Text>
+          ))}
+        </ScrollView>
       </View>
 
       <View style={styles.footer}>
@@ -349,7 +351,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: 'row',
-    position: 'absolute',
+    // position: 'absolute',
     bottom: 0,
     width: '100%',
     // backgroundColor: 'red',

@@ -3,7 +3,7 @@ import { StyleSheet, FlatList } from "react-native"
 import { View, Text, TouchableOpacity } from "react-native"
 import { fetchAllAnalysis } from "../components/db"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
-import { faDownload, faInfo, faSadCry, faSadTear, faWarning } from "@fortawesome/free-solid-svg-icons"
+import { faDownload, faInfo, faSadCry, faSadTear, faShare, faShareAlt, faWarning } from "@fortawesome/free-solid-svg-icons"
 import { useTheme } from '../components/ThemeContext'
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
@@ -42,19 +42,27 @@ const History = ({ navigation }) => {
   const handleDownload = async () => {
     try {
       const csv = convertToCSV(analysis);
-      const path = `${RNFS.DocumentDirectoryPath}/analysis.csv`;
+  
+      // Generate timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-'); // e.g., 2025-04-18T14-20-30-123Z
+  
+      // Filename with timestamp
+      const filename = `analysis_record_${timestamp}.csv`;
+      const path = `${RNFS.DocumentDirectoryPath}/${filename}`;
+  
       await RNFS.writeFile(path, csv, 'utf8');
       console.log('CSV written to:', path);
-
+  
       await Share.open({
         url: 'file://' + path,
         type: 'text/csv',
-        filename: 'analysis.csv',
+        filename, // optional - included for some Android support
       });
     } catch (err) {
       console.error('Error exporting CSV:', err);
     }
   };
+  
 
   
 
@@ -107,7 +115,7 @@ const History = ({ navigation }) => {
         style={[styles.downloadButton, { backgroundColor: isDarkMode ? 'white' : '#111211' }]}
         onPress={handleDownload}
       >
-        <FontAwesomeIcon icon={faDownload} size={18} color={isDarkMode ? '#111211' : 'white'} />
+        <FontAwesomeIcon icon={faShareAlt} size={18} color={isDarkMode ? '#111211' : 'white'} />
         <Text style={{ marginLeft: 6, color: isDarkMode ? '#111211' : 'white' }}>Share CSV</Text>
       </TouchableOpacity>
     </View>

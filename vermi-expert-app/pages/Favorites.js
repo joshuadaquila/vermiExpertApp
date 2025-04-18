@@ -11,22 +11,23 @@ const Favorites = ({ navigation }) => {
   const [analysis, setAnalysis] = useState([])
   const [selectedBedId, setSelectedBedId] = useState(0)
 
-  useEffect(()=>{
-    const fetchAllFavorites = async () => {
-      try{
-        const data = await fetchFavorites();
-        console.log(data)
-        setAnalysis(data)
-      }catch ( error) {
-        console.error("Error fetching all analysis", error);
-      }
-    } 
+  const fetchAllFavorites = async () => {
+    try{
+      const data = await fetchFavorites();
+      console.log(data)
+      setAnalysis(data)
+    }catch ( error) {
+      console.error("Error fetching all analysis", error);
+    }
+  } 
 
+  
+  useEffect(()=>{
     fetchAllFavorites();
   },[])
 
   const handlePress = (detail, favorite) => {
-    navigation.navigate('HistoryReport', { detail, favorite })
+    navigation.navigate('HistoryReport', { detail, favorite, onGoBack: () => fetchAllFavorites() })
   }
   return(
     <View style={[styles.main, { backgroundColor: isDarkMode? '#111211' : 'white' }]}>

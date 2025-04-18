@@ -2,7 +2,7 @@ import { BleManager } from 'react-native-ble-plx';
 import { Buffer } from 'buffer'; // Import Buffer from the 'buffer' package
 import { faBars, faDroplet, faFaceSmile, faMoon, faSmileWink, faSun, faTemperature0, faTemperature1, faTemperature2, faWater } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, StyleSheet, SafeAreaView, Platform, PermissionsAndroid, Alert, Text, FlatList, TouchableOpacity, Switch} from "react-native";
 import BluetoothNotice from "../components/BluetoothNotice";
 import BtStat from "../components/BTStat";
@@ -12,9 +12,8 @@ import { BluetoothContext } from '../components/BluetoothProvider';
 import { useContext } from 'react';
 import Loader from '../components/Loader';
 import { fetchLatestAnalysis } from '../components/db';
-import { formatDateTime } from '../components/FormatDateTime';
-import LottieView from 'lottie-react-native';
 import { useTheme } from '../components/ThemeContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, isBluetoothOn}) => {
     const { isDarkMode, toggleTheme } = useTheme();
@@ -28,7 +27,6 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
       navigation.navigate("Result", data)
     }
 
-  useEffect(() => {
     const fetchLatestAnalysisFunc = async () => {
       try {
         const data = await fetchLatestAnalysis();
@@ -38,6 +36,20 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
       }
     };
   
+    useFocusEffect(
+      useCallback(() => {
+        // This runs every time Screen1 is focused (i.e. after going back from Screen2)
+        fetchLatestAnalysisFunc()
+  
+        // Optional cleanup when screen loses focus
+        return () => {
+          // Any cleanup if needed
+        };
+      }, [])
+    );
+
+  useEffect(() => {
+    
     fetchLatestAnalysisFunc();
   }, []); // Run only on initial render
   
@@ -178,7 +190,7 @@ const BluetoothTest = ({ sensorVal, navigation, connectToDevice, isConnected, is
           />
           <Text style={{color: 'white', textAlign: 'center', marginBottom: 4}}>Check my bed now!</Text> */}
           <TouchableOpacity style={[styles.button, {backgroundColor: isDarkMode? 'white' : '#111211'}]} onPress={()=>{
-            if (true){ //isConnected
+            if (isConnected){ //isConnected
               setShowBedForm(true)
             }else{
               Alert.alert(

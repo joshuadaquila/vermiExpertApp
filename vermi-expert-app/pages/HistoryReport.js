@@ -53,6 +53,7 @@ const HistoryReport = ({ navigation, route }) => {
             try {
               await deleteFavorite(detail.analysisId);
               navigation.goBack(); // Navigate back after deletion
+              route.params.onGoBack()
             } catch (error) {
               console.error("Error removing favorite:", error);
             }
@@ -126,7 +127,10 @@ const HistoryReport = ({ navigation, route }) => {
           </Text> */}
         </View>
 
-        <View style={{ marginTop: 10 }}>
+        
+      </View>
+      
+      <View style={{ marginTop: 10, flex: 1 }}>
           <Text style={[styles.recommendationHeader, {color: isDarkMode? 'white' : '#111211', marginBottom: 5}]}>Recommendation</Text>
           <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ height: 370 }}>
             
@@ -137,13 +141,12 @@ const HistoryReport = ({ navigation, route }) => {
             ))} */}
             {detail.recommendations.split('.,').map((rec, index) => (
               <Text key={index} style={[styles.recommendationText, { color: isDarkMode ? 'white' : '#111211' }]}>
-                {index + 1}. {rec.trim()}.
+                {index + 1}. {rec.trim()}
               </Text>
             ))}
 
           </ScrollView>
         </View>
-      </View>
 
       <View style={styles.footer}>
         {/* <TouchableOpacity>
@@ -242,7 +245,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: 'row',
-    position: 'absolute',
+    // position: 'absolute',
     bottom: 0,
     width: '100%',
     // backgroundColor: 'red',

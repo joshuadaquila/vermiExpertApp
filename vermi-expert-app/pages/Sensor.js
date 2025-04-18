@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faDroplet, faTemperature0, faTemperature3, faWater } from '@fortawesome/free-solid-svg-icons';
 import { BluetoothContext } from '../components/BluetoothProvider';
 import Sidebar from '../components/Sidebar';
 import { LineChart } from 'react-native-charts-wrapper'; // Import LineChart
@@ -123,9 +123,10 @@ const Sensor = ({ route, bluetoothData }) => {
           </View>
 
           {/* Line Chart for Temperature */}
-          <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211'}]}>
-            <Text style={[styles.parameter, {color: isDarkMode? 'white' : '#111211'}]}>Temperature:</Text>
-            <Text style={[styles.chartTitle, {color: isDarkMode? 'white' : '#111211'}]}> {bluetoothData.temperature} °C {getStatus(bluetoothData.temperature, 'temperature')}</Text>
+          <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211', backgroundColor: getStatus(bluetoothData.temperature, 'temperature') === "Normal"? 'green' : '#c1121f'}]}>
+            <FontAwesomeIcon icon={faTemperature3} size={20}  style={{margin: 5, color: 'white'}}/>
+            <Text style={[styles.parameter, {color: 'white'}]}>Temperature:</Text>
+            <Text style={[styles.chartTitle, {color: 'white'}]}> {bluetoothData.temperature} °C {getStatus(bluetoothData.temperature, 'temperature')}</Text>
           </View>
           
           <LineChart
@@ -150,9 +151,10 @@ const Sensor = ({ route, bluetoothData }) => {
 
 
           {/* Line Chart for Moisture */}
-          <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211'}]}>
-            <Text style={[styles.parameter, {color: isDarkMode? 'white' : '#111211'}]}>Moisture Level: </Text>
-            <Text style={[styles.chartTitle, {color: isDarkMode? 'white' : '#111211'}]}>{bluetoothData.moisture} % {getStatus(bluetoothData.moisture, 'moisture')}</Text>
+          <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211', backgroundColor: getStatus(bluetoothData.moisture, 'moisture') === "Normal"? 'green' : '#c1121f'}]}>
+            <FontAwesomeIcon icon={faWater} size={20} style={{margin: 5, color:  'white'}}/>
+            <Text style={[styles.parameter, {color: 'white'}]}>Moisture Level: </Text>
+            <Text style={[styles.chartTitle, {color: 'white'}]}>{bluetoothData.moisture} % {getStatus(bluetoothData.moisture, 'moisture')}</Text>
           </View>
           <LineChart
             style={styles.chart}
@@ -176,9 +178,10 @@ const Sensor = ({ route, bluetoothData }) => {
 
 
           {/* Line Chart for pH Level */}
-          <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211'}]}>
-            <Text style={[styles.parameter, {color: isDarkMode? 'white' : '#111211'}]}>pH Level: </Text>
-            <Text style={[styles.chartTitle, {color: isDarkMode? 'white' : '#111211'}]}>{bluetoothData.phLevel} {getStatus(bluetoothData.phLevel, 'phLevel')}</Text>
+          <View style={[styles.tableTitleCon, {borderColor: isDarkMode? 'white' : '#111211', backgroundColor: getStatus(bluetoothData.phLevel, 'phLevel') === "Normal"? 'green' : '#c1121f'}]}>
+            <FontAwesomeIcon icon={faDroplet} size={20}  style={{margin: 5, color: 'white' }}/>
+            <Text style={[styles.parameter, {color: 'white' }]}>pH Level: </Text>
+            <Text style={[styles.chartTitle, {color: 'white' }]}>{bluetoothData.phLevel} {getStatus(bluetoothData.phLevel, 'phLevel')}</Text>
 
           </View>
           <LineChart
