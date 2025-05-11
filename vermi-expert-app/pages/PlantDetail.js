@@ -1,10 +1,12 @@
 import { faArrowAltCircleLeft, faArrowCircleLeft, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Dimensions, View, Text, Image, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Dimensions, View, Text, Image, ActivityIndicator, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { fetchPlantsInfo } from '../components/db';
 import Loader from '../components/Loader';
 // import Footer from '../components/Footer';
+import BluetoothClassic from "react-native-bluetooth-classic";
+const deviceAddress = "00:23:09:01:A8:4F";
 
 const PlantDetail = ({ route, navigation }) => {
   const { plantId } = route.params;
@@ -24,11 +26,30 @@ const PlantDetail = ({ route, navigation }) => {
     fetchPlant();
   }, [plantId]);
 
-  const handleAnalysis = (plantId) => {
-    setLoading(true)
-    setTimeout(() => {
-      navigation.replace("Result", { plantId, plantInfo });
-    }, 3000); 
+  const handleAnalysis = async (plantId) => {
+    try {
+      const status = await BluetoothClassic.isDeviceConnected(deviceAddress);
+  
+      if (status) {
+        setLoading(true);
+        setTimeout(() => {
+          navigation.replace("Result", { plantId, plantInfo });
+        }, 3000);
+      } else {
+        Alert.alert(
+          "Bluetooth Disconnected",
+          "Please connect to the Bluetooth device before proceeding.",
+          [{ text: "OK" }]
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        "Bluetooth Error",
+        "An error occurred while checking the Bluetooth connection. Please check your connection and try again.",
+        [{ text: "OK" }]
+      );
+      console.error("Bluetooth Error:", error); // Log error for debugging
+    }
   };
 
   // Plant images mapping

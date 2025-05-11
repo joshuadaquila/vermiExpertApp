@@ -14,15 +14,16 @@ const Sensor = ({ bluetoothData }) => {
   const screenWidth = Dimensions.get('window').width;
   const [temperature, setTemperature] = useState(0);
   const [light, setLight] = useState(0);
-
+  
   useEffect(() => {
     if (bluetoothData) {
       // Update temperature and light state
+      console.log(bluetoothData)
       const newTemperature = parseFloat(bluetoothData.temperature) || 0;
       const newLight = parseFloat(bluetoothData.light) || 0;
 
       setTemperature(newTemperature);
-      setLight(newLight);
+      setLight(newLight, dataHistory);
 
       // Update data history for the charts
       setDataHistory((prevHistory) => {
@@ -60,7 +61,7 @@ const Sensor = ({ bluetoothData }) => {
                 values: dataHistory.temperature.map((value, index) => ({ x: index, y: value })),
                 label: 'Temperature',
                 config: {
-                  color: 'rgba(205, 255, 255, 1)',
+                  // color: 'rgba(205, 255, 255, 1)',
                   drawValues: false,
                   mode: 'CUBIC_BEZIER',
                 },
@@ -98,7 +99,7 @@ const Sensor = ({ bluetoothData }) => {
                 values: dataHistory.light.map((value, index) => ({ x: index, y: value })),
                 label: 'Light',
                 config: {
-                  color: 'rgba(205, 255, 255, 1)',
+                  // color: 'rgba(205, 255, 255, 1)',
                   drawValues: false,
                   mode: 'CUBIC_BEZIER',
                 },

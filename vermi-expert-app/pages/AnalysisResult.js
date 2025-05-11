@@ -1,10 +1,12 @@
 import { View, StyleSheet, TouchableOpacity, Image, Text, Dimensions } from "react-native";
-import { faArrowCircleLeft, faRedo, faSun, faThermometerHalf } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faAngleRight, faArrowCircleLeft, faRedo, faSun, faThermometerHalf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import { BluetoothContext } from "../components/BluetoothProvider";
 import { insertAnalysis } from "../components/db";
 import Loader from "../components/Loader";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ScrollView } from "react-native-gesture-handler";
 
 const AnalysisResult = ({ navigation, route }) => {
   const [data, setData] = useState({});
@@ -12,6 +14,10 @@ const AnalysisResult = ({ navigation, route }) => {
   const { sensorData } = useContext(BluetoothContext);
   const [loading, setLoading] = useState(false);
   const [recommendation, setRecommendation] = useState("");
+  const [pastAssessment, setPastAssessment] = useState(null);
+  const [dpExpanded, setDpExpanded] = useState(false);
+  const [oExpanded, setOExpanded] = useState(false);
+  const [slExpanded, setSlExpanded] = useState(false);
 
   const plantImages = {
     1: require('../resources/plantId1.jpg'),
@@ -30,7 +36,7 @@ const AnalysisResult = ({ navigation, route }) => {
     if (sensorData) {
       setData(sensorData);
     }
-  }, [sensorData]);
+  }, []);
 
   const handleAnalysis = () => {
     setLoading(true);
@@ -101,6 +107,20 @@ const AnalysisResult = ({ navigation, route }) => {
         if (light < 4348 || light > 13043) {
             recommendation += " Please Move the Plant: Thrives where the light is between 4348 - 13043 lux.";
         }
+    } else if (plantType === "Chinese Evergreen (Aglaonema)") {
+      if (temperature < 20 || temperature > 30) {
+          recommendation = "Please Move the Plant: Lower temperature between 20-30°C (Silalahi, T. P. and Murni, P., 2023).";
+      } 
+      if (light < 2174 || light > 13043) {
+          recommendation += "Please Move the Plant: Thrives where the light is between 2174 - 13043 lux. (Sawardekar, S. and Sherkar, S., 2024) ";
+      }
+    } else if (plantType === "Fiddle Leaf Fig (Ficus lyrata)") {
+      if (temperature < 20 || temperature > 30) {
+          recommendation = "Please Move the Plant: Lower temperature between 20-30°C (Bjerkan, K. N., Alling, R. M., Myking, I. V., Brysting, A. K., & Grini, P. E., 2023).";
+      }
+      if (light < 4348 || light > 13043) {
+          recommendation += "Please Move the Plant: Thrives where the light is between 2174 - 13043 lux. (Parab, A. R., Han, K. Y., Chew, B. L., & Subramaniam, S., 2021) ";
+      }
     }
   
     // Add other plant types similarly...
@@ -128,13 +148,41 @@ const AnalysisResult = ({ navigation, route }) => {
           temperature: data.temperature,
           recommendations: recommendation,
         };
+  
         await insertAnalysis(state);
+  
+        // Save state in AsyncStorage
+        try {
+          await AsyncStorage.setItem(plantId.toString(), JSON.stringify(state));
+          console.log("Assessment saved successfully.");
+        } catch (error) {
+          console.error("Error saving assessment:", error);
+        }
       }
     };
-
+  
     insertAssessment();
   }, [recommendation]); // Trigger when recommendation changes
 
+  const getSavedAssessment = async () => {
+    try {
+      const savedState = await AsyncStorage.getItem(plantId.toString());
+      if (savedState) {
+        console.log("Retrieved assessment:", JSON.parse(savedState));
+        setPastAssessment(JSON.parse(savedState));
+      }
+    } catch (error) {
+      console.error("Error retrieving assessment:", error);
+    }
+  };
+  
+  useEffect(() => {
+    getSavedAssessment();
+  }, []);
+
+  console.log("data", sensorData)
+  
+  // console.log("past assess", pastAssessment.plantId)
   return (
     <View style={styles.main}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.goBackButton}>
@@ -146,7 +194,7 @@ const AnalysisResult = ({ navigation, route }) => {
       </TouchableOpacity>
       {loading && <Loader />}
       <View>
-        <Image source={plantImage} style={{ height: 500, width: screenWidth }} />
+        <Image source={plantImage} style={{ height: 350, width: screenWidth }} />
         
         <View style={styles.dataMain}>
           <Text style={{paddingVertical: 8, fontSize: 18, fontWeight: 'bold', elevation: 20,
@@ -156,7 +204,7 @@ const AnalysisResult = ({ navigation, route }) => {
             <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 10, 
               borderWidth: 1, padding: 5, borderColor: 'white'}}>
               <FontAwesomeIcon icon={faSun} color="white" style={{marginRight: 5}} />
-              <Text style={styles.dataText}>Light: {data?.light || 0} lux</Text>
+              <Text style={styles.dataText}>Light: {data?.light || 0} lx</Text>
             </View>
 
             <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
@@ -165,6 +213,12 @@ const AnalysisResult = ({ navigation, route }) => {
               <Text style={styles.dataText}>Temperature: {data?.temperature || 0} °C</Text>
             </View>
           </View>
+
+          <View style={{marginLeft: 20}}>
+            <Text style={{fontWeight: 'bold'}}>Last Assessment: </Text>
+            <Text>Light: {pastAssessment ? pastAssessment.light : '-'} lx Temperature: {pastAssessment ? pastAssessment.temperature : '-'} °C</Text>
+
+          </View>
         </View>
         
       </View>
@@ -172,7 +226,53 @@ const AnalysisResult = ({ navigation, route }) => {
       <View style={{padding: 10, backgroundColor: 'white'}}>
         <Text style={{fontWeight: 'bold', fontSize: 20}}>Recommendation:</Text>
         <Text style={{marginTop: 10, fontSize: 15}}>{recommendation}</Text>
+
+        <ScrollView style={{marginTop: 20, maxHeight: 150}} showsVerticalScrollIndicator={true} >
+          <TouchableOpacity onPress={()=> setDpExpanded(!dpExpanded)}>
+            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+              <FontAwesomeIcon icon={dpExpanded ? faAngleDown : faAngleRight} />
+              <Text style={{fontWeight: 'bold'}}>Drought Plants</Text>
+            </View>
+
+            {dpExpanded && (
+            <View style={{marginLeft: 15, borderRadius: 10, borderWidth: 1, borderColor: 'gray', padding: 4}}>
+              <Text>Water plants deeply, making sure the pot drains well. Increase watering frequency during hot or dry spells.</Text>
+            </View>
+            )}
+            
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={()=> setOExpanded(!oExpanded)}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5}}>
+              <FontAwesomeIcon icon={oExpanded ? faAngleDown : faAngleRight} />
+              <Text style={{fontWeight: 'bold'}}>Overwatering</Text>
+            </View>
+
+            {oExpanded && (
+            <View style={{marginLeft: 15, borderRadius: 10, borderWidth: 1, borderColor: 'gray', padding: 4}}>
+              <Text>Stick your finger into the soil up to the knuckle. If it's wet, wait a few days before watering. Decrease watering frequency to prevent waterlogged soil.</Text>
+            </View>
+            )}
+            
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={()=> setSlExpanded(!slExpanded)}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5}}>
+              <FontAwesomeIcon icon={slExpanded ? faAngleDown : faAngleRight} />
+              <Text style={{fontWeight: 'bold'}}>Scorching Leaves</Text>
+            </View>
+
+            {slExpanded && (
+            <View style={{marginLeft: 15, borderRadius: 10, borderWidth: 1, borderColor: 'gray', padding: 4}}>
+              <Text>Trim off severely scorched leaves to prevent the spread of damage and encourage new growth.</Text>
+            </View>
+            )}
+            
+          </TouchableOpacity>
+        </ScrollView>
       </View>
+
+      
 
       <Text style={{padding: 10, opacity: 0.6}}>We provide only the optimal care recommendations for each plant, as supported by cited sources.</Text>
     </View>
